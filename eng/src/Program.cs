@@ -2,23 +2,17 @@
 
 using PostSharp.Engineering.BuildTools;
 using PostSharp.Engineering.BuildTools.Build.Model;
-using PostSharp.Engineering.BuildTools.Build.Solutions;
 using PostSharp.Engineering.BuildTools.Dependencies.Definitions;
 using Spectre.Console.Cli;
-using Dependencies = PostSharp.Engineering.BuildTools.Dependencies.Definitions.TemplateDependencies;
+using MetalamaDependencies = PostSharp.Engineering.BuildTools.Dependencies.Definitions.MetalamaDependencies.V2023_1;
 
-var product = new Product( Dependencies.MetalamaConsolidated )
+var product = new Product( MetalamaDependencies.Consolidated )
 {
-    Solutions = new Solution[]
-    {
-        new DotNetSolution( "src\\Metalama.Consolidated.sln" )
-    },
-    PublicArtifacts = Pattern.Create( "Metalama.Consolidated.$(PackageVersion).nupkg" ),
-    Dependencies = new[] { DevelopmentDependencies.PostSharpEngineering, MetalamaDependencies.V2023_3.Metalama }
+    IsBundle = true,
+    Dependencies = new[] { DevelopmentDependencies.PostSharpEngineering }
 };
 
 var commandApp = new CommandApp();
-
 commandApp.AddProductCommands( product );
 
 return commandApp.Run( args );
