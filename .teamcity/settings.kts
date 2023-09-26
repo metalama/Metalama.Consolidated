@@ -473,12 +473,7 @@ object Metalama_Metalama20233_Consolidated_PublicDeployment : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20233_MetalamaDocumentation_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20233_MetalamaTry_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20233_MetalamaPatterns_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -489,11 +484,6 @@ object Metalama_Metalama20233_Consolidated_PublicDeployment : BuildType({
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20233_MetalamaTests_MetalamaTestsNopCommerce_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20233_MetalamaDocumentation_PublicUpdateSearch")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
