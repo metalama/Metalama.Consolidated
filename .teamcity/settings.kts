@@ -14,15 +14,15 @@ version = "2021.2"
 
 project {
 
-   buildType(Metalama_Metalama20232_Consolidated_DebugBuild)
-   buildType(Metalama_Metalama20232_Consolidated_DownstreamMerge)
-   buildType(Metalama_Metalama20232_Consolidated_VersionBump)
-   buildType(Metalama_Metalama20232_Consolidated_PublicBuild)
-   buildType(Metalama_Metalama20232_Consolidated_PublicDeployment)
-   buildTypesOrder = arrayListOf(Metalama_Metalama20232_Consolidated_DebugBuild,Metalama_Metalama20232_Consolidated_DownstreamMerge,Metalama_Metalama20232_Consolidated_VersionBump,Metalama_Metalama20232_Consolidated_PublicBuild,Metalama_Metalama20232_Consolidated_PublicDeployment)
+   buildType(DebugBuild)
+   buildType(DownstreamMerge)
+   buildType(VersionBump)
+   buildType(PublicBuild)
+   buildType(PublicDeployment)
+   buildTypesOrder = arrayListOf(DebugBuild,DownstreamMerge,VersionBump,PublicBuild,PublicDeployment)
 }
 
-object Metalama_Metalama20232_Consolidated_DebugBuild : BuildType({
+object DebugBuild : BuildType({
 
     name = "Build [Debug]"
 
@@ -108,7 +108,7 @@ object Metalama_Metalama20232_Consolidated_DebugBuild : BuildType({
 
 })
 
-object Metalama_Metalama20232_Consolidated_DownstreamMerge : BuildType({
+object DownstreamMerge : BuildType({
 
     name = "Merge Downstream"
 
@@ -205,7 +205,7 @@ object Metalama_Metalama20232_Consolidated_DownstreamMerge : BuildType({
 
 })
 
-object Metalama_Metalama20232_Consolidated_VersionBump : BuildType({
+object VersionBump : BuildType({
 
     name = "1. Version Bump"
 
@@ -312,7 +312,7 @@ object Metalama_Metalama20232_Consolidated_VersionBump : BuildType({
 
 })
 
-object Metalama_Metalama20232_Consolidated_PublicBuild : BuildType({
+object PublicBuild : BuildType({
 
     name = "2. Build [Public]"
 
@@ -409,7 +409,7 @@ object Metalama_Metalama20232_Consolidated_PublicBuild : BuildType({
 
 })
 
-object Metalama_Metalama20232_Consolidated_PublicDeployment : BuildType({
+object PublicDeployment : BuildType({
 
     name = "3. Deploy [Public]"
 
