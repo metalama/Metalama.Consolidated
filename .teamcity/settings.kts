@@ -14,14 +14,15 @@ version = "2021.2"
 
 project {
 
-   buildType(Metalama_Metalama20234_Consolidated_DebugBuild)
-   buildType(Metalama_Metalama20234_Consolidated_VersionBump)
-   buildType(Metalama_Metalama20234_Consolidated_PublicBuild)
-   buildType(Metalama_Metalama20234_Consolidated_PublicDeployment)
-   buildTypesOrder = arrayListOf(Metalama_Metalama20234_Consolidated_DebugBuild,Metalama_Metalama20234_Consolidated_VersionBump,Metalama_Metalama20234_Consolidated_PublicBuild,Metalama_Metalama20234_Consolidated_PublicDeployment)
+   buildType(DebugBuild)
+   buildType(DownstreamMerge)
+   buildType(VersionBump)
+   buildType(PublicBuild)
+   buildType(PublicDeployment)
+   buildTypesOrder = arrayListOf(DebugBuild,DownstreamMerge,VersionBump,PublicBuild,PublicDeployment)
 }
 
-object Metalama_Metalama20234_Consolidated_DebugBuild : BuildType({
+object DebugBuild : BuildType({
 
     name = "Build [Debug]"
 
@@ -38,6 +39,11 @@ object Metalama_Metalama20234_Consolidated_DebugBuild : BuildType({
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20234_MetalamaCompiler_DebugBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaFrameworkRunTime_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -107,7 +113,114 @@ object Metalama_Metalama20234_Consolidated_DebugBuild : BuildType({
 
 })
 
-object Metalama_Metalama20234_Consolidated_VersionBump : BuildType({
+object DownstreamMerge : BuildType({
+
+    name = "Merge Downstream"
+
+    type = Type.COMPOSITE
+
+    vcs {
+        showDependenciesChanges = true
+    }
+
+    triggers {
+        schedule {
+            schedulingPolicy = daily {
+                hour = 23
+            }
+            branchFilter = "+:<default>"
+            triggerBuild = always()
+            withPendingChangesOnly = true
+        }
+    }
+
+    dependencies {
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaBackstage_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaCompiler_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaFrameworkRunTime_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaFrameworkPrivate_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_Metalama_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaVsx_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaExtensions_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaSamples_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaMigration_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaLinqPad_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaCommunity_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaPatterns_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaDocumentation_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaTry_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaTests_MetalamaTestsCargoSupport_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaTests_MetalamaTestsNopCommerce_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+
+     }
+
+})
+
+object VersionBump : BuildType({
 
     name = "1. Version Bump"
 
@@ -131,6 +244,14 @@ object Metalama_Metalama20234_Consolidated_VersionBump : BuildType({
             }
             noProfile = false
             param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2023.4 Metalama.Compiler")
+        }
+        powerShell {
+            name = "Trigger version bump of Metalama.Framework.RunTime"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2023.4 Metalama.Framework.RunTime")
         }
         powerShell {
             name = "Trigger version bump of Metalama"
@@ -222,7 +343,7 @@ object Metalama_Metalama20234_Consolidated_VersionBump : BuildType({
 
 })
 
-object Metalama_Metalama20234_Consolidated_PublicBuild : BuildType({
+object PublicBuild : BuildType({
 
     name = "2. Build [Public]"
 
@@ -250,6 +371,11 @@ object Metalama_Metalama20234_Consolidated_PublicBuild : BuildType({
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20234_MetalamaCompiler_PublicBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaFrameworkRunTime_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -319,7 +445,7 @@ object Metalama_Metalama20234_Consolidated_PublicBuild : BuildType({
 
 })
 
-object Metalama_Metalama20234_Consolidated_PublicDeployment : BuildType({
+object PublicDeployment : BuildType({
 
     name = "3. Deploy [Public]"
 
@@ -336,6 +462,11 @@ object Metalama_Metalama20234_Consolidated_PublicDeployment : BuildType({
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20234_MetalamaCompiler_PublicDeployment")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20234_MetalamaFrameworkRunTime_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
