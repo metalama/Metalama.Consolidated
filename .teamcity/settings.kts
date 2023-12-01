@@ -312,7 +312,7 @@ object VersionBump : BuildType({
         schedule {
             schedulingPolicy = daily {
                 hour = 1
-                minute = 0
+                minute = 10
             }
             branchFilter = "+:<default>"
             triggerBuild = always()
