@@ -122,6 +122,7 @@ object DownstreamMerge : BuildType({
         schedule {
             schedulingPolicy = daily {
                 hour = 23
+                minute = 0
             }
             branchFilter = "+:<default>"
             triggerBuild = always()
@@ -303,6 +304,7 @@ object VersionBump : BuildType({
         schedule {
             schedulingPolicy = daily {
                 hour = 1
+                minute = 0
             }
             branchFilter = "+:<default>"
             triggerBuild = always()
@@ -326,6 +328,7 @@ object PublicBuild : BuildType({
         schedule {
             schedulingPolicy = daily {
                 hour = 2
+                minute = 0
             }
             branchFilter = "+:<default>"
             triggerBuild = always()
