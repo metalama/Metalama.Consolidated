@@ -16,10 +16,11 @@ project {
 
    buildType(DebugBuild)
    buildType(DownstreamMerge)
+   buildType(ReleaseBuild)
    buildType(VersionBump)
    buildType(PublicBuild)
    buildType(PublicDeployment)
-   buildTypesOrder = arrayListOf(DebugBuild,DownstreamMerge,VersionBump,PublicBuild,PublicDeployment)
+   buildTypesOrder = arrayListOf(DebugBuild,DownstreamMerge,ReleaseBuild,VersionBump,PublicBuild,PublicDeployment)
 }
 
 object DebugBuild : BuildType({
@@ -221,6 +222,97 @@ object DownstreamMerge : BuildType({
 
 })
 
+object ReleaseBuild : BuildType({
+
+    name = "Build [Release]"
+
+    type = Type.COMPOSITE
+
+    vcs {
+        showDependenciesChanges = true
+    }
+
+    dependencies {
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaBackstage_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaCompiler_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaFrameworkRunTime_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_Metalama_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaVsx_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaExtensions_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaSamples_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaMigration_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaLinqPad_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaCommunity_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaPatterns_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaDocumentation_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaTry_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaTests_MetalamaTestsCargoSupport_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20240_MetalamaTests_MetalamaTestsNopCommerce_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+
+     }
+
+})
+
 object VersionBump : BuildType({
 
     name = "1. Version Bump"
@@ -335,7 +427,7 @@ object VersionBump : BuildType({
         schedule {
             schedulingPolicy = daily {
                 hour = 1
-                minute = 20
+                minute = 10
             }
             branchFilter = "+:<default>"
             triggerBuild = always()
