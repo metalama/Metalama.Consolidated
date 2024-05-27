@@ -27,7 +27,7 @@ var product = new Product( MetalamaDependencies.Consolidated )
         {
             PublicPublishers =
             [
-                new DownloadsPublisher(
+                new DownloadPublisher(
                 [
                     S3Helper.CreateConfiguration( zipPackageName, MetalamaDependencies.Consolidated.ProductFamily ),
                     S3Helper.CreateConfiguration( mainIndexName, MetalamaDependencies.Consolidated.ProductFamily ),
