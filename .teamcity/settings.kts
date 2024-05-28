@@ -441,10 +441,49 @@ object PublicBuild : BuildType({
 
     name = "2. Build [Public]"
 
-    type = Type.COMPOSITE
+    artifactRules = "+:artifacts/publish/public/**/*=>artifacts/publish/public"
 
+    params {
+        text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
+    }
     vcs {
-        showDependenciesChanges = true
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        powerShell {
+            name = "Build"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            param("jetbrains_powershell_scriptArguments", "build --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%")
+        }
+    }
+
+    failureConditions {
+        failOnMetricChange {
+            metric = BuildFailureOnMetric.MetricType.BUILD_DURATION
+            units = BuildFailureOnMetric.MetricUnit.DEFAULT_UNIT
+            comparison = BuildFailureOnMetric.MetricComparison.MORE
+            compareTo = build {
+                buildRule = lastSuccessful()
+            }
+            stopBuildOnFailure = true
+            param("metricThreshold", "%TimeOut%")
+        }
+    }
+
+    requirements {
+        equals("env.BuildAgentType", "caravela04cloud")
+    }
+
+    features {
+        swabra {
+            lockingProcesses = Swabra.LockingProcessPolicy.KILL
+            verbose = true
+        }
     }
 
     triggers {
@@ -464,20 +503,40 @@ object PublicBuild : BuildType({
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Backstage\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Backstage"
+            }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaCompiler_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Compiler\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Compiler"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaFrameworkRunTime_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Framework.RunTime\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Framework.RunTime"
+            }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_Metalama_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaVsx_PublicBuild")) {
@@ -489,30 +548,60 @@ object PublicBuild : BuildType({
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Extensions\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Extensions"
+            }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaSamples_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Samples\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Samples"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaMigration_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Migration\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Migration"
+            }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaLinqPad_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.LinqPad\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.LinqPad"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaCommunity_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Community"
+            }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaPatterns_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Patterns\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Patterns"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaDocumentation_PublicBuild")) {
@@ -544,10 +633,49 @@ object PublicDeployment : BuildType({
 
     name = "3. Deploy [Public]"
 
-    type = Type.COMPOSITE
+    type = Type.DEPLOYMENT
 
+    params {
+        text("PublishArguments", "", label = "Publish Arguments", description = "Arguments to append to the 'Publish' build step.", allowEmpty = true)
+        text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
+    }
     vcs {
-        showDependenciesChanges = true
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        powerShell {
+            name = "Publish"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            param("jetbrains_powershell_scriptArguments", "publish --configuration Public %PublishArguments%")
+        }
+    }
+
+    failureConditions {
+        failOnMetricChange {
+            metric = BuildFailureOnMetric.MetricType.BUILD_DURATION
+            units = BuildFailureOnMetric.MetricUnit.DEFAULT_UNIT
+            comparison = BuildFailureOnMetric.MetricComparison.MORE
+            compareTo = build {
+                buildRule = lastSuccessful()
+            }
+            stopBuildOnFailure = true
+            param("metricThreshold", "%TimeOut%")
+        }
+    }
+
+    requirements {
+        equals("env.BuildAgentType", "caravela04cloud")
+    }
+
+    features {
+        swabra {
+            lockingProcesses = Swabra.LockingProcessPolicy.KILL
+            verbose = true
+        }
     }
 
     dependencies {
@@ -629,6 +757,16 @@ object PublicDeployment : BuildType({
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaDocumentation_PublicUpdateSearch")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20241_Consolidated_PublicBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/public/**/*=>artifacts/publish/public"
             }
         }
 
