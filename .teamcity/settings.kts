@@ -543,11 +543,6 @@ object PublicBuild : BuildType({
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Vsx\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Vsx"
-            }
         }
         dependency(AbsoluteId("Metalama_Metalama20240_MetalamaExtensions_PublicBuild")) {
             snapshot {
@@ -613,40 +608,20 @@ object PublicBuild : BuildType({
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Documentation\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Documentation"
-            }
         }
         dependency(AbsoluteId("Metalama_Metalama20240_MetalamaTry_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Try\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Try"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20240_MetalamaTests_MetalamaTestsCargoSupport_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Tests.CargoSupport\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Tests.CargoSupport"
-            }
         }
         dependency(AbsoluteId("Metalama_Metalama20240_MetalamaTests_MetalamaTestsNopCommerce_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Tests.NopCommerce\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Tests.NopCommerce"
             }
         }
 
