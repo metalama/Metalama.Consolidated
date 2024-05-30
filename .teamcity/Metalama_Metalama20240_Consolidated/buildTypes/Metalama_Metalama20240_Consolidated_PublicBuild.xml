@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2021.1/project-config.xsd">
+  <name>2. Build [Public]</name>
+  <description />
+  <settings>
+    <options>
+      <option name="artifactRules" value="+:artifacts/publish/private/**/*=&gt;artifacts/publish/private&#xA;+:artifacts/publish/public/**/*=&gt;artifacts/publish/public" />
+    </options>
+    <parameters>
+      <param name="BuildArguments" value="" spec="text label='Build Arguments' description='Arguments to append to the |'Build|' build step.' validationMode='any'" />
+      <param name="TimeOut" value="300" spec="text label='Time-Out Threshold' description='Seconds after the duration of the last successful build.' validationMode='regex' regexp='\d+' validationMessage='The timeout has to be an integer number.'" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_1" name="Build" type="jetbrains_powershell">
+        <parameters>
+          <param name="jetbrains_powershell_execution" value="PS1" />
+          <param name="jetbrains_powershell_noprofile" value="" />
+          <param name="jetbrains_powershell_scriptArguments" value="build --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%" />
+          <param name="jetbrains_powershell_script_file" value="Build.ps1" />
+          <param name="jetbrains_powershell_script_mode" value="FILE" />
+          <param name="teamcity.step.mode" value="default" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="Metalama_Metalama20240_MetalamaConsolidated" />
+    </vcs-settings>
+    <requirements>
+      <equals id="RQ_1" name="env.BuildAgentType" value="caravela04cloud" />
+    </requirements>
+    <build-triggers>
+      <build-trigger id="TRIGGER_1" type="schedulingTrigger">
+        <parameters>
+          <param name="branchFilter" value="+:&lt;default&gt;" />
+          <param name="cronExpression_dm" value="*" />
+          <param name="cronExpression_dw" value="?" />
+          <param name="cronExpression_hour" value="*" />
+          <param name="cronExpression_min" value="0" />
+          <param name="cronExpression_month" value="*" />
+          <param name="cronExpression_sec" value="0" />
+          <param name="cronExpression_year" value="*" />
+          <param name="dayOfWeek" value="Sunday" />
+          <param name="enableQueueOptimization" value="true" />
+          <param name="hour" value="2" />
+          <param name="minute" value="0" />
+          <param name="promoteWatchedBuild" value="true" />
+          <param name="revisionRule" value="lastFinished" />
+          <param name="revisionRuleBuildBranch" value="+:&lt;default&gt;" />
+          <param name="schedulingPolicy" value="daily" />
+          <param name="timezone" value="SERVER" />
+          <param name="triggerBuildIfWatchedBuildChanges" value="" />
+          <param name="triggerBuildWithPendingChangesOnly" value="true" />
+        </parameters>
+      </build-trigger>
+    </build-triggers>
+    <build-extensions>
+      <extension id="BUILD_EXT_1" type="swabra">
+        <parameters>
+          <param name="swabra.enabled" value="swabra.before.build" />
+          <param name="swabra.processes" value="kill" />
+          <param name="swabra.verbose" value="true" />
+        </parameters>
+      </extension>
+      <extension id="BUILD_EXT_2" type="BuildFailureOnMetric">
+        <parameters>
+          <param name="anchorBuild" value="lastSuccessful" />
+          <param name="metricKey" value="BuildDurationNetTime" />
+          <param name="metricThreshold" value="%TimeOut%" />
+          <param name="metricUnits" value="metricUnitsDefault" />
+          <param name="moreOrLess" value="more" />
+          <param name="stopBuildOnFailure" value="true" />
+          <param name="withBuildAnchor" value="true" />
+        </parameters>
+      </extension>
+    </build-extensions>
+    <artifact-dependencies>
+      <dependency id="ARTIFACT_DEPENDENCY_1" sourceBuildTypeId="Metalama_Metalama20240_MetalamaBackstage_PublicBuild" cleanDestination="true">
+        <revisionRule name="sameChainOrLastFinished" revision="latest.sameChainOrLastFinished" />
+        <artifact sourcePath="+:artifacts/publish/private/**/*.version.props=&gt;dependencies/Metalama.Backstage&#xD;&#xA;+:artifacts/publish/public/**/*.nupkg=&gt;dependencies/Metalama.Backstage&#xD;&#xA;+:artifacts/publish/public/**/*.snupkg=&gt;dependencies/Metalama.Backstage" />
+      </dependency>
+      <dependency id="ARTIFACT_DEPENDENCY_2" sourceBuildTypeId="Metalama_Metalama20240_MetalamaCompiler_PublicBuild" cleanDestination="true">
+        <revisionRule name="sameChainOrLastFinished" revision="latest.sameChainOrLastFinished" />
+        <artifact sourcePath="+:artifacts/packages/Release/Shipping/**/*.version.props=&gt;dependencies/Metalama.Compiler&#xD;&#xA;+:artifacts/publish/public/**/*.nupkg=&gt;dependencies/Metalama.Compiler&#xD;&#xA;+:artifacts/publish/public/**/*.snupkg=&gt;dependencies/Metalama.Compiler" />
+      </dependency>
+      <dependency id="ARTIFACT_DEPENDENCY_3" sourceBuildTypeId="Metalama_Metalama20240_MetalamaFrameworkRunTime_PublicBuild" cleanDestination="true">
+        <revisionRule name="sameChainOrLastFinished" revision="latest.sameChainOrLastFinished" />
+        <artifact sourcePath="+:artifacts/publish/private/**/*.version.props=&gt;dependencies/Metalama.Framework.RunTime&#xD;&#xA;+:artifacts/publish/public/**/*.nupkg=&gt;dependencies/Metalama.Framework.RunTime&#xD;&#xA;+:artifacts/publish/public/**/*.snupkg=&gt;dependencies/Metalama.Framework.RunTime" />
+      </dependency>
+      <dependency id="ARTIFACT_DEPENDENCY_4" sourceBuildTypeId="Metalama_Metalama20240_Metalama_PublicBuild" cleanDestination="true">
+        <revisionRule name="sameChainOrLastFinished" revision="latest.sameChainOrLastFinished" />
+        <artifact sourcePath="+:artifacts/publish/private/**/*.version.props=&gt;dependencies/Metalama&#xD;&#xA;+:artifacts/publish/public/**/*.nupkg=&gt;dependencies/Metalama&#xD;&#xA;+:artifacts/publish/public/**/*.snupkg=&gt;dependencies/Metalama" />
+      </dependency>
+      <dependency id="ARTIFACT_DEPENDENCY_5" sourceBuildTypeId="Metalama_Metalama20240_MetalamaExtensions_PublicBuild" cleanDestination="true">
+        <revisionRule name="sameChainOrLastFinished" revision="latest.sameChainOrLastFinished" />
+        <artifact sourcePath="+:artifacts/publish/public/**/*.nupkg=&gt;dependencies/Metalama.Extensions&#xA;+:artifacts/publish/public/**/*.snupkg=&gt;dependencies/Metalama.Extensions" />
+      </dependency>
+      <dependency id="ARTIFACT_DEPENDENCY_6" sourceBuildTypeId="Metalama_Metalama20240_MetalamaSamples_PublicBuild" cleanDestination="true">
+        <revisionRule name="sameChainOrLastFinished" revision="latest.sameChainOrLastFinished" />
+        <artifact sourcePath="+:artifacts/publish/public/**/*.nupkg=&gt;dependencies/Metalama.Samples&#xA;+:artifacts/publish/public/**/*.snupkg=&gt;dependencies/Metalama.Samples" />
+      </dependency>
+      <dependency id="ARTIFACT_DEPENDENCY_7" sourceBuildTypeId="Metalama_Metalama20240_MetalamaMigration_PublicBuild" cleanDestination="true">
+        <revisionRule name="sameChainOrLastFinished" revision="latest.sameChainOrLastFinished" />
+        <artifact sourcePath="+:artifacts/publish/public/**/*.nupkg=&gt;dependencies/Metalama.Migration&#xA;+:artifacts/publish/public/**/*.snupkg=&gt;dependencies/Metalama.Migration" />
+      </dependency>
+      <dependency id="ARTIFACT_DEPENDENCY_8" sourceBuildTypeId="Metalama_Metalama20240_MetalamaLinqPad_PublicBuild" cleanDestination="true">
+        <revisionRule name="sameChainOrLastFinished" revision="latest.sameChainOrLastFinished" />
+        <artifact sourcePath="+:artifacts/publish/public/**/*.nupkg=&gt;dependencies/Metalama.LinqPad&#xA;+:artifacts/publish/public/**/*.snupkg=&gt;dependencies/Metalama.LinqPad" />
+      </dependency>
+      <dependency id="ARTIFACT_DEPENDENCY_9" sourceBuildTypeId="Metalama_Metalama20240_MetalamaCommunity_PublicBuild" cleanDestination="true">
+        <revisionRule name="sameChainOrLastFinished" revision="latest.sameChainOrLastFinished" />
+        <artifact sourcePath="+:artifacts/publish/public/**/*.nupkg=&gt;dependencies/Metalama.Community&#xA;+:artifacts/publish/public/**/*.snupkg=&gt;dependencies/Metalama.Community" />
+      </dependency>
+      <dependency id="ARTIFACT_DEPENDENCY_10" sourceBuildTypeId="Metalama_Metalama20240_MetalamaPatterns_PublicBuild" cleanDestination="true">
+        <revisionRule name="sameChainOrLastFinished" revision="latest.sameChainOrLastFinished" />
+        <artifact sourcePath="+:artifacts/publish/public/**/*.nupkg=&gt;dependencies/Metalama.Patterns&#xA;+:artifacts/publish/public/**/*.snupkg=&gt;dependencies/Metalama.Patterns" />
+      </dependency>
+    </artifact-dependencies>
+    <dependencies>
+      <depend-on sourceBuildTypeId="Metalama_Metalama20240_MetalamaBackstage_PublicBuild">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="Metalama_Metalama20240_MetalamaCompiler_PublicBuild">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="Metalama_Metalama20240_MetalamaFrameworkRunTime_PublicBuild">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="Metalama_Metalama20240_Metalama_PublicBuild">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="Metalama_Metalama20240_MetalamaExtensions_PublicBuild">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="Metalama_Metalama20240_MetalamaSamples_PublicBuild">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="Metalama_Metalama20240_MetalamaMigration_PublicBuild">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="Metalama_Metalama20240_MetalamaLinqPad_PublicBuild">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="Metalama_Metalama20240_MetalamaCommunity_PublicBuild">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="Metalama_Metalama20240_MetalamaPatterns_PublicBuild">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+    </dependencies>
+    <cleanup />
+  </settings>
+</build-type>
+
