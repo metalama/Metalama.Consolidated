@@ -4,7 +4,6 @@ using BuildMetalamaConsolidated;
 using PostSharp.Engineering.BuildTools;
 using PostSharp.Engineering.BuildTools.Build;
 using PostSharp.Engineering.BuildTools.Build.Model;
-using PostSharp.Engineering.BuildTools.Build.Publishers;
 using PostSharp.Engineering.BuildTools.Build.Publishers.Downloads;
 using PostSharp.Engineering.BuildTools.Dependencies.Definitions;
 using Spectre.Console.Cli;
@@ -13,13 +12,14 @@ using MetalamaDependencies = PostSharp.Engineering.BuildTools.Dependencies.Defin
 var zipPackageName = "Metalama.$(PackageVersion).zip";
 var versionPackageName = "Metalama.Framework";
 var mainIndexName = "Index.xml";
-var packageIndexName = $"Index.{versionPackageName}.xml";
+var packageIndexName = $"Index.{zipPackageName}.xml";
 
 var product = new Product( MetalamaDependencies.Consolidated )
 {
     IsBundle = true,
     Solutions = [ new ConsolidatedBuildSolution( zipPackageName, versionPackageName ) ],
-    Dependencies = [ DevelopmentDependencies.PostSharpEngineering ],
+    Dependencies = [ DevelopmentDependencies.PostSharpEngineering, MetalamaDependencies.Metalama ],
+    MainVersionDependency = MetalamaDependencies.Metalama,
     Configurations = Product.DefaultConfigurations.WithValue(
         BuildConfiguration.Public,
         c => c with
@@ -31,8 +31,7 @@ var product = new Product( MetalamaDependencies.Consolidated )
                     S3Helper.CreateConfiguration( zipPackageName, MetalamaDependencies.Consolidated.ProductFamily ),
                     S3Helper.CreateConfiguration( mainIndexName, MetalamaDependencies.Consolidated.ProductFamily ),
                     S3Helper.CreateConfiguration( packageIndexName, MetalamaDependencies.Consolidated.ProductFamily )
-                ] ),
-                new MergePublisher()
+                ] )
             ]
         } )
 };
