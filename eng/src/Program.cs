@@ -4,7 +4,6 @@ using BuildMetalamaConsolidated;
 using PostSharp.Engineering.BuildTools;
 using PostSharp.Engineering.BuildTools.Build;
 using PostSharp.Engineering.BuildTools.Build.Model;
-using PostSharp.Engineering.BuildTools.Build.Publishers;
 using PostSharp.Engineering.BuildTools.Build.Publishers.Downloads;
 using PostSharp.Engineering.BuildTools.Dependencies.Definitions;
 using Spectre.Console.Cli;
@@ -31,8 +30,7 @@ var product = new Product( MetalamaDependencies.Consolidated )
                     S3Helper.CreateConfiguration( zipPackageName, MetalamaDependencies.Consolidated.ProductFamily ),
                     S3Helper.CreateConfiguration( mainIndexName, MetalamaDependencies.Consolidated.ProductFamily ),
                     S3Helper.CreateConfiguration( packageIndexName, MetalamaDependencies.Consolidated.ProductFamily )
-                ] ),
-                new MergePublisher()
+                ] )
             ]
         } )
 };

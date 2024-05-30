@@ -441,7 +441,7 @@ object PublicBuild : BuildType({
 
     name = "2. Build [Public]"
 
-    artifactRules = "+:artifacts/publish/public/**/*=>artifacts/publish/public"
+    artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private\n+:artifacts/publish/public/**/*=>artifacts/publish/public"
 
     params {
         text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
@@ -766,7 +766,7 @@ object PublicDeployment : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*=>artifacts/publish/public"
+                artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private\n+:artifacts/publish/public/**/*=>artifacts/publish/public"
             }
         }
 
