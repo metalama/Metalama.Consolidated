@@ -441,7 +441,7 @@ object PublicBuild : BuildType({
 
     name = "2. Build [Public]"
 
-    artifactRules = "+:artifacts/publish/public/**/*=>artifacts/publish/public"
+    artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private\n+:artifacts/publish/public/**/*=>artifacts/publish/public"
 
     params {
         text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
@@ -506,7 +506,7 @@ object PublicBuild : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Backstage\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Backstage"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Backstage\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Backstage\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Backstage"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaCompiler_PublicBuild")) {
@@ -516,7 +516,7 @@ object PublicBuild : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Compiler\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Compiler"
+                artifactRules = "+:artifacts/packages/Release/Shipping/**/*.version.props=>dependencies/Metalama.Compiler\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Compiler\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Compiler"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaFrameworkRunTime_PublicBuild")) {
@@ -526,7 +526,7 @@ object PublicBuild : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Framework.RunTime\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Framework.RunTime"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Framework.RunTime\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Framework.RunTime\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Framework.RunTime"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_Metalama_PublicBuild")) {
@@ -536,7 +536,7 @@ object PublicBuild : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaVsx_PublicBuild")) {
@@ -551,7 +551,7 @@ object PublicBuild : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Extensions\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Extensions"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Extensions\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Extensions\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Extensions"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaSamples_PublicBuild")) {
@@ -561,7 +561,7 @@ object PublicBuild : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Samples\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Samples"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Samples\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Samples\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Samples"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaMigration_PublicBuild")) {
@@ -571,7 +571,7 @@ object PublicBuild : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Migration\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Migration"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Migration\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Migration\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Migration"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaLinqPad_PublicBuild")) {
@@ -581,7 +581,7 @@ object PublicBuild : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.LinqPad\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.LinqPad"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.LinqPad\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.LinqPad\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.LinqPad"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaCommunity_PublicBuild")) {
@@ -591,7 +591,7 @@ object PublicBuild : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Community"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Community"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaPatterns_PublicBuild")) {
@@ -601,7 +601,7 @@ object PublicBuild : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Patterns\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Patterns"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Patterns\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Patterns\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Patterns"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaDocumentation_PublicBuild")) {
@@ -766,7 +766,7 @@ object PublicDeployment : BuildType({
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/public/**/*=>artifacts/publish/public"
+                artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private\n+:artifacts/publish/public/**/*=>artifacts/publish/public"
             }
         }
 
