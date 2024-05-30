@@ -18,7 +18,7 @@ var product = new Product( MetalamaDependencies.Consolidated )
 {
     IsBundle = true,
     Solutions = [ new ConsolidatedBuildSolution( zipPackageName, versionPackageName ) ],
-    Dependencies = [ DevelopmentDependencies.PostSharpEngineering ],
+    Dependencies = [ DevelopmentDependencies.PostSharpEngineering, MetalamaDependencies.Metalama ],
     MainVersionDependency = MetalamaDependencies.Metalama,
     Configurations = Product.DefaultConfigurations.WithValue(
         BuildConfiguration.Public,
