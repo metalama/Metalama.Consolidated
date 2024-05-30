@@ -33,6 +33,7 @@ internal class ConsolidatedBuildSolution : Solution
             .Where( p => packageExtensions.Contains( Path.GetExtension( p ) ) )
             .ToArray();
 
+        // TODO: The version should not be determined from the package file name.
         var packageVersionRegex = new Regex(
             $@"^{Regex.Escape( this._versionPackageName )}\.(?<Version>\d+\.\d+\.\d+(?:-.+)?)\.nupkg$",
             RegexOptions.CultureInvariant | RegexOptions.IgnoreCase );

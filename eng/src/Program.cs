@@ -12,13 +12,14 @@ using MetalamaDependencies = PostSharp.Engineering.BuildTools.Dependencies.Defin
 var zipPackageName = "Metalama.$(PackageVersion).zip";
 var versionPackageName = "Metalama.Framework";
 var mainIndexName = "Index.xml";
-var packageIndexName = $"Index.{versionPackageName}.xml";
+var packageIndexName = $"Index.{zipPackageName}.xml";
 
 var product = new Product( MetalamaDependencies.Consolidated )
 {
     IsBundle = true,
     Solutions = [ new ConsolidatedBuildSolution( zipPackageName, versionPackageName ) ],
     Dependencies = [ DevelopmentDependencies.PostSharpEngineering ],
+    MainVersionDependency = MetalamaDependencies.Metalama,
     Configurations = Product.DefaultConfigurations.WithValue(
         BuildConfiguration.Public,
         c => c with
