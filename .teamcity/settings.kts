@@ -22,7 +22,7 @@ project {
    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,VersionBump,PublicBuild,PublicDeployment)
 
    subProject {
-        id = "NuGet2"
+        id("NuGet2")
         name = "NuGet2"
 
         buildType(PublicBuild2)
