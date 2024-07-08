@@ -2,6 +2,7 @@ package patches.buildTypes
 
 import jetbrains.buildServer.configs.kotlin.v2019_2.*
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.dotnetCustom
 import jetbrains.buildServer.configs.kotlin.v2019_2.ui.*
 
 /*
@@ -15,6 +16,15 @@ create(RelativeId("NuGet"), BuildType({
 
     vcs {
         root(DslContext.settingsRoot)
+    }
+
+    steps {
+        dotnetCustom {
+            name = "MyStep"
+            id = "MyStep"
+            args = "--info"
+            param("dotNetCoverage.dotCover.home.path", "%teamcity.tool.JetBrains.dotCover.CommandLineTools.DEFAULT%")
+        }
     }
 }))
 
