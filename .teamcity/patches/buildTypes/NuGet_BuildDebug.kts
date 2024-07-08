@@ -12,5 +12,9 @@ in the project with id = 'NuGet', and delete the patch script.
 create(RelativeId("NuGet"), BuildType({
     id("NuGet_BuildDebug")
     name = "Build [Debug]"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
 }))
 
