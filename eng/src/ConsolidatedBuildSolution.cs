@@ -26,30 +26,18 @@ internal class ConsolidatedBuildSolution : Solution
 
     public override bool Pack( BuildContext context, BuildSettings settings )
     {
-        string artifactsFilter;
-        ParametricString artifactsDirectoryParametric;
-
-        switch ( settings.BuildConfiguration )
+        var artifactsDirectoryParametric = settings.BuildConfiguration switch
         {
-            case BuildConfiguration.Public:
-                artifactsFilter = Path.Combine( "", "public", "" );
-                artifactsDirectoryParametric = context.Product.PublicArtifactsDirectory;
-                break;
-            
-            default:
-                artifactsFilter = Path.Combine( "", "private", "" );
-                artifactsDirectoryParametric = context.Product.PrivateArtifactsDirectory;
-                break;
-        }
+            BuildConfiguration.Public => context.Product.PublicArtifactsDirectory,
+            _ => context.Product.PrivateArtifactsDirectory
+        };
         
         var dependenciesDirectory = Path.Combine( context.RepoDirectory, "dependencies" );
         
         var packageExtensions = new[] { ".nupkg", ".snupkg" };
 
         var packages = Directory.EnumerateFiles( dependenciesDirectory, "*.*", SearchOption.AllDirectories )
-            .Where( p =>
-                p.Contains( artifactsFilter, StringComparison.Ordinal ) &&
-                packageExtensions.Contains( Path.GetExtension( p ) ) )
+            .Where( p => packageExtensions.Contains( Path.GetExtension( p ) ) )
             .ToArray();
 
         // TODO: The version should not be determined from the package file name.
