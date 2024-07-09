@@ -42,7 +42,7 @@ internal class ConsolidatedBuildSolution : Solution
 
         // TODO: The version should not be determined from the package file name.
         var packageVersionRegex = new Regex(
-            $@"^{Regex.Escape( this._versionPackageName )}\.(?<Version>\d+\.\d+\.\d+(?:-.+)?)\.nupkg$",
+            $@"^{Regex.Escape( this._versionPackageName )}\.(?<Version>\d+\.\d+\.\d+(?:\.\d+)?(?:-.+)?)\.nupkg$",
             RegexOptions.CultureInvariant | RegexOptions.IgnoreCase );
 
         var packageVersion = packages
