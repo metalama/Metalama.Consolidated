@@ -1108,7 +1108,7 @@ object NPublicDeployment : BuildType({
 
 })
 
-object NuGet : ProjectType({
+object NuGet : Project({
 
     name = "NuGet"
 
@@ -1119,4 +1119,4 @@ object NuGet : ProjectType({
 
     buildTypesOrder = arrayListOf(NDebugBuild,NReleaseBuild,NPublicBuild,NPublicDeployment)
 
-}
+})
