@@ -1108,7 +1108,7 @@ object NPublicDeployment : BuildType({
 
 })
 
-object NuGet : BuildType({
+object NuGet : ProjectType({
 
     name = "NuGet"
 
