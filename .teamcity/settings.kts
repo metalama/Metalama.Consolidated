@@ -353,6 +353,18 @@ object PublicBuild : BuildType({
         showDependenciesChanges = true
     }
 
+    triggers {
+        schedule {
+            schedulingPolicy = daily {
+                hour = 2
+                minute = 0
+            }
+            branchFilter = "+:<default>"
+            triggerBuild = always()
+            withPendingChangesOnly = true
+        }
+    }
+
     dependencies {
         dependency(AbsoluteId("Metalama_Metalama20242_MetalamaBackstage_PublicBuild")) {
             snapshot {
