@@ -3,6 +3,7 @@
 using PostSharp.Engineering.BuildTools.Build;
 using PostSharp.Engineering.BuildTools.Build.Model;
 using PostSharp.Engineering.BuildTools.Build.Publishers.Downloads;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -21,10 +22,16 @@ internal class ConsolidatedBuildSolution : Solution
         this._versionPackageName = versionPackageName;
     }
 
-    public override bool Build( BuildContext context, BuildSettings settings ) => throw new System.NotSupportedException();
+    public override bool Build( BuildContext context, BuildSettings settings ) => throw new NotSupportedException();
 
     public override bool Pack( BuildContext context, BuildSettings settings )
     {
+        var artifactsDirectoryParametric = settings.BuildConfiguration switch
+        {
+            BuildConfiguration.Public => context.Product.PublicArtifactsDirectory,
+            _ => context.Product.PrivateArtifactsDirectory
+        };
+        
         var dependenciesDirectory = Path.Combine( context.RepoDirectory, "dependencies" );
         
         var packageExtensions = new[] { ".nupkg", ".snupkg" };
@@ -35,7 +42,7 @@ internal class ConsolidatedBuildSolution : Solution
 
         // TODO: The version should not be determined from the package file name.
         var packageVersionRegex = new Regex(
-            $@"^{Regex.Escape( this._versionPackageName )}\.(?<Version>\d+\.\d+\.\d+(?:-.+)?)\.nupkg$",
+            $@"^{Regex.Escape( this._versionPackageName )}\.(?<Version>\d+\.\d+\.\d+(?:\.\d+)?(?:-.+)?)\.nupkg$",
             RegexOptions.CultureInvariant | RegexOptions.IgnoreCase );
 
         var packageVersion = packages
@@ -44,15 +51,15 @@ internal class ConsolidatedBuildSolution : Solution
             .Groups["Version"].Value;
 
         var buildInfo = new BuildInfo( packageVersion, settings.BuildConfiguration, context.Product, null );
-        var publicArtifactsDirectory = Path.Combine( context.RepoDirectory, context.Product.PublicArtifactsDirectory.ToString( buildInfo ) );
+        var artifactsDirectory = Path.Combine( context.RepoDirectory, artifactsDirectoryParametric.ToString( buildInfo ) );
         var zipFileName = this._zipPackageFileName.ToString( buildInfo );
-        var zipFilePath = Path.Combine( publicArtifactsDirectory, zipFileName );
+        var zipFilePath = Path.Combine( artifactsDirectory, zipFileName );
         
         context.Console.WriteMessage( $"Creating '{zipFilePath}' archive." );
 
-        if ( !Directory.Exists( publicArtifactsDirectory ) )
+        if ( !Directory.Exists( artifactsDirectory ) )
         {
-            Directory.CreateDirectory( publicArtifactsDirectory );
+            Directory.CreateDirectory( artifactsDirectory );
         }
 
         using ( var zipFile = ZipFile.Open( zipFilePath, ZipArchiveMode.Create ) )
@@ -74,15 +81,15 @@ internal class ConsolidatedBuildSolution : Solution
             null );
     
         var mainIndex = new DownloadIndex( downloadsFolder, null, true );
-        mainIndex.Write( publicArtifactsDirectory );
+        mainIndex.Write( artifactsDirectory );
 
         var packageIndex = new DownloadIndex( downloadsFolder.WithFiles( new[] { packageDownloadFile } ), zipFileName, false );
-        packageIndex.Write( publicArtifactsDirectory );
+        packageIndex.Write( artifactsDirectory );
 
         return true;
     }
 
-    public override bool Test( BuildContext context, BuildSettings settings ) => throw new System.NotSupportedException();
+    public override bool Test( BuildContext context, BuildSettings settings ) => throw new NotSupportedException();
 
     public override bool Restore( BuildContext context, BuildSettings settings ) => true;
 }
