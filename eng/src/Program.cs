@@ -6,7 +6,6 @@ using PostSharp.Engineering.BuildTools.Build;
 using PostSharp.Engineering.BuildTools.Build.Model;
 using PostSharp.Engineering.BuildTools.Build.Publishers.Downloads;
 using PostSharp.Engineering.BuildTools.Dependencies.Definitions;
-using Spectre.Console.Cli;
 using MetalamaDependencies = PostSharp.Engineering.BuildTools.Dependencies.Definitions.MetalamaDependencies.V2024_1;
 
 var zipPackageName = "Metalama.$(PackageVersion).zip";
@@ -36,7 +35,4 @@ var product = new Product( MetalamaDependencies.Consolidated )
         } )
 };
 
-var commandApp = new CommandApp();
-commandApp.AddProductCommands( product );
-
-return commandApp.Run( args );
+return new EngineeringApp( product ).Run( args );
