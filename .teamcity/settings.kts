@@ -646,11 +646,6 @@ object PublicDeployment : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20241_MetalamaDocumentation_PublicUpdateSearch")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20241_Consolidated_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -1229,16 +1224,6 @@ object NuGetPublicDeployment : BuildType({
         dependency(AbsoluteId("Metalama_Metalama20241_MetalamaPatterns_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20241_Consolidated_NuGetPublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private\n+:artifacts/publish/public/**/*=>artifacts/publish/public"
             }
         }
 
