@@ -17,10 +17,12 @@ project {
     buildType(DownstreamMerge)
     buildType(ReleaseBuild)
     buildType(VersionBump)
+    buildType(PreDeployment)
     buildType(PublicBuild)
     buildType(PublicDeployment)
+    buildType(PostDeployment)
 
-    buildTypesOrder = arrayListOf(DebugBuild,DownstreamMerge,ReleaseBuild,VersionBump,PublicBuild,PublicDeployment)
+    buildTypesOrder = arrayListOf(DebugBuild,DownstreamMerge,ReleaseBuild,VersionBump,PreDeployment,PublicBuild,PublicDeployment,PostDeployment)
 
     subProject(NuGet)
 
@@ -33,6 +35,10 @@ object DebugBuild : BuildType({
     name = "Build [Debug]"
 
     type = Type.COMPOSITE
+
+    params {
+        text("DefaultBranch", "develop/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
 
     vcs {
         showDependenciesChanges = true
@@ -119,7 +125,6 @@ object DebugBuild : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-
      }
 
 })
@@ -129,6 +134,10 @@ object DownstreamMerge : BuildType({
     name = "Merge Downstream"
 
     type = Type.COMPOSITE
+
+    params {
+        text("DefaultBranch", "develop/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
 
     vcs {
         showDependenciesChanges = true
@@ -140,7 +149,7 @@ object DownstreamMerge : BuildType({
                 hour = 23
                 minute = 0
             }
-            branchFilter = "+:<default>"
+            branchFilter = "+:develop/2024.1"
             triggerBuild = always()
             withPendingChangesOnly = true
         }
@@ -227,7 +236,6 @@ object DownstreamMerge : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-
      }
 
 })
@@ -237,6 +245,10 @@ object ReleaseBuild : BuildType({
     name = "Build [Release]"
 
     type = Type.COMPOSITE
+
+    params {
+        text("DefaultBranch", "develop/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
 
     vcs {
         showDependenciesChanges = true
@@ -323,7 +335,6 @@ object ReleaseBuild : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-
      }
 
 })
@@ -332,98 +343,134 @@ object VersionBump : BuildType({
 
     name = "1. Version Bump"
 
+    params {
+        text("DefaultBranch", "develop/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
+
     vcs {
-        root(DslContext.settingsRoot)
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaBackstage"), "+:. => source-dependencies/Metalama.Backstage")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaFrameworkRunTime"), "+:. => source-dependencies/Metalama.Framework.RunTime")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaFramework"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaExtensions"), "+:. => source-dependencies/Metalama.Extensions")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaMigration"), "+:. => source-dependencies/Metalama.Migration")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaLinqPad"), "+:. => source-dependencies/Metalama.LinqPad")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaPatterns"), "+:. => source-dependencies/Metalama.Patterns")
     }
 
     steps {
         powerShell {
-            name = "Trigger version bump of Metalama.Backstage"
+            name = "Bump version of Metalama.Backstage"
+            id = "BumpMetalamaBackstage"
+            workingDir = "source-dependencies/Metalama.Backstage"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.1 Metalama.Backstage")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Compiler"
+            name = "Bump version of Metalama.Compiler"
+            id = "BumpMetalamaCompiler"
+            workingDir = "source-dependencies/Metalama.Compiler"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.1 Metalama.Compiler")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Framework.RunTime"
+            name = "Bump version of Metalama.Framework.RunTime"
+            id = "BumpMetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Metalama.Framework.RunTime"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.1 Metalama.Framework.RunTime")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama"
+            name = "Bump version of Metalama"
+            id = "BumpMetalama"
+            workingDir = "source-dependencies/Metalama"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.1 Metalama")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Vsx"
+            name = "Bump version of Metalama.Vsx"
+            id = "BumpMetalamaVsx"
+            workingDir = "source-dependencies/Metalama.Vsx"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.1 Metalama.Vsx")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Extensions"
+            name = "Bump version of Metalama.Extensions"
+            id = "BumpMetalamaExtensions"
+            workingDir = "source-dependencies/Metalama.Extensions"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.1 Metalama.Extensions")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Samples"
+            name = "Bump version of Metalama.Samples"
+            id = "BumpMetalamaSamples"
+            workingDir = "source-dependencies/Metalama.Samples"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.1 Metalama.Samples")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Migration"
+            name = "Bump version of Metalama.Migration"
+            id = "BumpMetalamaMigration"
+            workingDir = "source-dependencies/Metalama.Migration"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.1 Metalama.Migration")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.LinqPad"
+            name = "Bump version of Metalama.LinqPad"
+            id = "BumpMetalamaLinqPad"
+            workingDir = "source-dependencies/Metalama.LinqPad"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.1 Metalama.LinqPad")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Community"
+            name = "Bump version of Metalama.Community"
+            id = "BumpMetalamaCommunity"
+            workingDir = "source-dependencies/Metalama.Community"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.1 Metalama.Community")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Patterns"
+            name = "Bump version of Metalama.Patterns"
+            id = "BumpMetalamaPatterns"
+            workingDir = "source-dependencies/Metalama.Patterns"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.1 Metalama.Patterns")
+            scriptArgs = "bump"
         }
     }
 
@@ -436,6 +483,10 @@ object VersionBump : BuildType({
             lockingProcesses = Swabra.LockingProcessPolicy.KILL
             verbose = true
         }
+        sshAgent {
+            // By convention, the SSH key name is always PostSharp.Engineering for all repositories using SSH to connect.
+            teamcitySshKey = "PostSharp.Engineering"
+        }
     }
 
     triggers {
@@ -444,7 +495,7 @@ object VersionBump : BuildType({
                 hour = 1
                 minute = 10
             }
-            branchFilter = "+:<default>"
+            branchFilter = "+:develop/2024.1"
             triggerBuild = always()
             withPendingChangesOnly = false
         }
@@ -452,11 +503,853 @@ object VersionBump : BuildType({
 
 })
 
+object PreDeployment : BuildType({
+
+    name = "2. Prepare Deployment [Public]"
+
+    params {
+        text("DefaultBranch", "develop/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
+
+    vcs {
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaBackstage"), "+:. => source-dependencies/Metalama.Backstage")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaFrameworkRunTime"), "+:. => source-dependencies/Metalama.Framework.RunTime")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaFrameworkPrivate"), "+:. => source-dependencies/Metalama.Framework.Private")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaFramework"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaExtensions"), "+:. => source-dependencies/Metalama.Extensions")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaMigration"), "+:. => source-dependencies/Metalama.Migration")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaLinqPad"), "+:. => source-dependencies/Metalama.LinqPad")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaPatterns"), "+:. => source-dependencies/Metalama.Patterns")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaTry"), "+:. => source-dependencies/Metalama.Try")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaTests_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
+    }
+
+    steps {
+        powerShell {
+            name = "Prepare deployment of Metalama.Backstage"
+            id = "PreDeployment_MetalamaBackstage"
+            workingDir = "source-dependencies/Metalama.Backstage"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Compiler"
+            id = "PreDeployment_MetalamaCompiler"
+            workingDir = "source-dependencies/Metalama.Compiler"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Framework.RunTime"
+            id = "PreDeployment_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Metalama.Framework.RunTime"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Framework.Private"
+            id = "PreDeployment_MetalamaFrameworkPrivate"
+            workingDir = "source-dependencies/Metalama.Framework.Private"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama"
+            id = "Prepare_PreDeployment_Metalama_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama"
+            id = "Prepare_PreDeployment_Metalama_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama"
+            id = "Prepare_PreDeployment_Metalama_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama"
+            id = "PreDeployment_Metalama"
+            workingDir = "source-dependencies/Metalama"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Vsx"
+            id = "Prepare_PreDeployment_MetalamaVsx_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Vsx/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Vsx"
+            id = "Prepare_PreDeployment_MetalamaVsx_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Vsx/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Vsx"
+            id = "Prepare_PreDeployment_MetalamaVsx_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Vsx/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Vsx"
+            id = "Prepare_PreDeployment_MetalamaVsx_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Vsx/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Copy version file of PostSharpPackage for Metalama.Vsx"
+            id = "Prepare_PreDeployment_MetalamaVsx_PostSharp20241"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../PostSharpPackage/artifacts/publish/private/PostSharpPackage.version.props ../Metalama.Vsx/dependencies/PostSharpPackage/PostSharpPackage.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Vsx"
+            id = "PreDeployment_MetalamaVsx"
+            workingDir = "source-dependencies/Metalama.Vsx"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Extensions"
+            id = "Prepare_PreDeployment_MetalamaExtensions_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Extensions/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Extensions"
+            id = "Prepare_PreDeployment_MetalamaExtensions_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Extensions/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Extensions"
+            id = "Prepare_PreDeployment_MetalamaExtensions_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Extensions/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Extensions"
+            id = "Prepare_PreDeployment_MetalamaExtensions_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Extensions/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Extensions"
+            id = "PreDeployment_MetalamaExtensions"
+            workingDir = "source-dependencies/Metalama.Extensions"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Samples"
+            id = "Prepare_PreDeployment_MetalamaSamples_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Samples/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Samples"
+            id = "Prepare_PreDeployment_MetalamaSamples_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Samples/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Samples"
+            id = "Prepare_PreDeployment_MetalamaSamples_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Samples/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Extensions for Metalama.Samples"
+            id = "Prepare_PreDeployment_MetalamaSamples_MetalamaExtensions"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Extensions/artifacts/publish/private/Metalama.Extensions.version.props ../Metalama.Samples/dependencies/Metalama.Extensions/Metalama.Extensions.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Samples"
+            id = "Prepare_PreDeployment_MetalamaSamples_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Samples/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Samples"
+            id = "PreDeployment_MetalamaSamples"
+            workingDir = "source-dependencies/Metalama.Samples"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Migration"
+            id = "Prepare_PreDeployment_MetalamaMigration_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Migration/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Migration"
+            id = "Prepare_PreDeployment_MetalamaMigration_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Migration/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Migration"
+            id = "Prepare_PreDeployment_MetalamaMigration_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Migration/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Extensions for Metalama.Migration"
+            id = "Prepare_PreDeployment_MetalamaMigration_MetalamaExtensions"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Extensions/artifacts/publish/private/Metalama.Extensions.version.props ../Metalama.Migration/dependencies/Metalama.Extensions/Metalama.Extensions.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Migration"
+            id = "Prepare_PreDeployment_MetalamaMigration_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Migration/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Migration"
+            id = "PreDeployment_MetalamaMigration"
+            workingDir = "source-dependencies/Metalama.Migration"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.LinqPad"
+            id = "Prepare_PreDeployment_MetalamaLinqPad_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.LinqPad/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.LinqPad"
+            id = "Prepare_PreDeployment_MetalamaLinqPad_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.LinqPad/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.LinqPad"
+            id = "Prepare_PreDeployment_MetalamaLinqPad_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.LinqPad/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.LinqPad"
+            id = "Prepare_PreDeployment_MetalamaLinqPad_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.LinqPad/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.LinqPad"
+            id = "PreDeployment_MetalamaLinqPad"
+            workingDir = "source-dependencies/Metalama.LinqPad"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Community"
+            id = "Prepare_PreDeployment_MetalamaCommunity_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Community/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Community"
+            id = "Prepare_PreDeployment_MetalamaCommunity_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Community/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Community"
+            id = "Prepare_PreDeployment_MetalamaCommunity_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Community/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Community"
+            id = "Prepare_PreDeployment_MetalamaCommunity_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Community/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Community"
+            id = "PreDeployment_MetalamaCommunity"
+            workingDir = "source-dependencies/Metalama.Community"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Patterns"
+            id = "Prepare_PreDeployment_MetalamaPatterns_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Patterns/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Patterns"
+            id = "Prepare_PreDeployment_MetalamaPatterns_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Patterns/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Patterns"
+            id = "Prepare_PreDeployment_MetalamaPatterns_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Patterns/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Extensions for Metalama.Patterns"
+            id = "Prepare_PreDeployment_MetalamaPatterns_MetalamaExtensions"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Extensions/artifacts/publish/private/Metalama.Extensions.version.props ../Metalama.Patterns/dependencies/Metalama.Extensions/Metalama.Extensions.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Patterns"
+            id = "Prepare_PreDeployment_MetalamaPatterns_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Patterns/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Patterns"
+            id = "PreDeployment_MetalamaPatterns"
+            workingDir = "source-dependencies/Metalama.Patterns"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Documentation"
+            id = "Prepare_PreDeployment_MetalamaDocumentation_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Documentation/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Documentation"
+            id = "Prepare_PreDeployment_MetalamaDocumentation_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Documentation/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Community for Metalama.Documentation"
+            id = "Prepare_PreDeployment_MetalamaDocumentation_MetalamaCommunity"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Community/artifacts/publish/private/Metalama.Community.version.props ../Metalama.Documentation/dependencies/Metalama.Community/Metalama.Community.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Documentation"
+            id = "Prepare_PreDeployment_MetalamaDocumentation_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Documentation/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Extensions for Metalama.Documentation"
+            id = "Prepare_PreDeployment_MetalamaDocumentation_MetalamaExtensions"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Extensions/artifacts/publish/private/Metalama.Extensions.version.props ../Metalama.Documentation/dependencies/Metalama.Extensions/Metalama.Extensions.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Documentation"
+            id = "Prepare_PreDeployment_MetalamaDocumentation_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Documentation/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.LinqPad for Metalama.Documentation"
+            id = "Prepare_PreDeployment_MetalamaDocumentation_MetalamaLinqPad"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.LinqPad/artifacts/publish/private/Metalama.LinqPad.version.props ../Metalama.Documentation/dependencies/Metalama.LinqPad/Metalama.LinqPad.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Migration for Metalama.Documentation"
+            id = "Prepare_PreDeployment_MetalamaDocumentation_MetalamaMigration"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Migration/artifacts/publish/private/Metalama.Migration.version.props ../Metalama.Documentation/dependencies/Metalama.Migration/Metalama.Migration.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Patterns for Metalama.Documentation"
+            id = "Prepare_PreDeployment_MetalamaDocumentation_MetalamaPatterns"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Patterns/artifacts/publish/private/Metalama.Patterns.version.props ../Metalama.Documentation/dependencies/Metalama.Patterns/Metalama.Patterns.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Samples for Metalama.Documentation"
+            id = "Prepare_PreDeployment_MetalamaDocumentation_MetalamaSamples"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Samples/artifacts/publish/private/Metalama.Samples.version.props ../Metalama.Documentation/dependencies/Metalama.Samples/Metalama.Samples.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Documentation"
+            id = "PreDeployment_MetalamaDocumentation"
+            workingDir = "source-dependencies/Metalama.Documentation"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Try"
+            id = "Prepare_PreDeployment_MetalamaTry_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Try/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Try"
+            id = "Prepare_PreDeployment_MetalamaTry_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Try/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Try"
+            id = "Prepare_PreDeployment_MetalamaTry_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Try/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Documentation for Metalama.Try"
+            id = "Prepare_PreDeployment_MetalamaTry_MetalamaDocumentation"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Documentation/artifacts/publish/private/Metalama.Documentation.version.props ../Metalama.Try/dependencies/Metalama.Documentation/Metalama.Documentation.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Extensions for Metalama.Try"
+            id = "Prepare_PreDeployment_MetalamaTry_MetalamaExtensions"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Extensions/artifacts/publish/private/Metalama.Extensions.version.props ../Metalama.Try/dependencies/Metalama.Extensions/Metalama.Extensions.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Try"
+            id = "Prepare_PreDeployment_MetalamaTry_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Try/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Patterns for Metalama.Try"
+            id = "Prepare_PreDeployment_MetalamaTry_MetalamaPatterns"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Patterns/artifacts/publish/private/Metalama.Patterns.version.props ../Metalama.Try/dependencies/Metalama.Patterns/Metalama.Patterns.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Samples for Metalama.Try"
+            id = "Prepare_PreDeployment_MetalamaTry_MetalamaSamples"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Samples/artifacts/publish/private/Metalama.Samples.version.props ../Metalama.Try/dependencies/Metalama.Samples/Metalama.Samples.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Try"
+            id = "PreDeployment_MetalamaTry"
+            workingDir = "source-dependencies/Metalama.Try"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Tests.CargoSupport"
+            id = "Prepare_PreDeployment_MetalamaTestsCargoSupport_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Tests.CargoSupport/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Tests.CargoSupport"
+            id = "Prepare_PreDeployment_MetalamaTestsCargoSupport_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Tests.CargoSupport/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Tests.CargoSupport"
+            id = "Prepare_PreDeployment_MetalamaTestsCargoSupport_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Tests.CargoSupport/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Tests.CargoSupport"
+            id = "Prepare_PreDeployment_MetalamaTestsCargoSupport_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Tests.CargoSupport/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Tests.CargoSupport"
+            id = "PreDeployment_MetalamaTestsCargoSupport"
+            workingDir = "source-dependencies/Metalama.Tests.CargoSupport"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Tests.NopCommerce"
+            id = "Prepare_PreDeployment_MetalamaTestsNopCommerce_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Tests.NopCommerce/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Tests.NopCommerce"
+            id = "Prepare_PreDeployment_MetalamaTestsNopCommerce_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Tests.NopCommerce/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Tests.NopCommerce"
+            id = "Prepare_PreDeployment_MetalamaTestsNopCommerce_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Tests.NopCommerce/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Tests.NopCommerce"
+            id = "Prepare_PreDeployment_MetalamaTestsNopCommerce_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Tests.NopCommerce/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Tests.NopCommerce"
+            id = "PreDeployment_MetalamaTestsNopCommerce"
+            workingDir = "source-dependencies/Metalama.Tests.NopCommerce"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for the consolidated project"
+            id = "Prepare_PreDeployment_Metalama_Metalama20241_Consolidated_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Consolidated/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Prepare consolidated deployment"
+            id = "PreDeployment_Metalama_Metalama20241_Consolidated"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+    }
+
+    requirements {
+        equals("env.BuildAgentType", "caravela04cloud")
+    }
+
+    features {
+        swabra {
+            lockingProcesses = Swabra.LockingProcessPolicy.KILL
+            verbose = true
+        }
+        sshAgent {
+            // By convention, the SSH key name is always PostSharp.Engineering for all repositories using SSH to connect.
+            teamcitySshKey = "PostSharp.Engineering"
+        }
+    }
+
+})
+
 object PublicBuild : BuildType({
 
-    name = "2. Build [Public]"
+    name = "3. Build [Public]"
 
     type = Type.COMPOSITE
+
+    params {
+        text("DefaultBranch", "release/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
 
     vcs {
         showDependenciesChanges = true
@@ -468,7 +1361,7 @@ object PublicBuild : BuildType({
                 hour = 2
                 minute = 0
             }
-            branchFilter = "+:<default>"
+            branchFilter = "+:develop/2024.1"
             triggerBuild = always()
             withPendingChangesOnly = true
         }
@@ -555,19 +1448,26 @@ object PublicBuild : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-
      }
 
 })
 
 object PublicDeployment : BuildType({
 
-    name = "3. Deploy [Public]"
+    name = "4. Deploy [Public]"
 
     type = Type.DEPLOYMENT
 
+    params {
+        text("DefaultBranch", "release/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
+
     vcs {
         showDependenciesChanges = true
+    }
+
+    requirements {
+        equals("env.BuildAgentType", "caravela04cloud")
     }
 
     dependencies {
@@ -656,8 +1556,845 @@ object PublicDeployment : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-
      }
+
+})
+
+object PostDeployment : BuildType({
+
+    name = "5. Finish Deployment [Public]"
+
+    params {
+        text("DefaultBranch", "release/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
+
+    vcs {
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaBackstage"), "+:. => source-dependencies/Metalama.Backstage")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaFrameworkRunTime"), "+:. => source-dependencies/Metalama.Framework.RunTime")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaFrameworkPrivate"), "+:. => source-dependencies/Metalama.Framework.Private")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaFramework"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaExtensions"), "+:. => source-dependencies/Metalama.Extensions")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaMigration"), "+:. => source-dependencies/Metalama.Migration")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaLinqPad"), "+:. => source-dependencies/Metalama.LinqPad")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaPatterns"), "+:. => source-dependencies/Metalama.Patterns")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaTry"), "+:. => source-dependencies/Metalama.Try")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaTests_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
+    }
+
+    steps {
+        powerShell {
+            name = "Finish deployment of Metalama.Backstage"
+            id = "PostDeployment_MetalamaBackstage"
+            workingDir = "source-dependencies/Metalama.Backstage"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Compiler"
+            id = "PostDeployment_MetalamaCompiler"
+            workingDir = "source-dependencies/Metalama.Compiler"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Framework.RunTime"
+            id = "PostDeployment_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Metalama.Framework.RunTime"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Framework.Private"
+            id = "PostDeployment_MetalamaFrameworkPrivate"
+            workingDir = "source-dependencies/Metalama.Framework.Private"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama"
+            id = "Prepare_PostDeployment_Metalama_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama"
+            id = "Prepare_PostDeployment_Metalama_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama"
+            id = "Prepare_PostDeployment_Metalama_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama"
+            id = "PostDeployment_Metalama"
+            workingDir = "source-dependencies/Metalama"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Vsx"
+            id = "Prepare_PostDeployment_MetalamaVsx_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Vsx/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Vsx"
+            id = "Prepare_PostDeployment_MetalamaVsx_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Vsx/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Vsx"
+            id = "Prepare_PostDeployment_MetalamaVsx_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Vsx/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Vsx"
+            id = "Prepare_PostDeployment_MetalamaVsx_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Vsx/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Copy version file of PostSharpPackage for Metalama.Vsx"
+            id = "Prepare_PostDeployment_MetalamaVsx_PostSharp20241"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../PostSharpPackage/artifacts/publish/private/PostSharpPackage.version.props ../Metalama.Vsx/dependencies/PostSharpPackage/PostSharpPackage.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Vsx"
+            id = "PostDeployment_MetalamaVsx"
+            workingDir = "source-dependencies/Metalama.Vsx"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Extensions"
+            id = "Prepare_PostDeployment_MetalamaExtensions_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Extensions/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Extensions"
+            id = "Prepare_PostDeployment_MetalamaExtensions_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Extensions/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Extensions"
+            id = "Prepare_PostDeployment_MetalamaExtensions_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Extensions/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Extensions"
+            id = "Prepare_PostDeployment_MetalamaExtensions_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Extensions/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Extensions"
+            id = "PostDeployment_MetalamaExtensions"
+            workingDir = "source-dependencies/Metalama.Extensions"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Samples"
+            id = "Prepare_PostDeployment_MetalamaSamples_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Samples/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Samples"
+            id = "Prepare_PostDeployment_MetalamaSamples_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Samples/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Samples"
+            id = "Prepare_PostDeployment_MetalamaSamples_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Samples/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Extensions for Metalama.Samples"
+            id = "Prepare_PostDeployment_MetalamaSamples_MetalamaExtensions"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Extensions/artifacts/publish/private/Metalama.Extensions.version.props ../Metalama.Samples/dependencies/Metalama.Extensions/Metalama.Extensions.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Samples"
+            id = "Prepare_PostDeployment_MetalamaSamples_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Samples/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Samples"
+            id = "PostDeployment_MetalamaSamples"
+            workingDir = "source-dependencies/Metalama.Samples"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Migration"
+            id = "Prepare_PostDeployment_MetalamaMigration_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Migration/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Migration"
+            id = "Prepare_PostDeployment_MetalamaMigration_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Migration/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Migration"
+            id = "Prepare_PostDeployment_MetalamaMigration_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Migration/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Extensions for Metalama.Migration"
+            id = "Prepare_PostDeployment_MetalamaMigration_MetalamaExtensions"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Extensions/artifacts/publish/private/Metalama.Extensions.version.props ../Metalama.Migration/dependencies/Metalama.Extensions/Metalama.Extensions.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Migration"
+            id = "Prepare_PostDeployment_MetalamaMigration_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Migration/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Migration"
+            id = "PostDeployment_MetalamaMigration"
+            workingDir = "source-dependencies/Metalama.Migration"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.LinqPad"
+            id = "Prepare_PostDeployment_MetalamaLinqPad_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.LinqPad/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.LinqPad"
+            id = "Prepare_PostDeployment_MetalamaLinqPad_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.LinqPad/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.LinqPad"
+            id = "Prepare_PostDeployment_MetalamaLinqPad_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.LinqPad/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.LinqPad"
+            id = "Prepare_PostDeployment_MetalamaLinqPad_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.LinqPad/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.LinqPad"
+            id = "PostDeployment_MetalamaLinqPad"
+            workingDir = "source-dependencies/Metalama.LinqPad"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Community"
+            id = "Prepare_PostDeployment_MetalamaCommunity_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Community/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Community"
+            id = "Prepare_PostDeployment_MetalamaCommunity_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Community/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Community"
+            id = "Prepare_PostDeployment_MetalamaCommunity_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Community/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Community"
+            id = "Prepare_PostDeployment_MetalamaCommunity_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Community/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Community"
+            id = "PostDeployment_MetalamaCommunity"
+            workingDir = "source-dependencies/Metalama.Community"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Patterns"
+            id = "Prepare_PostDeployment_MetalamaPatterns_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Patterns/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Patterns"
+            id = "Prepare_PostDeployment_MetalamaPatterns_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Patterns/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Patterns"
+            id = "Prepare_PostDeployment_MetalamaPatterns_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Patterns/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Extensions for Metalama.Patterns"
+            id = "Prepare_PostDeployment_MetalamaPatterns_MetalamaExtensions"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Extensions/artifacts/publish/private/Metalama.Extensions.version.props ../Metalama.Patterns/dependencies/Metalama.Extensions/Metalama.Extensions.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Patterns"
+            id = "Prepare_PostDeployment_MetalamaPatterns_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Patterns/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Patterns"
+            id = "PostDeployment_MetalamaPatterns"
+            workingDir = "source-dependencies/Metalama.Patterns"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Documentation"
+            id = "Prepare_PostDeployment_MetalamaDocumentation_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Documentation/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Documentation"
+            id = "Prepare_PostDeployment_MetalamaDocumentation_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Documentation/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Community for Metalama.Documentation"
+            id = "Prepare_PostDeployment_MetalamaDocumentation_MetalamaCommunity"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Community/artifacts/publish/private/Metalama.Community.version.props ../Metalama.Documentation/dependencies/Metalama.Community/Metalama.Community.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Documentation"
+            id = "Prepare_PostDeployment_MetalamaDocumentation_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Documentation/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Extensions for Metalama.Documentation"
+            id = "Prepare_PostDeployment_MetalamaDocumentation_MetalamaExtensions"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Extensions/artifacts/publish/private/Metalama.Extensions.version.props ../Metalama.Documentation/dependencies/Metalama.Extensions/Metalama.Extensions.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Documentation"
+            id = "Prepare_PostDeployment_MetalamaDocumentation_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Documentation/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.LinqPad for Metalama.Documentation"
+            id = "Prepare_PostDeployment_MetalamaDocumentation_MetalamaLinqPad"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.LinqPad/artifacts/publish/private/Metalama.LinqPad.version.props ../Metalama.Documentation/dependencies/Metalama.LinqPad/Metalama.LinqPad.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Migration for Metalama.Documentation"
+            id = "Prepare_PostDeployment_MetalamaDocumentation_MetalamaMigration"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Migration/artifacts/publish/private/Metalama.Migration.version.props ../Metalama.Documentation/dependencies/Metalama.Migration/Metalama.Migration.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Patterns for Metalama.Documentation"
+            id = "Prepare_PostDeployment_MetalamaDocumentation_MetalamaPatterns"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Patterns/artifacts/publish/private/Metalama.Patterns.version.props ../Metalama.Documentation/dependencies/Metalama.Patterns/Metalama.Patterns.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Samples for Metalama.Documentation"
+            id = "Prepare_PostDeployment_MetalamaDocumentation_MetalamaSamples"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Samples/artifacts/publish/private/Metalama.Samples.version.props ../Metalama.Documentation/dependencies/Metalama.Samples/Metalama.Samples.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Documentation"
+            id = "PostDeployment_MetalamaDocumentation"
+            workingDir = "source-dependencies/Metalama.Documentation"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Try"
+            id = "Prepare_PostDeployment_MetalamaTry_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Try/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Try"
+            id = "Prepare_PostDeployment_MetalamaTry_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Try/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Try"
+            id = "Prepare_PostDeployment_MetalamaTry_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Try/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Documentation for Metalama.Try"
+            id = "Prepare_PostDeployment_MetalamaTry_MetalamaDocumentation"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Documentation/artifacts/publish/private/Metalama.Documentation.version.props ../Metalama.Try/dependencies/Metalama.Documentation/Metalama.Documentation.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Extensions for Metalama.Try"
+            id = "Prepare_PostDeployment_MetalamaTry_MetalamaExtensions"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Extensions/artifacts/publish/private/Metalama.Extensions.version.props ../Metalama.Try/dependencies/Metalama.Extensions/Metalama.Extensions.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Try"
+            id = "Prepare_PostDeployment_MetalamaTry_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Try/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Patterns for Metalama.Try"
+            id = "Prepare_PostDeployment_MetalamaTry_MetalamaPatterns"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Patterns/artifacts/publish/private/Metalama.Patterns.version.props ../Metalama.Try/dependencies/Metalama.Patterns/Metalama.Patterns.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Samples for Metalama.Try"
+            id = "Prepare_PostDeployment_MetalamaTry_MetalamaSamples"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Samples/artifacts/publish/private/Metalama.Samples.version.props ../Metalama.Try/dependencies/Metalama.Samples/Metalama.Samples.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Try"
+            id = "PostDeployment_MetalamaTry"
+            workingDir = "source-dependencies/Metalama.Try"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Tests.CargoSupport"
+            id = "Prepare_PostDeployment_MetalamaTestsCargoSupport_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Tests.CargoSupport/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Tests.CargoSupport"
+            id = "Prepare_PostDeployment_MetalamaTestsCargoSupport_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Tests.CargoSupport/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Tests.CargoSupport"
+            id = "Prepare_PostDeployment_MetalamaTestsCargoSupport_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Tests.CargoSupport/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Tests.CargoSupport"
+            id = "Prepare_PostDeployment_MetalamaTestsCargoSupport_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Tests.CargoSupport/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Tests.CargoSupport"
+            id = "PostDeployment_MetalamaTestsCargoSupport"
+            workingDir = "source-dependencies/Metalama.Tests.CargoSupport"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for Metalama.Tests.NopCommerce"
+            id = "Prepare_PostDeployment_MetalamaTestsNopCommerce_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Metalama.Tests.NopCommerce/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Backstage for Metalama.Tests.NopCommerce"
+            id = "Prepare_PostDeployment_MetalamaTestsNopCommerce_MetalamaBackstage"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Backstage/artifacts/publish/private/Metalama.Backstage.version.props ../Metalama.Tests.NopCommerce/dependencies/Metalama.Backstage/Metalama.Backstage.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Compiler for Metalama.Tests.NopCommerce"
+            id = "Prepare_PostDeployment_MetalamaTestsNopCommerce_MetalamaCompiler"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Compiler/artifacts/packages/Release/Shipping/Metalama.Compiler.version.props ../Metalama.Tests.NopCommerce/dependencies/Metalama.Compiler/Metalama.Compiler.version.props"
+        }
+        powerShell {
+            name = "Copy version file of Metalama.Framework.RunTime for Metalama.Tests.NopCommerce"
+            id = "Prepare_PostDeployment_MetalamaTestsNopCommerce_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama.Framework.RunTime/artifacts/publish/private/Metalama.Framework.RunTime.version.props ../Metalama.Tests.NopCommerce/dependencies/Metalama.Framework.RunTime/Metalama.Framework.RunTime.version.props"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Tests.NopCommerce"
+            id = "PostDeployment_MetalamaTestsNopCommerce"
+            workingDir = "source-dependencies/Metalama.Tests.NopCommerce"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+        powerShell {
+            name = "Copy version file of Metalama for the consolidated project"
+            id = "Prepare_PostDeployment_Metalama_Metalama20241_Consolidated_Metalama"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "copy ../Metalama/artifacts/publish/private/Metalama.version.props ../Consolidated/dependencies/Metalama/Metalama.version.props"
+        }
+        powerShell {
+            name = "Finish consolidated deployment"
+            id = "PostDeployment_Metalama_Metalama20241_Consolidated"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id%"
+        }
+    }
+
+    requirements {
+        equals("env.BuildAgentType", "caravela04cloud")
+    }
+
+    features {
+        swabra {
+            lockingProcesses = Swabra.LockingProcessPolicy.KILL
+            verbose = true
+        }
+        sshAgent {
+            // By convention, the SSH key name is always PostSharp.Engineering for all repositories using SSH to connect.
+            teamcitySshKey = "PostSharp.Engineering"
+        }
+    }
 
 })
 
@@ -669,20 +2406,23 @@ object NuGetDebugBuild : BuildType({
 
     params {
         text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text("DefaultBranch", "develop/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
+
     vcs {
-        root(DslContext.settingsRoot)
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"))
     }
 
     steps {
         powerShell {
             name = "Build"
+            id = "Build"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "build --configuration Debug --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%")
+            scriptArgs = "build --configuration Debug --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%"
         }
     }
 
@@ -811,7 +2551,6 @@ object NuGetDebugBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Patterns\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Patterns\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Patterns"
             }
         }
-
      }
 
 })
@@ -824,20 +2563,23 @@ object NuGetReleaseBuild : BuildType({
 
     params {
         text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text("DefaultBranch", "develop/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
+
     vcs {
-        root(DslContext.settingsRoot)
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"))
     }
 
     steps {
         powerShell {
             name = "Build"
+            id = "Build"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "build --configuration Release --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%")
+            scriptArgs = "build --configuration Release --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%"
         }
     }
 
@@ -966,7 +2708,6 @@ object NuGetReleaseBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Patterns\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Patterns\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Patterns"
             }
         }
-
      }
 
 })
@@ -979,20 +2720,23 @@ object NuGetPublicBuild : BuildType({
 
     params {
         text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text("DefaultBranch", "develop/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
+
     vcs {
-        root(DslContext.settingsRoot)
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"))
     }
 
     steps {
         powerShell {
             name = "Build"
+            id = "Build"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "build --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%")
+            scriptArgs = "build --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%"
         }
     }
 
@@ -1121,7 +2865,6 @@ object NuGetPublicBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Patterns\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Patterns\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Patterns"
             }
         }
-
      }
 
 })
@@ -1134,20 +2877,23 @@ object NuGetPublicDeployment : BuildType({
 
     params {
         text("PublishArguments", "", label = "Publish Arguments", description = "Arguments to append to the 'Publish' build step.", allowEmpty = true)
+        text("DefaultBranch", "release/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
+
     vcs {
-        root(DslContext.settingsRoot)
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"))
     }
 
     steps {
         powerShell {
             name = "Publish"
+            id = "Publish"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "publish --configuration Public %PublishArguments%")
+            scriptArgs = "publish --configuration Public %PublishArguments%"
         }
     }
 
@@ -1236,7 +2982,6 @@ object NuGetPublicDeployment : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private\n+:artifacts/publish/public/**/*=>artifacts/publish/public"
             }
         }
-
      }
 
 })
