@@ -725,6 +725,11 @@ object PreDeployment : BuildType({
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/PostSharpPackage.version.props=>source-dependencies/Metalama.Vsx/dependencies/PostSharpPackage"
+            }
         }
      }
 
@@ -1170,6 +1175,11 @@ object PostDeployment : BuildType({
         dependency(AbsoluteId("PostSharp_PostSharp20241_BuildDistribution")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/PostSharpPackage.version.props=>source-dependencies/Metalama.Vsx/dependencies/PostSharpPackage"
             }
         }
      }
