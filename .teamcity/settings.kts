@@ -509,6 +509,7 @@ object PreDeployment : BuildType({
 
     params {
         text("DefaultBranch", "develop/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch_MetalamaTestsNopCommerce", "dev/2024.1", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
     }
 
     vcs {
@@ -946,6 +947,7 @@ object PostDeployment : BuildType({
 
     params {
         text("DefaultBranch", "release/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch_MetalamaTestsNopCommerce", "dev/2024.1", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
     }
 
     vcs {
