@@ -526,8 +526,8 @@ object PreDeployment : BuildType({
         root(AbsoluteId("Metalama_Metalama20241_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20241_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20241_MetalamaTry"), "+:. => source-dependencies/Metalama.Try")
-        root(AbsoluteId("Metalama_Metalama20241_MetalamaTests_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
-        root(AbsoluteId("Metalama_Metalama20241_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
         root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
     }
 
@@ -963,8 +963,8 @@ object PostDeployment : BuildType({
         root(AbsoluteId("Metalama_Metalama20241_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20241_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20241_MetalamaTry"), "+:. => source-dependencies/Metalama.Try")
-        root(AbsoluteId("Metalama_Metalama20241_MetalamaTests_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
-        root(AbsoluteId("Metalama_Metalama20241_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
         root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
     }
 
