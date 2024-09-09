@@ -720,6 +720,14 @@ object PreDeployment : BuildType({
         }
     }
 
+    dependencies {
+        dependency(AbsoluteId("PostSharp_PostSharp20241_BuildDistribution")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+     }
+
 })
 
 object PublicBuild : BuildType({
@@ -1157,6 +1165,14 @@ object PostDeployment : BuildType({
             teamcitySshKey = "PostSharp.Engineering"
         }
     }
+
+    dependencies {
+        dependency(AbsoluteId("PostSharp_PostSharp20241_BuildDistribution")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+     }
 
 })
 
