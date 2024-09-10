@@ -14,12 +14,15 @@ version = "2024.03"
 project {
 
     buildType(DebugBuild)
+    buildType(DownstreamMerge)
     buildType(ReleaseBuild)
     buildType(VersionBump)
+    buildType(PreDeployment)
     buildType(PublicBuild)
     buildType(PublicDeployment)
+    buildType(PostDeployment)
 
-    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,VersionBump,PublicBuild,PublicDeployment)
+    buildTypesOrder = arrayListOf(DebugBuild,DownstreamMerge,ReleaseBuild,VersionBump,PreDeployment,PublicBuild,PublicDeployment,PostDeployment)
 
     subProject(NuGet)
 
@@ -32,6 +35,10 @@ object DebugBuild : BuildType({
     name = "Build [Debug]"
 
     type = Type.COMPOSITE
+
+    params {
+        text("DefaultBranch", "develop/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
 
     vcs {
         showDependenciesChanges = true
@@ -118,7 +125,117 @@ object DebugBuild : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
+     }
 
+})
+
+object DownstreamMerge : BuildType({
+
+    name = "Merge Downstream"
+
+    type = Type.COMPOSITE
+
+    params {
+        text("DefaultBranch", "develop/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
+
+    vcs {
+        showDependenciesChanges = true
+    }
+
+    triggers {
+        schedule {
+            schedulingPolicy = daily {
+                hour = 23
+                minute = 0
+            }
+            branchFilter = "+:develop/2024.2"
+            triggerBuild = always()
+            withPendingChangesOnly = true
+        }
+    }
+
+    dependencies {
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaBackstage_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaCompiler_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaFrameworkRunTime_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaFrameworkPrivate_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_Metalama_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaVsx_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaExtensions_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaMigration_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaLinqPad_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaCommunity_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaPatterns_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaSamples_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaDocumentation_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaTry_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaTests_MetalamaTestsCargoSupport_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20242_MetalamaTests_MetalamaTestsNopCommerce_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
      }
 
 })
@@ -128,6 +245,10 @@ object ReleaseBuild : BuildType({
     name = "Build [Release]"
 
     type = Type.COMPOSITE
+
+    params {
+        text("DefaultBranch", "develop/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
 
     vcs {
         showDependenciesChanges = true
@@ -214,7 +335,6 @@ object ReleaseBuild : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-
      }
 
 })
@@ -223,98 +343,134 @@ object VersionBump : BuildType({
 
     name = "1. Version Bump"
 
+    params {
+        text("DefaultBranch", "develop/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
+
     vcs {
-        root(DslContext.settingsRoot)
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaBackstage"), "+:. => source-dependencies/Metalama.Backstage")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaFrameworkRunTime"), "+:. => source-dependencies/Metalama.Framework.RunTime")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaFramework"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaExtensions"), "+:. => source-dependencies/Metalama.Extensions")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaMigration"), "+:. => source-dependencies/Metalama.Migration")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaLinqPad"), "+:. => source-dependencies/Metalama.LinqPad")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaPatterns"), "+:. => source-dependencies/Metalama.Patterns")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
     }
 
     steps {
         powerShell {
-            name = "Trigger version bump of Metalama.Backstage"
+            name = "Bump version of Metalama.Backstage"
+            id = "BumpMetalamaBackstage"
+            workingDir = "source-dependencies/Metalama.Backstage"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.2 Metalama.Backstage")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Compiler"
+            name = "Bump version of Metalama.Compiler"
+            id = "BumpMetalamaCompiler"
+            workingDir = "source-dependencies/Metalama.Compiler"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.2 Metalama.Compiler")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Framework.RunTime"
+            name = "Bump version of Metalama.Framework.RunTime"
+            id = "BumpMetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Metalama.Framework.RunTime"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.2 Metalama.Framework.RunTime")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama"
+            name = "Bump version of Metalama"
+            id = "BumpMetalama"
+            workingDir = "source-dependencies/Metalama"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.2 Metalama")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Vsx"
+            name = "Bump version of Metalama.Vsx"
+            id = "BumpMetalamaVsx"
+            workingDir = "source-dependencies/Metalama.Vsx"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.2 Metalama.Vsx")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Extensions"
+            name = "Bump version of Metalama.Extensions"
+            id = "BumpMetalamaExtensions"
+            workingDir = "source-dependencies/Metalama.Extensions"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.2 Metalama.Extensions")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Migration"
+            name = "Bump version of Metalama.Migration"
+            id = "BumpMetalamaMigration"
+            workingDir = "source-dependencies/Metalama.Migration"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.2 Metalama.Migration")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.LinqPad"
+            name = "Bump version of Metalama.LinqPad"
+            id = "BumpMetalamaLinqPad"
+            workingDir = "source-dependencies/Metalama.LinqPad"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.2 Metalama.LinqPad")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Community"
+            name = "Bump version of Metalama.Community"
+            id = "BumpMetalamaCommunity"
+            workingDir = "source-dependencies/Metalama.Community"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.2 Metalama.Community")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Patterns"
+            name = "Bump version of Metalama.Patterns"
+            id = "BumpMetalamaPatterns"
+            workingDir = "source-dependencies/Metalama.Patterns"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.2 Metalama.Patterns")
+            scriptArgs = "bump"
         }
         powerShell {
-            name = "Trigger version bump of Metalama.Samples"
+            name = "Bump version of Metalama.Samples"
+            id = "BumpMetalamaSamples"
+            workingDir = "source-dependencies/Metalama.Samples"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "teamcity run bump Metalama 2024.2 Metalama.Samples")
+            scriptArgs = "bump"
         }
     }
 
@@ -327,15 +483,19 @@ object VersionBump : BuildType({
             lockingProcesses = Swabra.LockingProcessPolicy.KILL
             verbose = true
         }
+        sshAgent {
+            // By convention, the SSH key name is always PostSharp.Engineering for all repositories using SSH to connect.
+            teamcitySshKey = "PostSharp.Engineering"
+        }
     }
 
     triggers {
         schedule {
             schedulingPolicy = daily {
                 hour = 1
-                minute = 20
+                minute = 10
             }
-            branchFilter = "+:<default>"
+            branchFilter = "+:develop/2024.2"
             triggerBuild = always()
             withPendingChangesOnly = false
         }
@@ -343,11 +503,233 @@ object VersionBump : BuildType({
 
 })
 
+object PreDeployment : BuildType({
+
+    name = "2. Prepare Deployment [Public]"
+
+    params {
+        text("DefaultBranch", "develop/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
+
+    vcs {
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaBackstage"), "+:. => source-dependencies/Metalama.Backstage")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaFrameworkRunTime"), "+:. => source-dependencies/Metalama.Framework.RunTime")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaFrameworkPrivate"), "+:. => source-dependencies/Metalama.Framework.Private")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaFramework"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaExtensions"), "+:. => source-dependencies/Metalama.Extensions")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaMigration"), "+:. => source-dependencies/Metalama.Migration")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaLinqPad"), "+:. => source-dependencies/Metalama.LinqPad")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaPatterns"), "+:. => source-dependencies/Metalama.Patterns")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaTry"), "+:. => source-dependencies/Metalama.Try")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaTests_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
+    }
+
+    steps {
+        powerShell {
+            name = "Prepare deployment of Metalama.Backstage"
+            id = "PreDeployment_MetalamaBackstage"
+            workingDir = "source-dependencies/Metalama.Backstage"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Compiler"
+            id = "PreDeployment_MetalamaCompiler"
+            workingDir = "source-dependencies/Metalama.Compiler"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Framework.RunTime"
+            id = "PreDeployment_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Metalama.Framework.RunTime"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Framework.Private"
+            id = "PreDeployment_MetalamaFrameworkPrivate"
+            workingDir = "source-dependencies/Metalama.Framework.Private"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama"
+            id = "PreDeployment_Metalama"
+            workingDir = "source-dependencies/Metalama"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Vsx"
+            id = "PreDeployment_MetalamaVsx"
+            workingDir = "source-dependencies/Metalama.Vsx"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Extensions"
+            id = "PreDeployment_MetalamaExtensions"
+            workingDir = "source-dependencies/Metalama.Extensions"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Migration"
+            id = "PreDeployment_MetalamaMigration"
+            workingDir = "source-dependencies/Metalama.Migration"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.LinqPad"
+            id = "PreDeployment_MetalamaLinqPad"
+            workingDir = "source-dependencies/Metalama.LinqPad"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Community"
+            id = "PreDeployment_MetalamaCommunity"
+            workingDir = "source-dependencies/Metalama.Community"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Patterns"
+            id = "PreDeployment_MetalamaPatterns"
+            workingDir = "source-dependencies/Metalama.Patterns"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Samples"
+            id = "PreDeployment_MetalamaSamples"
+            workingDir = "source-dependencies/Metalama.Samples"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Documentation"
+            id = "PreDeployment_MetalamaDocumentation"
+            workingDir = "source-dependencies/Metalama.Documentation"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Try"
+            id = "PreDeployment_MetalamaTry"
+            workingDir = "source-dependencies/Metalama.Try"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Tests.CargoSupport"
+            id = "PreDeployment_MetalamaTestsCargoSupport"
+            workingDir = "source-dependencies/Metalama.Tests.CargoSupport"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare deployment of Metalama.Tests.NopCommerce"
+            id = "PreDeployment_MetalamaTestsNopCommerce"
+            workingDir = "source-dependencies/Metalama.Tests.NopCommerce"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Prepare consolidated deployment"
+            id = "PreDeployment_Metalama_Metalama20242_Consolidated"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+    }
+
+    requirements {
+        equals("env.BuildAgentType", "caravela04cloud")
+    }
+
+    features {
+        swabra {
+            lockingProcesses = Swabra.LockingProcessPolicy.KILL
+            verbose = true
+        }
+        sshAgent {
+            // By convention, the SSH key name is always PostSharp.Engineering for all repositories using SSH to connect.
+            teamcitySshKey = "PostSharp.Engineering"
+        }
+    }
+
+})
+
 object PublicBuild : BuildType({
 
-    name = "2. Build [Public]"
+    name = "3. Build [Public]"
 
     type = Type.COMPOSITE
+
+    params {
+        text("DefaultBranch", "release/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
 
     vcs {
         showDependenciesChanges = true
@@ -359,7 +741,7 @@ object PublicBuild : BuildType({
                 hour = 2
                 minute = 0
             }
-            branchFilter = "+:<default>"
+            branchFilter = "+:develop/2024.2"
             triggerBuild = always()
             withPendingChangesOnly = true
         }
@@ -446,19 +828,26 @@ object PublicBuild : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-
      }
 
 })
 
 object PublicDeployment : BuildType({
 
-    name = "3. Deploy [Public]"
+    name = "4. Deploy [Public]"
 
     type = Type.DEPLOYMENT
 
+    params {
+        text("DefaultBranch", "release/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
+
     vcs {
         showDependenciesChanges = true
+    }
+
+    requirements {
+        equals("env.BuildAgentType", "caravela04cloud")
     }
 
     dependencies {
@@ -552,8 +941,225 @@ object PublicDeployment : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-
      }
+
+})
+
+object PostDeployment : BuildType({
+
+    name = "5. Finish Deployment [Public]"
+
+    params {
+        text("DefaultBranch", "release/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
+
+    vcs {
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaBackstage"), "+:. => source-dependencies/Metalama.Backstage")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaFrameworkRunTime"), "+:. => source-dependencies/Metalama.Framework.RunTime")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaFrameworkPrivate"), "+:. => source-dependencies/Metalama.Framework.Private")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaFramework"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaExtensions"), "+:. => source-dependencies/Metalama.Extensions")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaMigration"), "+:. => source-dependencies/Metalama.Migration")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaLinqPad"), "+:. => source-dependencies/Metalama.LinqPad")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaPatterns"), "+:. => source-dependencies/Metalama.Patterns")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaTry"), "+:. => source-dependencies/Metalama.Try")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaTests_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
+    }
+
+    steps {
+        powerShell {
+            name = "Finish deployment of Metalama.Backstage"
+            id = "PostDeployment_MetalamaBackstage"
+            workingDir = "source-dependencies/Metalama.Backstage"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Compiler"
+            id = "PostDeployment_MetalamaCompiler"
+            workingDir = "source-dependencies/Metalama.Compiler"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Framework.RunTime"
+            id = "PostDeployment_MetalamaFrameworkRunTime"
+            workingDir = "source-dependencies/Metalama.Framework.RunTime"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Framework.Private"
+            id = "PostDeployment_MetalamaFrameworkPrivate"
+            workingDir = "source-dependencies/Metalama.Framework.Private"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama"
+            id = "PostDeployment_Metalama"
+            workingDir = "source-dependencies/Metalama"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Vsx"
+            id = "PostDeployment_MetalamaVsx"
+            workingDir = "source-dependencies/Metalama.Vsx"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Extensions"
+            id = "PostDeployment_MetalamaExtensions"
+            workingDir = "source-dependencies/Metalama.Extensions"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Migration"
+            id = "PostDeployment_MetalamaMigration"
+            workingDir = "source-dependencies/Metalama.Migration"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.LinqPad"
+            id = "PostDeployment_MetalamaLinqPad"
+            workingDir = "source-dependencies/Metalama.LinqPad"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Community"
+            id = "PostDeployment_MetalamaCommunity"
+            workingDir = "source-dependencies/Metalama.Community"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Patterns"
+            id = "PostDeployment_MetalamaPatterns"
+            workingDir = "source-dependencies/Metalama.Patterns"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Samples"
+            id = "PostDeployment_MetalamaSamples"
+            workingDir = "source-dependencies/Metalama.Samples"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Documentation"
+            id = "PostDeployment_MetalamaDocumentation"
+            workingDir = "source-dependencies/Metalama.Documentation"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Try"
+            id = "PostDeployment_MetalamaTry"
+            workingDir = "source-dependencies/Metalama.Try"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Tests.CargoSupport"
+            id = "PostDeployment_MetalamaTestsCargoSupport"
+            workingDir = "source-dependencies/Metalama.Tests.CargoSupport"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish deployment of Metalama.Tests.NopCommerce"
+            id = "PostDeployment_MetalamaTestsNopCommerce"
+            workingDir = "source-dependencies/Metalama.Tests.NopCommerce"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
+            name = "Finish consolidated deployment"
+            id = "PostDeployment_Metalama_Metalama20242_Consolidated"
+            workingDir = "source-dependencies/Consolidated"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+    }
+
+    requirements {
+        equals("env.BuildAgentType", "caravela04cloud")
+    }
+
+    features {
+        swabra {
+            lockingProcesses = Swabra.LockingProcessPolicy.KILL
+            verbose = true
+        }
+        sshAgent {
+            // By convention, the SSH key name is always PostSharp.Engineering for all repositories using SSH to connect.
+            teamcitySshKey = "PostSharp.Engineering"
+        }
+    }
 
 })
 
@@ -565,20 +1171,23 @@ object NuGetDebugBuild : BuildType({
 
     params {
         text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text("DefaultBranch", "develop/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
+
     vcs {
-        root(DslContext.settingsRoot)
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaConsolidated"))
     }
 
     steps {
         powerShell {
             name = "Build"
+            id = "Build"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "build --configuration Debug --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%")
+            scriptArgs = "build --configuration Debug --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%"
         }
     }
 
@@ -707,7 +1316,6 @@ object NuGetDebugBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Samples\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Samples\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Samples"
             }
         }
-
      }
 
 })
@@ -720,20 +1328,23 @@ object NuGetReleaseBuild : BuildType({
 
     params {
         text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text("DefaultBranch", "develop/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
+
     vcs {
-        root(DslContext.settingsRoot)
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaConsolidated"))
     }
 
     steps {
         powerShell {
             name = "Build"
+            id = "Build"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "build --configuration Release --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%")
+            scriptArgs = "build --configuration Release --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%"
         }
     }
 
@@ -862,7 +1473,6 @@ object NuGetReleaseBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Samples\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Samples\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Samples"
             }
         }
-
      }
 
 })
@@ -875,20 +1485,23 @@ object NuGetPublicBuild : BuildType({
 
     params {
         text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text("DefaultBranch", "develop/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
+
     vcs {
-        root(DslContext.settingsRoot)
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaConsolidated"))
     }
 
     steps {
         powerShell {
             name = "Build"
+            id = "Build"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "build --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%")
+            scriptArgs = "build --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %BuildArguments%"
         }
     }
 
@@ -1017,7 +1630,6 @@ object NuGetPublicBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Samples\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Samples\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Samples"
             }
         }
-
      }
 
 })
@@ -1030,20 +1642,23 @@ object NuGetPublicDeployment : BuildType({
 
     params {
         text("PublishArguments", "", label = "Publish Arguments", description = "Arguments to append to the 'Publish' build step.", allowEmpty = true)
+        text("DefaultBranch", "release/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
+
     vcs {
-        root(DslContext.settingsRoot)
+        root(AbsoluteId("Metalama_Metalama20242_MetalamaConsolidated"))
     }
 
     steps {
         powerShell {
             name = "Publish"
+            id = "Publish"
             scriptMode = file {
                 path = "Build.ps1"
             }
             noProfile = false
-            param("jetbrains_powershell_scriptArguments", "publish --configuration Public %PublishArguments%")
+            scriptArgs = "publish --configuration Public %PublishArguments%"
         }
     }
 
@@ -1132,7 +1747,6 @@ object NuGetPublicDeployment : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private\n+:artifacts/publish/public/**/*=>artifacts/publish/public"
             }
         }
-
      }
 
 })
