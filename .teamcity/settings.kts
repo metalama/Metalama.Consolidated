@@ -1791,3 +1791,4 @@ object NuGet : Project({
     buildTypesOrder = arrayListOf(NuGetDebugBuild,NuGetReleaseBuild,NuGetPublicBuild,NuGetPublicDeployment)
 
 })
+
