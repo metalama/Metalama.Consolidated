@@ -397,6 +397,7 @@ object PreDeployment : BuildType({
 
     params {
         text("DefaultBranch", "develop/2025.0", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch_MetalamaTestsNopCommerce", "dev/2025.0", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
     }
 
     vcs {
@@ -414,8 +415,8 @@ object PreDeployment : BuildType({
         root(AbsoluteId("Metalama_Metalama20250_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaTry"), "+:. => source-dependencies/Metalama.Try")
-        root(AbsoluteId("Metalama_Metalama20250_MetalamaTests_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
-        root(AbsoluteId("Metalama_Metalama20250_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20250_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
+        root(AbsoluteId("Metalama_Metalama20250_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
     }
 
@@ -606,6 +607,19 @@ object PreDeployment : BuildType({
             teamcitySshKey = "PostSharp.Engineering"
         }
     }
+
+    dependencies {
+        dependency(AbsoluteId("PostSharp_PostSharp20241_BuildDistribution")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/PostSharpPackage.version.props=>source-dependencies/Metalama.Vsx/dependencies/PostSharpPackage"
+            }
+        }
+     }
 
 })
 
@@ -839,6 +853,7 @@ object PostDeployment : BuildType({
 
     params {
         text("DefaultBranch", "release/2025.0", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch_MetalamaTestsNopCommerce", "dev/2025.0", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
     }
 
     vcs {
@@ -856,8 +871,8 @@ object PostDeployment : BuildType({
         root(AbsoluteId("Metalama_Metalama20250_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaTry"), "+:. => source-dependencies/Metalama.Try")
-        root(AbsoluteId("Metalama_Metalama20250_MetalamaTests_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
-        root(AbsoluteId("Metalama_Metalama20250_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20250_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
+        root(AbsoluteId("Metalama_Metalama20250_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
     }
 
@@ -1048,6 +1063,19 @@ object PostDeployment : BuildType({
             teamcitySshKey = "PostSharp.Engineering"
         }
     }
+
+    dependencies {
+        dependency(AbsoluteId("PostSharp_PostSharp20241_BuildDistribution")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/PostSharpPackage.version.props=>source-dependencies/Metalama.Vsx/dependencies/PostSharpPackage"
+            }
+        }
+     }
 
 })
 
