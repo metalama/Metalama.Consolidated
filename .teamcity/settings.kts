@@ -853,7 +853,7 @@ object PostDeployment : BuildType({
 
     params {
         text("DefaultBranch", "release/2025.0", label = "Default Branch", description = "The default branch of this build configuration.")
-        text("DefaultBranch_MetalamaTestsNopCommerce", "dev/2025.0", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
+        text("DefaultBranch_MetalamaTestsNopCommerce", "release/2025.0", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
     }
 
     vcs {
@@ -1679,5 +1679,3 @@ object NuGet : Project({
     buildTypesOrder = arrayListOf(NuGetDebugBuild,NuGetReleaseBuild,NuGetPublicBuild,NuGetPublicDeployment)
 
 })
-
-
