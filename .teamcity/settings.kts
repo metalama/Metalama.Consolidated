@@ -752,8 +752,8 @@ object PublicBuild : BuildType({
     triggers {
         schedule {
             schedulingPolicy = daily {
-                hour = 2
-                minute = 0
+                hour = 12
+                minute = 05
             }
             branchFilter = "+:refs/heads/(develop/2024.1)"
             triggerBuild = always()
