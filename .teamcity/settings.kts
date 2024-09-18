@@ -753,9 +753,8 @@ object PublicBuild : BuildType({
         schedule {
             schedulingPolicy = daily {
                 hour = 10
-                minute = 8
+                minute = 13
             }
-            branchFilter = "+:refs/heads/(develop/2024.1)"
             triggerBuild = always()
             withPendingChangesOnly = true
             buildParams {
