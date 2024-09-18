@@ -755,9 +755,12 @@ object PublicBuild : BuildType({
                 hour = 2
                 minute = 0
             }
-            branchFilter = "+:develop/2024.1"
+            branchFilter = "+:refs/heads/(develop/2024.1)"
             triggerBuild = always()
             withPendingChangesOnly = true
+            buildParams {
+                param("DefaultBranch", "develop/2024.1")
+            }
         }
     }
 
