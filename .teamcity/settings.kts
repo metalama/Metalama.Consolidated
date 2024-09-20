@@ -743,6 +743,9 @@ object PublicBuild : BuildType({
 
     params {
         text("DefaultBranch", "release/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch_MetalamaTestsNopCommerce", "release/2024.1", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
+        param("reverse.dep.*.DefaultBranch", "%DefaultBranch%")
+        param("reverse.dep.*.DefaultBranch_MetalamaTestsNopCommerce", "%DefaultBranch_MetalamaTestsNopCommerce%")
     }
 
     vcs {
@@ -759,6 +762,7 @@ object PublicBuild : BuildType({
             withPendingChangesOnly = true
             buildParams {
                 param("DefaultBranch", "develop/2024.1")
+                param("DefaultBranch_MetalamaTestsNopCommerce", "dev/2024.1")
             }
         }
     }
