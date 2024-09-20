@@ -749,6 +749,7 @@ object PublicBuild : BuildType({
     }
 
     vcs {
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
