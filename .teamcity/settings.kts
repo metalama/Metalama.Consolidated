@@ -41,6 +41,7 @@ object DebugBuild : BuildType({
     }
 
     vcs {
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
@@ -140,6 +141,7 @@ object DownstreamMerge : BuildType({
     }
 
     vcs {
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
@@ -149,7 +151,6 @@ object DownstreamMerge : BuildType({
                 hour = 23
                 minute = 0
             }
-            branchFilter = "+:develop/2024.1"
             triggerBuild = always()
             withPendingChangesOnly = true
         }
@@ -251,6 +252,7 @@ object ReleaseBuild : BuildType({
     }
 
     vcs {
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
@@ -495,7 +497,6 @@ object VersionBump : BuildType({
                 hour = 1
                 minute = 0
             }
-            branchFilter = "+:develop/2024.1"
             triggerBuild = always()
             withPendingChangesOnly = false
         }
@@ -743,9 +744,6 @@ object PublicBuild : BuildType({
 
     params {
         text("DefaultBranch", "release/2024.1", label = "Default Branch", description = "The default branch of this build configuration.")
-        text("DefaultBranch_MetalamaTestsNopCommerce", "release/2024.1", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
-        param("reverse.dep.*.DefaultBranch", "release/2024.1")
-        param("reverse.dep.*.DefaultBranch_MetalamaTestsNopCommerce", "release/2024.1")
     }
 
     vcs {
@@ -757,15 +755,12 @@ object PublicBuild : BuildType({
         schedule {
             schedulingPolicy = daily {
                 hour = 10
-                minute = 13
+                minute = 0
             }
             triggerBuild = always()
             withPendingChangesOnly = true
             buildParams {
                 param("DefaultBranch", "develop/2024.1")
-                param("DefaultBranch_MetalamaTestsNopCommerce", "dev/2024.1")
-                param("reverse.dep.*.DefaultBranch", "develop/2024.1")
-                param("reverse.dep.*.DefaultBranch_MetalamaTestsNopCommerce", "dev/2024.1")
             }
         }
     }
@@ -866,6 +861,7 @@ object PublicDeployment : BuildType({
     }
 
     vcs {
+        root(AbsoluteId("Metalama_Metalama20241_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
