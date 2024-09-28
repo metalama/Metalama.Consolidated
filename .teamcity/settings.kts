@@ -151,6 +151,7 @@ object DownstreamMerge : BuildType({
                 hour = 23
                 minute = 0
             }
+            branchFilter = "+:develop/2024.1"
             triggerBuild = always()
             withPendingChangesOnly = true
         }
@@ -497,6 +498,7 @@ object VersionBump : BuildType({
                 hour = 1
                 minute = 0
             }
+            branchFilter = "+:develop/2024.1"
             triggerBuild = always()
             withPendingChangesOnly = false
         }
@@ -754,9 +756,10 @@ object PublicBuild : BuildType({
     triggers {
         schedule {
             schedulingPolicy = daily {
-                hour = 10
+                hour = 20
                 minute = 0
             }
+            branchFilter = "+:develop/2024.1"
             triggerBuild = always()
             withPendingChangesOnly = true
             buildParams {
