@@ -40,6 +40,7 @@ object DebugBuild : BuildType({
     }
 
     vcs {
+        root(AbsoluteId("Metalama_Metalama20250_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
@@ -139,6 +140,7 @@ object ReleaseBuild : BuildType({
     }
 
     vcs {
+        root(AbsoluteId("Metalama_Metalama20250_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
@@ -381,7 +383,7 @@ object VersionBump : BuildType({
         schedule {
             schedulingPolicy = daily {
                 hour = 1
-                minute = 20
+                minute = 0
             }
             branchFilter = "+:develop/2025.0"
             triggerBuild = always()
@@ -634,6 +636,7 @@ object PublicBuild : BuildType({
     }
 
     vcs {
+        root(AbsoluteId("Metalama_Metalama20250_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
@@ -646,6 +649,9 @@ object PublicBuild : BuildType({
             branchFilter = "+:develop/2025.0"
             triggerBuild = always()
             withPendingChangesOnly = true
+            buildParams {
+                param("DefaultBranch", "develop/2025.0")
+            }
         }
     }
 
@@ -745,6 +751,7 @@ object PublicDeployment : BuildType({
     }
 
     vcs {
+        root(AbsoluteId("Metalama_Metalama20250_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
