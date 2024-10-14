@@ -745,7 +745,7 @@ object PublicBuild : BuildType({
     type = Type.COMPOSITE
 
     params {
-        text("DefaultBranch", "release/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "develop/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
@@ -860,7 +860,7 @@ object PublicDeployment : BuildType({
     type = Type.DEPLOYMENT
 
     params {
-        text("DefaultBranch", "release/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "develop/2024.2", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
