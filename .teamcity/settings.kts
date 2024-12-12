@@ -105,11 +105,6 @@ object DebugBuild : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaTry_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20250_MetalamaTests_MetalamaTestsCargoSupport_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -201,11 +196,6 @@ object ReleaseBuild : BuildType({
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20250_MetalamaDocumentation_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaTry_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -416,7 +406,6 @@ object PreDeployment : BuildType({
         root(AbsoluteId("Metalama_Metalama20250_MetalamaPatterns"), "+:. => source-dependencies/Metalama.Patterns")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
-        root(AbsoluteId("Metalama_Metalama20250_MetalamaTry"), "+:. => source-dependencies/Metalama.Try")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
@@ -554,16 +543,6 @@ object PreDeployment : BuildType({
             scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
         }
         powerShell {
-            name = "Prepare deployment of Metalama.Try"
-            id = "PreDeployment_MetalamaTry"
-            workingDir = "source-dependencies/Metalama.Try"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
-        powerShell {
             name = "Prepare deployment of Metalama.Tests.CargoSupport"
             id = "PreDeployment_MetalamaTestsCargoSupport"
             workingDir = "source-dependencies/Metalama.Tests.CargoSupport"
@@ -611,7 +590,7 @@ object PreDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("PostSharp_PostSharp20241_BuildDistribution")) {
+        dependency(AbsoluteId("PostSharp_PostSharp20250_BuildDistribution")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -716,11 +695,6 @@ object PublicBuild : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaTry_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20250_MetalamaTests_MetalamaTestsCargoSupport_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -820,11 +794,6 @@ object PublicDeployment : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaTry_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20250_MetalamaTests_MetalamaTestsCargoSupport_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -877,7 +846,6 @@ object PostDeployment : BuildType({
         root(AbsoluteId("Metalama_Metalama20250_MetalamaPatterns"), "+:. => source-dependencies/Metalama.Patterns")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
-        root(AbsoluteId("Metalama_Metalama20250_MetalamaTry"), "+:. => source-dependencies/Metalama.Try")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
         root(AbsoluteId("Metalama_Metalama20250_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
@@ -1015,16 +983,6 @@ object PostDeployment : BuildType({
             scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
         }
         powerShell {
-            name = "Finish deployment of Metalama.Try"
-            id = "PostDeployment_MetalamaTry"
-            workingDir = "source-dependencies/Metalama.Try"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
-        powerShell {
             name = "Finish deployment of Metalama.Tests.CargoSupport"
             id = "PostDeployment_MetalamaTestsCargoSupport"
             workingDir = "source-dependencies/Metalama.Tests.CargoSupport"
@@ -1072,7 +1030,7 @@ object PostDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("PostSharp_PostSharp20241_BuildDistribution")) {
+        dependency(AbsoluteId("PostSharp_PostSharp20250_BuildDistribution")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
