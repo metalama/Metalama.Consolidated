@@ -14,6 +14,7 @@ version = "2024.03"
 project {
 
     buildType(DebugBuild)
+    buildType(DownstreamMerge)
     buildType(ReleaseBuild)
     buildType(VersionBump)
     buildType(PreDeployment)
@@ -21,7 +22,7 @@ project {
     buildType(PublicDeployment)
     buildType(PostDeployment)
 
-    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,VersionBump,PreDeployment,PublicBuild,PublicDeployment,PostDeployment)
+    buildTypesOrder = arrayListOf(DebugBuild,DownstreamMerge,ReleaseBuild,VersionBump,PreDeployment,PublicBuild,PublicDeployment,PostDeployment)
 
     subProject(NuGet)
 
@@ -116,6 +117,113 @@ object DebugBuild : BuildType({
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20250_Consolidated_NuGetDebugBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+     }
+
+})
+
+object DownstreamMerge : BuildType({
+
+    name = "Merge Downstream"
+
+    type = Type.COMPOSITE
+
+    params {
+        text("DefaultBranch", "develop/2025.0", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
+
+    vcs {
+        root(AbsoluteId("Metalama_Metalama20250_MetalamaConsolidated"))
+        showDependenciesChanges = true
+    }
+
+    triggers {
+        schedule {
+            schedulingPolicy = daily {
+                hour = 23
+                minute = 0
+            }
+            branchFilter = "+:develop/2025.0"
+            triggerBuild = always()
+            withPendingChangesOnly = true
+        }
+    }
+
+    dependencies {
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaBackstage_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaCompiler_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaFrameworkRunTime_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaFrameworkPrivate_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_Metalama_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaVsx_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaExtensions_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaMigration_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaLinqPad_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaCommunity_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaPatterns_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaSamples_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaDocumentation_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaTests_MetalamaTestsCargoSupport_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20250_MetalamaTests_MetalamaTestsNopCommerce_DownstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
