@@ -45,11 +45,6 @@ object DebugBuild : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaBackstage_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -60,32 +55,17 @@ object DebugBuild : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_DebugBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaExtensions_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaMigration_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaLinqPad_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPatterns_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -135,11 +115,6 @@ object ReleaseBuild : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaBackstage_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -150,32 +125,17 @@ object ReleaseBuild : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaExtensions_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaMigration_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaLinqPad_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPatterns_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -218,29 +178,15 @@ object VersionBump : BuildType({
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaBackstage"), "+:. => source-dependencies/Metalama.Backstage")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaFramework"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaFramework20251"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaExtensions"), "+:. => source-dependencies/Metalama.Extensions")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaMigration"), "+:. => source-dependencies/Metalama.Migration")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaLinqPad"), "+:. => source-dependencies/Metalama.LinqPad")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaPatterns"), "+:. => source-dependencies/Metalama.Patterns")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
     }
 
     steps {
-        powerShell {
-            name = "Bump version of Metalama.Backstage"
-            id = "BumpMetalamaBackstage"
-            workingDir = "source-dependencies/Metalama.Backstage"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "bump"
-        }
         powerShell {
             name = "Bump version of Metalama.Compiler"
             id = "BumpMetalamaCompiler"
@@ -262,6 +208,16 @@ object VersionBump : BuildType({
             scriptArgs = "bump"
         }
         powerShell {
+            name = "Bump version of Metalama.Premium"
+            id = "BumpMetalamaPremium"
+            workingDir = "source-dependencies/Metalama.Premium"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "bump"
+        }
+        powerShell {
             name = "Bump version of Metalama.Vsx"
             id = "BumpMetalamaVsx"
             workingDir = "source-dependencies/Metalama.Vsx"
@@ -272,49 +228,9 @@ object VersionBump : BuildType({
             scriptArgs = "bump"
         }
         powerShell {
-            name = "Bump version of Metalama.Extensions"
-            id = "BumpMetalamaExtensions"
-            workingDir = "source-dependencies/Metalama.Extensions"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "bump"
-        }
-        powerShell {
-            name = "Bump version of Metalama.Migration"
-            id = "BumpMetalamaMigration"
-            workingDir = "source-dependencies/Metalama.Migration"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "bump"
-        }
-        powerShell {
-            name = "Bump version of Metalama.LinqPad"
-            id = "BumpMetalamaLinqPad"
-            workingDir = "source-dependencies/Metalama.LinqPad"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "bump"
-        }
-        powerShell {
             name = "Bump version of Metalama.Community"
             id = "BumpMetalamaCommunity"
             workingDir = "source-dependencies/Metalama.Community"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "bump"
-        }
-        powerShell {
-            name = "Bump version of Metalama.Patterns"
-            id = "BumpMetalamaPatterns"
-            workingDir = "source-dependencies/Metalama.Patterns"
             scriptMode = file {
                 path = "Build.ps1"
             }
@@ -372,15 +288,11 @@ object PreDeployment : BuildType({
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaBackstage"), "+:. => source-dependencies/Metalama.Backstage")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaFramework"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaFramework20251"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaExtensions"), "+:. => source-dependencies/Metalama.Extensions")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaMigration"), "+:. => source-dependencies/Metalama.Migration")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaLinqPad"), "+:. => source-dependencies/Metalama.LinqPad")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaPatterns"), "+:. => source-dependencies/Metalama.Patterns")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
@@ -389,16 +301,6 @@ object PreDeployment : BuildType({
     }
 
     steps {
-        powerShell {
-            name = "Prepare deployment of Metalama.Backstage"
-            id = "PreDeployment_MetalamaBackstage"
-            workingDir = "source-dependencies/Metalama.Backstage"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
         powerShell {
             name = "Prepare deployment of Metalama.Compiler"
             id = "PreDeployment_MetalamaCompiler"
@@ -420,6 +322,16 @@ object PreDeployment : BuildType({
             scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
         }
         powerShell {
+            name = "Prepare deployment of Metalama.Premium"
+            id = "PreDeployment_MetalamaPremium"
+            workingDir = "source-dependencies/Metalama.Premium"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
             name = "Prepare deployment of Metalama.Vsx"
             id = "PreDeployment_MetalamaVsx"
             workingDir = "source-dependencies/Metalama.Vsx"
@@ -430,49 +342,9 @@ object PreDeployment : BuildType({
             scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
         }
         powerShell {
-            name = "Prepare deployment of Metalama.Extensions"
-            id = "PreDeployment_MetalamaExtensions"
-            workingDir = "source-dependencies/Metalama.Extensions"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
-        powerShell {
-            name = "Prepare deployment of Metalama.Migration"
-            id = "PreDeployment_MetalamaMigration"
-            workingDir = "source-dependencies/Metalama.Migration"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
-        powerShell {
-            name = "Prepare deployment of Metalama.LinqPad"
-            id = "PreDeployment_MetalamaLinqPad"
-            workingDir = "source-dependencies/Metalama.LinqPad"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
-        powerShell {
             name = "Prepare deployment of Metalama.Community"
             id = "PreDeployment_MetalamaCommunity"
             workingDir = "source-dependencies/Metalama.Community"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
-        powerShell {
-            name = "Prepare deployment of Metalama.Patterns"
-            id = "PreDeployment_MetalamaPatterns"
-            workingDir = "source-dependencies/Metalama.Patterns"
             scriptMode = file {
                 path = "Build.ps1"
             }
@@ -547,7 +419,7 @@ object PreDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("PostSharp_PostSharp20250_BuildDistribution")) {
+        dependency(AbsoluteId("PostSharp_PostSharp20251_BuildDistribution")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -592,11 +464,6 @@ object PublicBuild : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaBackstage_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -607,32 +474,17 @@ object PublicBuild : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_PublicBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaExtensions_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaMigration_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaLinqPad_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPatterns_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -686,11 +538,6 @@ object PublicDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaBackstage_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -701,32 +548,17 @@ object PublicDeployment : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_PublicDeployment")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaExtensions_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaMigration_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaLinqPad_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPatterns_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -780,15 +612,11 @@ object PostDeployment : BuildType({
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaBackstage"), "+:. => source-dependencies/Metalama.Backstage")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaFramework"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaFramework20251"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaExtensions"), "+:. => source-dependencies/Metalama.Extensions")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaMigration"), "+:. => source-dependencies/Metalama.Migration")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaLinqPad"), "+:. => source-dependencies/Metalama.LinqPad")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaPatterns"), "+:. => source-dependencies/Metalama.Patterns")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
@@ -797,16 +625,6 @@ object PostDeployment : BuildType({
     }
 
     steps {
-        powerShell {
-            name = "Finish deployment of Metalama.Backstage"
-            id = "PostDeployment_MetalamaBackstage"
-            workingDir = "source-dependencies/Metalama.Backstage"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
         powerShell {
             name = "Finish deployment of Metalama.Compiler"
             id = "PostDeployment_MetalamaCompiler"
@@ -828,6 +646,16 @@ object PostDeployment : BuildType({
             scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
         }
         powerShell {
+            name = "Finish deployment of Metalama.Premium"
+            id = "PostDeployment_MetalamaPremium"
+            workingDir = "source-dependencies/Metalama.Premium"
+            scriptMode = file {
+                path = "Build.ps1"
+            }
+            noProfile = false
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+        }
+        powerShell {
             name = "Finish deployment of Metalama.Vsx"
             id = "PostDeployment_MetalamaVsx"
             workingDir = "source-dependencies/Metalama.Vsx"
@@ -838,49 +666,9 @@ object PostDeployment : BuildType({
             scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
         }
         powerShell {
-            name = "Finish deployment of Metalama.Extensions"
-            id = "PostDeployment_MetalamaExtensions"
-            workingDir = "source-dependencies/Metalama.Extensions"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
-        powerShell {
-            name = "Finish deployment of Metalama.Migration"
-            id = "PostDeployment_MetalamaMigration"
-            workingDir = "source-dependencies/Metalama.Migration"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
-        powerShell {
-            name = "Finish deployment of Metalama.LinqPad"
-            id = "PostDeployment_MetalamaLinqPad"
-            workingDir = "source-dependencies/Metalama.LinqPad"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
-        powerShell {
             name = "Finish deployment of Metalama.Community"
             id = "PostDeployment_MetalamaCommunity"
             workingDir = "source-dependencies/Metalama.Community"
-            scriptMode = file {
-                path = "Build.ps1"
-            }
-            noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
-        }
-        powerShell {
-            name = "Finish deployment of Metalama.Patterns"
-            id = "PostDeployment_MetalamaPatterns"
-            workingDir = "source-dependencies/Metalama.Patterns"
             scriptMode = file {
                 path = "Build.ps1"
             }
@@ -955,7 +743,7 @@ object PostDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("PostSharp_PostSharp20250_BuildDistribution")) {
+        dependency(AbsoluteId("PostSharp_PostSharp20251_BuildDistribution")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1022,16 +810,6 @@ object NuGetDebugBuild : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaBackstage_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Backstage\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Backstage\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Backstage"
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -1052,34 +830,14 @@ object NuGetDebugBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaExtensions_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Extensions\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Extensions\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Extensions"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaMigration_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Migration\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Migration\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Migration"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaLinqPad_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.LinqPad\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.LinqPad\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.LinqPad"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Premium\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Premium\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Premium"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_DebugBuild")) {
@@ -1090,16 +848,6 @@ object NuGetDebugBuild : BuildType({
             artifacts {
                 cleanDestination = true
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Community\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Community\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Community"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPatterns_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Patterns\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Patterns\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Patterns"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_DebugBuild")) {
@@ -1169,16 +917,6 @@ object NuGetReleaseBuild : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaBackstage_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Backstage\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Backstage\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Backstage"
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -1199,34 +937,14 @@ object NuGetReleaseBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaExtensions_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Extensions\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Extensions\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Extensions"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaMigration_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Migration\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Migration\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Migration"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaLinqPad_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.LinqPad\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.LinqPad\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.LinqPad"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Premium\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Premium\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Premium"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_ReleaseBuild")) {
@@ -1237,16 +955,6 @@ object NuGetReleaseBuild : BuildType({
             artifacts {
                 cleanDestination = true
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Community\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Community\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Community"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPatterns_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Patterns\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Patterns\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Patterns"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_ReleaseBuild")) {
@@ -1316,16 +1024,6 @@ object NuGetPublicBuild : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaBackstage_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Backstage\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Backstage\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Backstage"
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -1346,34 +1044,14 @@ object NuGetPublicBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaExtensions_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
 
             artifacts {
                 cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Extensions\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Extensions\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Extensions"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaMigration_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Migration\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Migration\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Migration"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaLinqPad_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.LinqPad\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.LinqPad\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.LinqPad"
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Premium\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Premium\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Premium"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_PublicBuild")) {
@@ -1384,16 +1062,6 @@ object NuGetPublicBuild : BuildType({
             artifacts {
                 cleanDestination = true
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Community"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPatterns_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Patterns\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Patterns\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Patterns"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_PublicBuild")) {
@@ -1463,11 +1131,6 @@ object NuGetPublicDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaBackstage_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -1478,27 +1141,12 @@ object NuGetPublicDeployment : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaExtensions_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaMigration_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaLinqPad_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPatterns_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
