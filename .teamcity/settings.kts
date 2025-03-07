@@ -388,6 +388,7 @@ object PreDeployment : BuildType({
     name = "2. Prepare Deployment [Public]"
 
     params {
+        text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
         text("DefaultBranch", "develop/2025.0", label = "Default Branch", description = "The default branch of this build configuration.")
         text("DefaultBranch_MetalamaTestsNopCommerce", "dev/2025.0", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
     }
@@ -420,7 +421,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Compiler"
@@ -430,7 +431,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Framework.RunTime"
@@ -440,7 +441,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Framework.Private"
@@ -450,7 +451,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama"
@@ -460,7 +461,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Vsx"
@@ -470,7 +471,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Extensions"
@@ -480,7 +481,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Migration"
@@ -490,7 +491,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.LinqPad"
@@ -500,7 +501,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Community"
@@ -510,7 +511,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Patterns"
@@ -520,7 +521,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Samples"
@@ -530,7 +531,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Documentation"
@@ -540,7 +541,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Tests.CargoSupport"
@@ -550,7 +551,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Tests.NopCommerce"
@@ -560,7 +561,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
         powerShell {
             name = "Prepare consolidated deployment"
@@ -570,7 +571,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %BuildArguments%"
         }
     }
 
