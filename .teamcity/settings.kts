@@ -179,7 +179,7 @@ object VersionBump : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaFramework20251"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20251_Metalama"), "+:. => source-dependencies/Metalama")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
@@ -289,7 +289,7 @@ object PreDeployment : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaFramework20251"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20251_Metalama"), "+:. => source-dependencies/Metalama")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
@@ -613,7 +613,7 @@ object PostDeployment : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaFramework20251"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20251_Metalama"), "+:. => source-dependencies/Metalama")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
