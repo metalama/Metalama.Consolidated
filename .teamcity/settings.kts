@@ -174,6 +174,12 @@ object VersionBump : BuildType({
     name = "1. Version Bump"
 
     params {
+        text("BumpMetalamaCompilerArguments", "", label = "Bump version of Metalama.Compiler Arguments", description = "Arguments to append to the 'Bump version of Metalama.Compiler' build step.", allowEmpty = true)
+        text("BumpMetalamaArguments", "", label = "Bump version of Metalama Arguments", description = "Arguments to append to the 'Bump version of Metalama' build step.", allowEmpty = true)
+        text("BumpMetalamaPremiumArguments", "", label = "Bump version of Metalama.Premium Arguments", description = "Arguments to append to the 'Bump version of Metalama.Premium' build step.", allowEmpty = true)
+        text("BumpMetalamaVsxArguments", "", label = "Bump version of Metalama.Vsx Arguments", description = "Arguments to append to the 'Bump version of Metalama.Vsx' build step.", allowEmpty = true)
+        text("BumpMetalamaCommunityArguments", "", label = "Bump version of Metalama.Community Arguments", description = "Arguments to append to the 'Bump version of Metalama.Community' build step.", allowEmpty = true)
+        text("BumpMetalamaSamplesArguments", "", label = "Bump version of Metalama.Samples Arguments", description = "Arguments to append to the 'Bump version of Metalama.Samples' build step.", allowEmpty = true)
         text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
@@ -195,7 +201,7 @@ object VersionBump : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "bump"
+            scriptArgs = "bump %BumpMetalamaCompilerArguments%"
         }
         powerShell {
             name = "Bump version of Metalama"
@@ -205,7 +211,7 @@ object VersionBump : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "bump"
+            scriptArgs = "bump %BumpMetalamaArguments%"
         }
         powerShell {
             name = "Bump version of Metalama.Premium"
@@ -215,7 +221,7 @@ object VersionBump : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "bump"
+            scriptArgs = "bump %BumpMetalamaPremiumArguments%"
         }
         powerShell {
             name = "Bump version of Metalama.Vsx"
@@ -225,7 +231,7 @@ object VersionBump : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "bump"
+            scriptArgs = "bump %BumpMetalamaVsxArguments%"
         }
         powerShell {
             name = "Bump version of Metalama.Community"
@@ -235,7 +241,7 @@ object VersionBump : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "bump"
+            scriptArgs = "bump %BumpMetalamaCommunityArguments%"
         }
         powerShell {
             name = "Bump version of Metalama.Samples"
@@ -245,7 +251,7 @@ object VersionBump : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "bump"
+            scriptArgs = "bump %BumpMetalamaSamplesArguments%"
         }
     }
 
@@ -283,6 +289,15 @@ object PreDeployment : BuildType({
     name = "2. Prepare Deployment [Public]"
 
     params {
+        text("PreDeployment_MetalamaCompilerArguments", "", label = "Prepare deployment of Metalama.Compiler Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama.Compiler' build step.", allowEmpty = true)
+        text("PreDeployment_MetalamaArguments", "", label = "Prepare deployment of Metalama Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama' build step.", allowEmpty = true)
+        text("PreDeployment_MetalamaPremiumArguments", "", label = "Prepare deployment of Metalama.Premium Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama.Premium' build step.", allowEmpty = true)
+        text("PreDeployment_MetalamaVsxArguments", "", label = "Prepare deployment of Metalama.Vsx Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama.Vsx' build step.", allowEmpty = true)
+        text("PreDeployment_MetalamaCommunityArguments", "", label = "Prepare deployment of Metalama.Community Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama.Community' build step.", allowEmpty = true)
+        text("PreDeployment_MetalamaSamplesArguments", "", label = "Prepare deployment of Metalama.Samples Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama.Samples' build step.", allowEmpty = true)
+        text("PreDeployment_MetalamaDocumentationArguments", "", label = "Prepare deployment of Metalama.Documentation Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama.Documentation' build step.", allowEmpty = true)
+        text("PreDeployment_MetalamaTestsCargoSupportArguments", "", label = "Prepare deployment of Metalama.Tests.CargoSupport Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama.Tests.CargoSupport' build step.", allowEmpty = true)
+        text("PreDeployment_MetalamaTestsNopCommerceArguments", "", label = "Prepare deployment of Metalama.Tests.NopCommerce Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama.Tests.NopCommerce' build step.", allowEmpty = true)
         text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
         text("DefaultBranch_MetalamaTestsNopCommerce", "dev/2025.1", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
     }
@@ -309,7 +324,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PreDeployment_MetalamaCompilerArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama"
@@ -319,7 +334,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PreDeployment_MetalamaArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Premium"
@@ -329,7 +344,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PreDeployment_MetalamaPremiumArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Vsx"
@@ -339,7 +354,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PreDeployment_MetalamaVsxArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Community"
@@ -349,7 +364,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PreDeployment_MetalamaCommunityArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Samples"
@@ -359,7 +374,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PreDeployment_MetalamaSamplesArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Documentation"
@@ -369,7 +384,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PreDeployment_MetalamaDocumentationArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Tests.CargoSupport"
@@ -379,7 +394,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PreDeployment_MetalamaTestsCargoSupportArguments%"
         }
         powerShell {
             name = "Prepare deployment of Metalama.Tests.NopCommerce"
@@ -389,7 +404,7 @@ object PreDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "prepublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PreDeployment_MetalamaTestsNopCommerceArguments%"
         }
         powerShell {
             name = "Prepare consolidated deployment"
@@ -607,6 +622,15 @@ object PostDeployment : BuildType({
     name = "5. Finish Deployment [Public]"
 
     params {
+        text("PostDeployment_MetalamaCompilerArguments", "", label = "Finish deployment of Metalama.Compiler Arguments", description = "Arguments to append to the 'Finish deployment of Metalama.Compiler' build step.", allowEmpty = true)
+        text("PostDeployment_MetalamaArguments", "", label = "Finish deployment of Metalama Arguments", description = "Arguments to append to the 'Finish deployment of Metalama' build step.", allowEmpty = true)
+        text("PostDeployment_MetalamaPremiumArguments", "", label = "Finish deployment of Metalama.Premium Arguments", description = "Arguments to append to the 'Finish deployment of Metalama.Premium' build step.", allowEmpty = true)
+        text("PostDeployment_MetalamaVsxArguments", "", label = "Finish deployment of Metalama.Vsx Arguments", description = "Arguments to append to the 'Finish deployment of Metalama.Vsx' build step.", allowEmpty = true)
+        text("PostDeployment_MetalamaCommunityArguments", "", label = "Finish deployment of Metalama.Community Arguments", description = "Arguments to append to the 'Finish deployment of Metalama.Community' build step.", allowEmpty = true)
+        text("PostDeployment_MetalamaSamplesArguments", "", label = "Finish deployment of Metalama.Samples Arguments", description = "Arguments to append to the 'Finish deployment of Metalama.Samples' build step.", allowEmpty = true)
+        text("PostDeployment_MetalamaDocumentationArguments", "", label = "Finish deployment of Metalama.Documentation Arguments", description = "Arguments to append to the 'Finish deployment of Metalama.Documentation' build step.", allowEmpty = true)
+        text("PostDeployment_MetalamaTestsCargoSupportArguments", "", label = "Finish deployment of Metalama.Tests.CargoSupport Arguments", description = "Arguments to append to the 'Finish deployment of Metalama.Tests.CargoSupport' build step.", allowEmpty = true)
+        text("PostDeployment_MetalamaTestsNopCommerceArguments", "", label = "Finish deployment of Metalama.Tests.NopCommerce Arguments", description = "Arguments to append to the 'Finish deployment of Metalama.Tests.NopCommerce' build step.", allowEmpty = true)
         text("DefaultBranch", "release/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
         text("DefaultBranch_MetalamaTestsNopCommerce", "release/2025.1", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
     }
@@ -633,7 +657,7 @@ object PostDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PostDeployment_MetalamaCompilerArguments%"
         }
         powerShell {
             name = "Finish deployment of Metalama"
@@ -643,7 +667,7 @@ object PostDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PostDeployment_MetalamaArguments%"
         }
         powerShell {
             name = "Finish deployment of Metalama.Premium"
@@ -653,7 +677,7 @@ object PostDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PostDeployment_MetalamaPremiumArguments%"
         }
         powerShell {
             name = "Finish deployment of Metalama.Vsx"
@@ -663,7 +687,7 @@ object PostDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PostDeployment_MetalamaVsxArguments%"
         }
         powerShell {
             name = "Finish deployment of Metalama.Community"
@@ -673,7 +697,7 @@ object PostDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PostDeployment_MetalamaCommunityArguments%"
         }
         powerShell {
             name = "Finish deployment of Metalama.Samples"
@@ -683,7 +707,7 @@ object PostDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PostDeployment_MetalamaSamplesArguments%"
         }
         powerShell {
             name = "Finish deployment of Metalama.Documentation"
@@ -693,7 +717,7 @@ object PostDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PostDeployment_MetalamaDocumentationArguments%"
         }
         powerShell {
             name = "Finish deployment of Metalama.Tests.CargoSupport"
@@ -703,7 +727,7 @@ object PostDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PostDeployment_MetalamaTestsCargoSupportArguments%"
         }
         powerShell {
             name = "Finish deployment of Metalama.Tests.NopCommerce"
@@ -713,7 +737,7 @@ object PostDeployment : BuildType({
                 path = "Build.ps1"
             }
             noProfile = false
-            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies"
+            scriptArgs = "postpublish --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --use-local-dependencies %PostDeployment_MetalamaTestsNopCommerceArguments%"
         }
         powerShell {
             name = "Finish consolidated deployment"
@@ -1154,6 +1178,56 @@ object NuGetPublicDeployment : BuildType({
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_PublicBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/packages/Release/Shipping/**/*.version.props=>dependencies/Metalama.Compiler\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Compiler\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Compiler"
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_PublicBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama"
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_PublicBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Premium\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Premium\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Premium"
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_PublicBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Community"
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_PublicBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Samples\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Samples\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Samples"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20251_Consolidated_NuGetPublicBuild")) {
