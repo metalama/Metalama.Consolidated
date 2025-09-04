@@ -14,6 +14,7 @@ version = "2024.03"
 project {
 
     buildType(DebugBuild)
+    buildType(DownstreamMerge)
     buildType(ReleaseBuild)
     buildType(VersionBump)
     buildType(PreDeployment)
@@ -21,7 +22,7 @@ project {
     buildType(PublicDeployment)
     buildType(PostDeployment)
 
-    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,VersionBump,PreDeployment,PublicBuild,PublicDeployment,PostDeployment)
+    buildTypesOrder = arrayListOf(DebugBuild,DownstreamMerge,ReleaseBuild,VersionBump,PreDeployment,PublicBuild,PublicDeployment,PostDeployment)
 
     subProject(NuGet)
 
@@ -91,6 +92,83 @@ object DebugBuild : BuildType({
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20251_Consolidated_NuGetDebugBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+     }
+
+})
+
+object DownstreamMerge : BuildType({
+
+    name = "Merge Downstream"
+
+    type = Type.COMPOSITE
+
+    params {
+        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
+    }
+
+    vcs {
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+        showDependenciesChanges = true
+    }
+
+    triggers {
+        schedule {
+            schedulingPolicy = daily {
+                hour = 23
+                minute = 0
+            }
+            branchFilter = "+:develop/2025.1"
+            triggerBuild = always()
+            withPendingChangesOnly = true
+        }
+    }
+
+    dependencies {
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsCargoSupport_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce_DownstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -434,7 +512,7 @@ object PreDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("PostSharp_PostSharp20251_BuildDistribution")) {
+        dependency(AbsoluteId("PostSharpGitHub_PostSharp20251_BuildDistribution")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -767,7 +845,7 @@ object PostDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("PostSharp_PostSharp20251_BuildDistribution")) {
+        dependency(AbsoluteId("PostSharpGitHub_PostSharp20251_BuildDistribution")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
