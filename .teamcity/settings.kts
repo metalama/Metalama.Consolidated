@@ -37,61 +37,61 @@ object DebugBuild : BuildType({
     type = Type.COMPOSITE
 
     params {
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "develop/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Metalama_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaPremium_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaVsx_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaSamples_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaDocumentation_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsCargoSupport_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaTests_MetalamaTestsCargoSupport_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaTests_MetalamaTestsNopCommerce_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Consolidated_NuGetDebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Consolidated_NuGetDebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -107,11 +107,11 @@ object DownstreamMerge : BuildType({
     type = Type.COMPOSITE
 
     params {
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "develop/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
@@ -121,54 +121,54 @@ object DownstreamMerge : BuildType({
                 hour = 23
                 minute = 0
             }
-            branchFilter = "+:develop/2025.1"
+            branchFilter = "+:develop/2025.2"
             triggerBuild = always()
             withPendingChangesOnly = true
         }
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_DownstreamMerge")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler_DownstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_DownstreamMerge")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Metalama_DownstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_DownstreamMerge")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaPremium_DownstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_DownstreamMerge")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaVsx_DownstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_DownstreamMerge")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity_DownstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_DownstreamMerge")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaSamples_DownstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation_DownstreamMerge")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaDocumentation_DownstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsCargoSupport_DownstreamMerge")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaTests_MetalamaTestsCargoSupport_DownstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce_DownstreamMerge")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaTests_MetalamaTestsNopCommerce_DownstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -184,61 +184,61 @@ object ReleaseBuild : BuildType({
     type = Type.COMPOSITE
 
     params {
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "develop/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Metalama_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaPremium_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaVsx_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaSamples_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaDocumentation_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsCargoSupport_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaTests_MetalamaTestsCargoSupport_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaTests_MetalamaTestsNopCommerce_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Consolidated_NuGetReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Consolidated_NuGetReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -258,16 +258,16 @@ object VersionBump : BuildType({
         text("BumpMetalamaVsxArguments", "", label = "Bump version of Metalama.Vsx Arguments", description = "Arguments to append to the 'Bump version of Metalama.Vsx' build step.", allowEmpty = true)
         text("BumpMetalamaCommunityArguments", "", label = "Bump version of Metalama.Community Arguments", description = "Arguments to append to the 'Bump version of Metalama.Community' build step.", allowEmpty = true)
         text("BumpMetalamaSamplesArguments", "", label = "Bump version of Metalama.Samples Arguments", description = "Arguments to append to the 'Bump version of Metalama.Samples' build step.", allowEmpty = true)
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "develop/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_Metalama"), "+:. => source-dependencies/Metalama")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
+        root(AbsoluteId("Metalama_Metalama20252_Metalama"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
     }
 
     steps {
@@ -354,7 +354,7 @@ object VersionBump : BuildType({
                 hour = 1
                 minute = 0
             }
-            branchFilter = "+:develop/2025.1"
+            branchFilter = "+:develop/2025.2"
             triggerBuild = always()
             withPendingChangesOnly = false
         }
@@ -376,21 +376,21 @@ object PreDeployment : BuildType({
         text("PreDeployment_MetalamaDocumentationArguments", "", label = "Prepare deployment of Metalama.Documentation Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama.Documentation' build step.", allowEmpty = true)
         text("PreDeployment_MetalamaTestsCargoSupportArguments", "", label = "Prepare deployment of Metalama.Tests.CargoSupport Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama.Tests.CargoSupport' build step.", allowEmpty = true)
         text("PreDeployment_MetalamaTestsNopCommerceArguments", "", label = "Prepare deployment of Metalama.Tests.NopCommerce Arguments", description = "Arguments to append to the 'Prepare deployment of Metalama.Tests.NopCommerce' build step.", allowEmpty = true)
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
-        text("DefaultBranch_MetalamaTestsNopCommerce", "dev/2025.1", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
+        text("DefaultBranch", "develop/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch_MetalamaTestsNopCommerce", "dev/2025.2", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_Metalama"), "+:. => source-dependencies/Metalama")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
+        root(AbsoluteId("Metalama_Metalama20252_Metalama"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
     }
 
     steps {
@@ -486,7 +486,7 @@ object PreDeployment : BuildType({
         }
         powerShell {
             name = "Prepare consolidated deployment"
-            id = "PreDeployment_Metalama_Metalama20251_Consolidated"
+            id = "PreDeployment_Metalama_Metalama20252_Consolidated"
             workingDir = "source-dependencies/Consolidated"
             scriptMode = file {
                 path = "Build.ps1"
@@ -533,11 +533,11 @@ object PublicBuild : BuildType({
     type = Type.COMPOSITE
 
     params {
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "develop/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
@@ -547,62 +547,62 @@ object PublicBuild : BuildType({
                 hour = 2
                 minute = 0
             }
-            branchFilter = "+:develop/2025.1"
+            branchFilter = "+:develop/2025.2"
             triggerBuild = always()
             withPendingChangesOnly = true
             buildParams {
-                param("DefaultBranch", "develop/2025.1")
+                param("DefaultBranch", "develop/2025.2")
             }
         }
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Metalama_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaPremium_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaVsx_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaSamples_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaDocumentation_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsCargoSupport_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaTests_MetalamaTestsCargoSupport_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaTests_MetalamaTestsNopCommerce_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Consolidated_NuGetPublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Consolidated_NuGetPublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -618,11 +618,11 @@ object PublicDeployment : BuildType({
     type = Type.DEPLOYMENT
 
     params {
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "develop/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaConsolidated"))
         showDependenciesChanges = true
     }
 
@@ -631,62 +631,62 @@ object PublicDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Metalama_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaPremium_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaVsx_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaSamples_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaDocumentation_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsCargoSupport_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaTests_MetalamaTestsCargoSupport_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaTests_MetalamaTestsNopCommerce_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation_PublicUpdateSearch")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaDocumentation_PublicUpdateSearch")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Consolidated_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Consolidated_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Consolidated_NuGetPublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Consolidated_NuGetPublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -709,21 +709,21 @@ object PostDeployment : BuildType({
         text("PostDeployment_MetalamaDocumentationArguments", "", label = "Finish deployment of Metalama.Documentation Arguments", description = "Arguments to append to the 'Finish deployment of Metalama.Documentation' build step.", allowEmpty = true)
         text("PostDeployment_MetalamaTestsCargoSupportArguments", "", label = "Finish deployment of Metalama.Tests.CargoSupport Arguments", description = "Arguments to append to the 'Finish deployment of Metalama.Tests.CargoSupport' build step.", allowEmpty = true)
         text("PostDeployment_MetalamaTestsNopCommerceArguments", "", label = "Finish deployment of Metalama.Tests.NopCommerce Arguments", description = "Arguments to append to the 'Finish deployment of Metalama.Tests.NopCommerce' build step.", allowEmpty = true)
-        text("DefaultBranch", "release/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
-        text("DefaultBranch_MetalamaTestsNopCommerce", "release/2025.1", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
+        text("DefaultBranch", "release/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch_MetalamaTestsNopCommerce", "release/2025.2", label = "DefaultBranch_MetalamaTestsNopCommerce", description = "Default branch of Metalama.Tests.NopCommerce")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_Metalama"), "+:. => source-dependencies/Metalama")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
+        root(AbsoluteId("Metalama_Metalama20252_Metalama"), "+:. => source-dependencies/Metalama")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaTestsCargoSupport"), "+:. => source-dependencies/Metalama.Tests.CargoSupport")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaConsolidated"), "+:. => source-dependencies/Consolidated")
     }
 
     steps {
@@ -819,7 +819,7 @@ object PostDeployment : BuildType({
         }
         powerShell {
             name = "Finish consolidated deployment"
-            id = "PostDeployment_Metalama_Metalama20251_Consolidated"
+            id = "PostDeployment_Metalama_Metalama20252_Consolidated"
             workingDir = "source-dependencies/Consolidated"
             scriptMode = file {
                 path = "Build.ps1"
@@ -867,12 +867,12 @@ object NuGetDebugBuild : BuildType({
 
     params {
         text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "develop/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaConsolidated"))
     }
 
     steps {
@@ -912,7 +912,7 @@ object NuGetDebugBuild : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -922,7 +922,7 @@ object NuGetDebugBuild : BuildType({
                 artifactRules = "+:artifacts/packages/Debug/Shipping/**/*.version.props=>dependencies/Metalama.Compiler\n+:artifacts/packages/Debug/Shipping/**/*.nupkg=>dependencies/Metalama.Compiler\n+:artifacts/packages/Debug/Shipping/**/*.snupkg=>dependencies/Metalama.Compiler"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Metalama_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -932,7 +932,7 @@ object NuGetDebugBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaPremium_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -942,7 +942,7 @@ object NuGetDebugBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Premium\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Premium\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Premium"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -952,7 +952,7 @@ object NuGetDebugBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Community\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Community\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Community"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_DebugBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaSamples_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -974,12 +974,12 @@ object NuGetReleaseBuild : BuildType({
 
     params {
         text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "develop/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaConsolidated"))
     }
 
     steps {
@@ -1019,7 +1019,7 @@ object NuGetReleaseBuild : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1029,7 +1029,7 @@ object NuGetReleaseBuild : BuildType({
                 artifactRules = "+:artifacts/packages/Release/Shipping/**/*.version.props=>dependencies/Metalama.Compiler\n+:artifacts/packages/Release/Shipping/**/*.nupkg=>dependencies/Metalama.Compiler\n+:artifacts/packages/Release/Shipping/**/*.snupkg=>dependencies/Metalama.Compiler"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Metalama_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1039,7 +1039,7 @@ object NuGetReleaseBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaPremium_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1049,7 +1049,7 @@ object NuGetReleaseBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Premium\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Premium\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Premium"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1059,7 +1059,7 @@ object NuGetReleaseBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Community\n+:artifacts/publish/private/**/*.nupkg=>dependencies/Metalama.Community\n+:artifacts/publish/private/**/*.snupkg=>dependencies/Metalama.Community"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_ReleaseBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaSamples_ReleaseBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1081,12 +1081,12 @@ object NuGetPublicBuild : BuildType({
 
     params {
         text("BuildArguments", "", label = "Build Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "develop/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaConsolidated"))
     }
 
     steps {
@@ -1126,7 +1126,7 @@ object NuGetPublicBuild : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1136,7 +1136,7 @@ object NuGetPublicBuild : BuildType({
                 artifactRules = "+:artifacts/packages/Release/Shipping/**/*.version.props=>dependencies/Metalama.Compiler\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Compiler\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Compiler"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Metalama_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1146,7 +1146,7 @@ object NuGetPublicBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaPremium_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1156,7 +1156,7 @@ object NuGetPublicBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Premium\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Premium\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Premium"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1166,7 +1166,7 @@ object NuGetPublicBuild : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Community"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaSamples_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1188,12 +1188,12 @@ object NuGetPublicDeployment : BuildType({
 
     params {
         text("PublishArguments", "", label = "Publish Arguments", description = "Arguments to append to the 'Publish' build step.", allowEmpty = true)
-        text("DefaultBranch", "release/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
+        text("DefaultBranch", "release/2025.2", label = "Default Branch", description = "The default branch of this build configuration.")
         text("TimeOut", "300", label = "Time-Out Threshold", description = "Seconds after the duration of the last successful build.", regex = """\d+""", validationMessage = "The timeout has to be an integer number.")
     }
 
     vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+        root(AbsoluteId("Metalama_Metalama20252_MetalamaConsolidated"))
     }
 
     steps {
@@ -1233,32 +1233,32 @@ object NuGetPublicDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Metalama_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaPremium_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_PublicDeployment")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaSamples_PublicDeployment")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCompiler_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1268,7 +1268,7 @@ object NuGetPublicDeployment : BuildType({
                 artifactRules = "+:artifacts/packages/Release/Shipping/**/*.version.props=>dependencies/Metalama.Compiler\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Compiler\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Compiler"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Metalama_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1278,7 +1278,7 @@ object NuGetPublicDeployment : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaPremium_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1288,7 +1288,7 @@ object NuGetPublicDeployment : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Premium\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Premium\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Premium"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaCommunity_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1298,7 +1298,7 @@ object NuGetPublicDeployment : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Community\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Community"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_PublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_MetalamaSamples_PublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1308,7 +1308,7 @@ object NuGetPublicDeployment : BuildType({
                 artifactRules = "+:artifacts/publish/private/**/*.version.props=>dependencies/Metalama.Samples\n+:artifacts/publish/public/**/*.nupkg=>dependencies/Metalama.Samples\n+:artifacts/publish/public/**/*.snupkg=>dependencies/Metalama.Samples"
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20251_Consolidated_NuGetPublicBuild")) {
+        dependency(AbsoluteId("Metalama_Metalama20252_Consolidated_NuGetPublicBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }

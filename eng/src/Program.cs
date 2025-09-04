@@ -6,7 +6,7 @@ using PostSharp.Engineering.BuildTools.Build;
 using PostSharp.Engineering.BuildTools.Build.Model;
 using PostSharp.Engineering.BuildTools.Build.Publishers.Downloads;
 using PostSharp.Engineering.BuildTools.Dependencies.Definitions;
-using MetalamaDependencies = PostSharp.Engineering.BuildTools.Dependencies.Definitions.MetalamaDependencies.V2025_1;
+using MetalamaDependencies = PostSharp.Engineering.BuildTools.Dependencies.Definitions.MetalamaDependencies.V2025_2;
 
 var zipPackageName = "Metalama.$(PackageVersion).zip";
 var versionPackageName = "Metalama.Framework";
