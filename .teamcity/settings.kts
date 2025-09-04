@@ -616,7 +616,7 @@ object PreDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("PostSharp_PostSharp20250_BuildDistribution")) {
+        dependency(AbsoluteId("PostSharpGitHub_PostSharp20250_BuildDistribution")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
@@ -1071,7 +1071,7 @@ object PostDeployment : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("PostSharp_PostSharp20250_BuildDistribution")) {
+        dependency(AbsoluteId("PostSharpGitHub_PostSharp20250_BuildDistribution")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
