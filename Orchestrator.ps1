@@ -12,7 +12,8 @@ $products = @( "$repo/source-dependencies/Metalama.Compiler",
     "$repo/source-dependencies/NopCommerce",
     ".")
 
-$hasError = $false
+$errors = 0
+$successes = 0
 foreach ( $product in $products ) {
     $buildScriptPath = Join-Path $product "Build.ps1"
     $fullPath = Resolve-Path $buildScriptPath -ErrorAction SilentlyContinue
@@ -23,19 +24,27 @@ foreach ( $product in $products ) {
     }
     else {
         Write-Error "Build script not found at: $buildScriptPath"
-        $hasError = $true
+        $errors = $errors + 1 
         continue
     }
 
     if ( $LASTEXITCODE -ne 0 ) {
-        Write-Error "Processing of '$product' failed with exit code $LASTEXITCODE."
-        $hasError = $true
+        Write-Error "$fullPath' failed with exit code $LASTEXITCODE."
+        $errors = $errors + 1 
+    } else {
+        $successes = $successes + 1 
     }
+
+
+    Write-Host "`n------------------------------`n"
 }
 
-if ( $hasError ) {
+if ( $errors -gt 0 ) {
+    Write-Error "$errors scripts were in error, $successes were successful."
     exit 1
 }
 else {
+    Write-Host "All $successes scripts were successful."
+    & $fullPath @args
     exit 0
 }
