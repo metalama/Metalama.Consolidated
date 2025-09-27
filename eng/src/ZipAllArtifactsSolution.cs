@@ -58,9 +58,11 @@ internal class ZipAllArtifactsSolution : Solution
         {
             foreach ( var package in packages )
             {
-                if ( package.StartsWith( "Metalama.", StringComparison.Ordinal ) || package.StartsWith( "Flashtrace", StringComparison.Ordinal ) )
+                var packageName = Path.GetFileNameWithoutExtension( package );
+                
+                if ( packageName.StartsWith( "Metalama.", StringComparison.Ordinal ) || packageName.StartsWith( "Flashtrace", StringComparison.Ordinal ) )
                 {
-                    context.Console.WriteMessage( $"Adding '{package}' package." );
+                    context.Console.WriteMessage( $"Adding '{packageName}' package." );
                     zipFile.CreateEntryFromFile( package, Path.GetFileName( package ) );
                 }
             }
