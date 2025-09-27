@@ -50,3 +50,4 @@ launchSettings.json
 nuget.config
 global.json
 **/.idea/copilot.data.*
+source-dependencies
