@@ -4,6 +4,12 @@
     <PropertyGroup>
         <MetalamaVersion>2025.1.13</MetalamaVersion>
         <MetalamaCompilerVersion>2025.1.7</MetalamaCompilerVersion>
+        <MetalamaCommunityVersion></MetalamaCommunityVersion>
+        <MetalamaPremiumVersion></MetalamaPremiumVersion>
+        <MetalamaDocumentationVersion></MetalamaDocumentationVersion>
+        <MetalamaCommunityVersion></MetalamaCommunityVersion>
+        <MetalamaSamplesVersion></MetalamaSamplesVersion>
+        <MetalamaVsxVersion></MetalamaVsxVersion>
     </PropertyGroup>
 
 </Project>
