@@ -40,7 +40,6 @@ object DebugBuild : BuildType({
     params {
         text("Build.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
         param("Build.Timeout", "30")
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
@@ -52,7 +51,7 @@ object DebugBuild : BuildType({
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
     }
 
     steps {
@@ -245,7 +244,6 @@ object ReleaseBuild : BuildType({
     params {
         text("Build.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
         param("Build.Timeout", "30")
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
@@ -257,7 +255,7 @@ object ReleaseBuild : BuildType({
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
     }
 
     steps {
@@ -431,7 +429,6 @@ object PublicBuild : BuildType({
     params {
         text("Build.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
         param("Build.Timeout", "30")
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
@@ -443,7 +440,7 @@ object PublicBuild : BuildType({
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
     }
 
     steps {
@@ -612,7 +609,6 @@ object PublicDeployment : BuildType({
     params {
         text("Publish.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Publish' build step.", allowEmpty = true)
         param("Publish.Timeout", "30")
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
@@ -793,7 +789,6 @@ object DownstreamMerge : BuildType({
     params {
         text("DownstreamMerge.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Merge downstream' build step.", allowEmpty = true)
         param("DownstreamMerge.Timeout", "15")
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
     }
 
     vcs {
@@ -855,10 +850,6 @@ object Bump : BuildType({
 
     name = "Bump Versions"
 
-    params {
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
-    }
-
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
@@ -868,7 +859,7 @@ object Bump : BuildType({
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
     }
 
     steps {
@@ -909,10 +900,6 @@ object PrePublish : BuildType({
 
     name = "Prepare Deployment"
 
-    params {
-        text("DefaultBranch", "develop/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
-    }
-
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
@@ -922,7 +909,7 @@ object PrePublish : BuildType({
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
     }
 
     steps {
@@ -963,10 +950,6 @@ object PostPublish : BuildType({
 
     name = "Finalize Deployment"
 
-    params {
-        text("DefaultBranch", "release/2025.1", label = "Default Branch", description = "The default branch of this build configuration.")
-    }
-
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
@@ -976,7 +959,7 @@ object PostPublish : BuildType({
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTests_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
+        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
     }
 
     steps {
