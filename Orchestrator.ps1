@@ -27,7 +27,7 @@ foreach ( $product in $products ) {
         continue
     }
 
-    if ( $LASTEXITCODE != 0 ) {
+    if ( $LASTEXITCODE -ne 0 ) {
         Write-Error "Processing of '$product' failed with exit code $LASTEXITCODE."
         $hasError = $true
     }
