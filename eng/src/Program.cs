@@ -45,7 +45,7 @@ var product = new Product( MetalamaDependencies.Consolidated )
                 ] )
             ]
         } ),
-    
+    BuildRequiresSourceDependencies = false,
     AdditionalCiBuildConfigurations = [
         new PowershellAdditionalCiBuildConfiguration( "Bump", "Bump Versions", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "bump" ) { AddSourceDependencies = true },
         new PowershellAdditionalCiBuildConfiguration( "PrePublish", "Prepare Deployment", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "prepublish" ) { AddSourceDependencies = true },
