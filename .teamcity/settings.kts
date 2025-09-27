@@ -44,14 +44,6 @@ object DebugBuild : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_Metalama"), "+:. => source-dependencies/Metalama")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
     }
 
     steps {
@@ -238,14 +230,6 @@ object ReleaseBuild : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_Metalama"), "+:. => source-dependencies/Metalama")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
     }
 
     steps {
@@ -423,14 +407,6 @@ object PublicBuild : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"), "+:. => source-dependencies/Metalama.Compiler")
-        root(AbsoluteId("Metalama_Metalama20251_Metalama"), "+:. => source-dependencies/Metalama")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"), "+:. => source-dependencies/Metalama.Community")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"), "+:. => source-dependencies/Metalama.Premium")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"), "+:. => source-dependencies/Metalama.Samples")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"), "+:. => source-dependencies/Metalama.Documentation")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"), "+:. => source-dependencies/Metalama.Vsx")
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"), "+:. => source-dependencies/Metalama.Tests.NopCommerce")
     }
 
     steps {

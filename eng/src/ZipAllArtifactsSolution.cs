@@ -7,7 +7,6 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace BuildMetalamaConsolidated;
 
@@ -43,15 +42,6 @@ internal class ZipAllArtifactsSolution : Solution
             .Where( p => packageExtensions.Contains( Path.GetExtension( p ) ) )
             .ToArray();
 
-        // TODO: The version should not be determined from the package file name.
-        var packageVersionRegex = new Regex(
-            $@"^{Regex.Escape( this._versionPackageName )}\.(?<Version>\d+\.\d+\.\d+(?:\.\d+)?(?:-.+)?)\.nupkg$",
-            RegexOptions.CultureInvariant | RegexOptions.IgnoreCase );
-
-        var packageVersion = packages
-            .Select( p => packageVersionRegex.Match( Path.GetFileName( p ) ) )
-            .Single( m => m.Success )
-            .Groups["Version"].Value;
 
         var buildInfo = BuildArguments.Read( context, settings.BuildConfiguration );
         var zipFileName = this._zipPackageFileName.ToString( buildInfo );
@@ -68,8 +58,11 @@ internal class ZipAllArtifactsSolution : Solution
         {
             foreach ( var package in packages )
             {
-                context.Console.WriteMessage( $"Adding '{package}' package." );
-                zipFile.CreateEntryFromFile( package, Path.GetFileName( package ) );
+                if ( package.StartsWith( "Metalama.", StringComparison.Ordinal ) || package.StartsWith( "Flashtrace", StringComparison.Ordinal ) )
+                {
+                    context.Console.WriteMessage( $"Adding '{package}' package." );
+                    zipFile.CreateEntryFromFile( package, Path.GetFileName( package ) );
+                }
             }
         }
 
@@ -91,7 +84,7 @@ internal class ZipAllArtifactsSolution : Solution
         return true;
     }
 
-    public override bool Test( BuildContext context, BuildSettings settings ) => throw new NotSupportedException();
+    public override bool Test( BuildContext context, BuildSettings settings ) => true;
 
     public override bool Restore( BuildContext context, BuildSettings settings ) => true;
 }
