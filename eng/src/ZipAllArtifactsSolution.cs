@@ -2,7 +2,7 @@
 
 using PostSharp.Engineering.BuildTools.Build;
 using PostSharp.Engineering.BuildTools.Build.Model;
-using PostSharp.Engineering.BuildTools.Build.Publishers.Downloads;
+using PostSharp.Engineering.BuildTools.Build.Publishing.Downloads;
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -11,12 +11,12 @@ using System.Text.RegularExpressions;
 
 namespace BuildMetalamaConsolidated;
 
-internal class ConsolidatedBuildSolution : Solution
+internal class ZipAllArtifactsSolution : Solution
 {
-    private readonly ParametricString _zipPackageFileName;
     private readonly string _versionPackageName;
+    private readonly ParametricString _zipPackageFileName;
 
-    public ConsolidatedBuildSolution( ParametricString zipPackageFileName, string versionPackageName ) : base( null! )
+    public ZipAllArtifactsSolution( ParametricString zipPackageFileName, string versionPackageName ) : base( null! )
     {
         this._zipPackageFileName = zipPackageFileName;
         this._versionPackageName = versionPackageName;
@@ -26,14 +26,17 @@ internal class ConsolidatedBuildSolution : Solution
 
     public override bool Pack( BuildContext context, BuildSettings settings )
     {
-        var artifactsDirectoryParametric = settings.BuildConfiguration switch
-        {
-            BuildConfiguration.Public => context.Product.PublicArtifactsDirectory,
-            _ => context.Product.PrivateArtifactsDirectory
-        };
-        
+        var artifactsDirectory =
+            Path.Combine(
+                context.RepoDirectory,
+                settings.BuildConfiguration switch
+                {
+                    BuildConfiguration.Public => context.Product.PublicArtifactsDirectory,
+                    _ => context.Product.GetPrivateArtifactsRelativeDirectory( settings.BuildConfiguration )
+                } );
+
         var dependenciesDirectory = Path.Combine( context.RepoDirectory, "dependencies" );
-        
+
         var packageExtensions = new[] { ".nupkg", ".snupkg" };
 
         var packages = Directory.EnumerateFiles( dependenciesDirectory, "*.*", SearchOption.AllDirectories )
@@ -50,11 +53,10 @@ internal class ConsolidatedBuildSolution : Solution
             .Single( m => m.Success )
             .Groups["Version"].Value;
 
-        var buildInfo = new BuildInfo( packageVersion, settings.BuildConfiguration, context.Product, null );
-        var artifactsDirectory = Path.Combine( context.RepoDirectory, artifactsDirectoryParametric.ToString( buildInfo ) );
+        var buildInfo = BuildArguments.Read( context, settings.BuildConfiguration );
         var zipFileName = this._zipPackageFileName.ToString( buildInfo );
         var zipFilePath = Path.Combine( artifactsDirectory, zipFileName );
-        
+
         context.Console.WriteMessage( $"Creating '{zipFilePath}' archive." );
 
         if ( !Directory.Exists( artifactsDirectory ) )
@@ -70,20 +72,20 @@ internal class ConsolidatedBuildSolution : Solution
                 zipFile.CreateEntryFromFile( package, Path.GetFileName( package ) );
             }
         }
-        
+
         context.Console.WriteMessage( "Creating index files." );
-        
+
         var downloadsFolder = DownloadFolder.Create( context, buildInfo );
 
         var packageDownloadFile = DownloadFile.Create(
             zipFilePath,
             "All NuGet packages in a zip file.",
             null );
-    
+
         var mainIndex = new DownloadIndex( downloadsFolder, null, true );
         mainIndex.Write( artifactsDirectory );
 
-        var packageIndex = new DownloadIndex( downloadsFolder.WithFiles( new[] { packageDownloadFile } ), zipFileName, false );
+        var packageIndex = new DownloadIndex( downloadsFolder.WithFiles( [packageDownloadFile] ), zipFileName, false );
         packageIndex.Write( artifactsDirectory );
 
         return true;

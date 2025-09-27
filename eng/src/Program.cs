@@ -4,9 +4,13 @@ using BuildMetalamaConsolidated;
 using PostSharp.Engineering.BuildTools;
 using PostSharp.Engineering.BuildTools.Build;
 using PostSharp.Engineering.BuildTools.Build.Model;
-using PostSharp.Engineering.BuildTools.Build.Publishers.Downloads;
-using PostSharp.Engineering.BuildTools.Dependencies.Definitions;
+using PostSharp.Engineering.BuildTools.Build.Publishing.Downloads;
+using PostSharp.Engineering.BuildTools.ContinuousIntegration.Model;
+using PostSharp.Engineering.BuildTools.Docker;
 using MetalamaDependencies = PostSharp.Engineering.BuildTools.Dependencies.Definitions.MetalamaDependencies.V2025_1;
+
+const string productFamilyVersion = "2025.1";
+const string dotNetSdkVersion = "9.0.205";
 
 var zipPackageName = "Metalama.$(PackageVersion).zip";
 var versionPackageName = "Metalama.Framework";
@@ -15,9 +19,17 @@ var packageIndexName = $"Index.{zipPackageName}.xml";
 
 var product = new Product( MetalamaDependencies.Consolidated )
 {
-    IsBundle = true,
-    Solutions = [ new ConsolidatedBuildSolution( zipPackageName, versionPackageName ) ],
-    Dependencies = [ DevelopmentDependencies.PostSharpEngineering, MetalamaDependencies.Metalama ],
+    OverriddenBuildAgentRequirements = new ContainerRequirements( ContainerHostKind.Windows )
+    {
+        Components =
+        [
+            new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
+        ]
+    },
+    GenerateNuGetConfig = true,
+    DotNetSdkVersion = new DotNetSdkVersion( dotNetSdkVersion ),
+    Solutions = [new ZipAllArtifactsSolution( zipPackageName, versionPackageName )],
+
     MainVersionDependency = MetalamaDependencies.Metalama,
     Configurations = Product.DefaultConfigurations.WithValue(
         BuildConfiguration.Public,
@@ -32,7 +44,12 @@ var product = new Product( MetalamaDependencies.Consolidated )
                     S3Helper.CreateConfiguration( packageIndexName, MetalamaDependencies.Consolidated.ProductFamily )
                 ] )
             ]
-        } )
+        } ),
+    
+    AdditionalCiBuildConfigurations = [
+        new PowershellAdditionalCiBuildConfiguration( "Bump", "Bump Versions", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "bump" ) { AddSourceDependencies = true },
+        new PowershellAdditionalCiBuildConfiguration( "PrePublish", "Prepare Deployment", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "prepublish" ) { AddSourceDependencies = true },
+        new PowershellAdditionalCiBuildConfiguration( "PostPublish", "Finalize Deployment", $"release/{productFamilyVersion}", "Orchestrator.ps1", "postpublish" ) { AddSourceDependencies = true } ]
 };
 
 return new EngineeringApp( product ).Run( args );
