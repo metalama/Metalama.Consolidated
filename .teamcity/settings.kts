@@ -130,16 +130,6 @@ object DebugBuild : BuildType({
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/packages/Debug/Shipping/**/*=>dependencies/Metalama.Compiler"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
         }
         dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_ReleaseBuild")) {
             snapshot {
@@ -840,6 +830,41 @@ object DownstreamMerge : BuildType({
         dependency(DebugBuild) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
             }
         }
      }
