@@ -47,9 +47,9 @@ var product = new Product( MetalamaDependencies.Consolidated )
         } ),
     BuildRequiresSourceDependencies = false,
     AdditionalCiBuildConfigurations = [
-        new PowershellAdditionalCiBuildConfiguration( "Bump", "Bump Versions", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "bump" ) { AddSourceDependencies = true },
-        new PowershellAdditionalCiBuildConfiguration( "PrePublish", "Prepare Deployment", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "prepublish" ) { AddSourceDependencies = true },
-        new PowershellAdditionalCiBuildConfiguration( "PostPublish", "Finalize Deployment", $"release/{productFamilyVersion}", "Orchestrator.ps1", "postpublish" ) { AddSourceDependencies = true } ]
+        new PowershellAdditionalCiBuildConfiguration( "Bump", "Bump Versions", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "bump" ) { RequiresSourceDependencies = true },
+        new PowershellAdditionalCiBuildConfiguration( "PrePublish", "Prepare Deployment", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "prepublish" ) { RequiresSourceDependencies = true },
+        new PowershellAdditionalCiBuildConfiguration( "PostPublish", "Finalize Deployment", $"release/{productFamilyVersion}", "Orchestrator.ps1", "postpublish" ) { RequiresSourceDependencies = true } ]
 };
 
 return new EngineeringApp( product ).Run( args );
