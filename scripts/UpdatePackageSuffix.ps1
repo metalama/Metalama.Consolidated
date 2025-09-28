@@ -13,8 +13,8 @@ Get-ChildItem -Path $root -Recurse -File -Name "MainVersion.props" | ForEach-Obj
     $xml.Save($file)
     
     Push-Location $dir
-    #git add MainVersion.props
-    #git commit -m "Set package version suffix to '$suffixValue'"
-    #git push
+    git add MainVersion.props
+    git commit -m "Set package version suffix to '$suffixValue'."
+    git push
     Pop-Location
 }
