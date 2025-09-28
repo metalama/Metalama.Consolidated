@@ -18,7 +18,6 @@ Get-ChildItem -Path "$root\*\eng*\MainVersion.props" -File | ForEach-Object {
     $xml.Project.PropertyGroup.PackageVersionSuffix = $suffixValue
     $xml.Save($file)
     
-    git add MainVersions.props
     git commit --all -m "Set package version suffix to '$suffixValue'."
     git push
     Pop-Location
