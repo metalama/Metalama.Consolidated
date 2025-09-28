@@ -1,7 +1,7 @@
 param([Parameter(Mandatory=$true)][ValidateSet("none", "preview", "rc")][string]$Suffix)
 
 $root = Resolve-Path "$PSScriptRoot/../.."
-$suffixValue = if ($Suffix -eq "none") { "" } else { $Suffix }
+$suffixValue = if ($Suffix -eq "none") { "" } else { "-$Suffix" }
 
 Get-ChildItem -Path $root -Directory -Name "eng*" | ForEach-Object {
     $engDir = Join-Path $root $_
