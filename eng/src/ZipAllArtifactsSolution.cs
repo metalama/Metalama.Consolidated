@@ -2,21 +2,20 @@
 
 using PostSharp.Engineering.BuildTools.Build;
 using PostSharp.Engineering.BuildTools.Build.Model;
-using PostSharp.Engineering.BuildTools.Build.Publishers.Downloads;
+using PostSharp.Engineering.BuildTools.Build.Publishing.Downloads;
 using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace BuildMetalamaConsolidated;
 
-internal class ConsolidatedBuildSolution : Solution
+internal class ZipAllArtifactsSolution : Solution
 {
-    private readonly ParametricString _zipPackageFileName;
     private readonly string _versionPackageName;
+    private readonly ParametricString _zipPackageFileName;
 
-    public ConsolidatedBuildSolution( ParametricString zipPackageFileName, string versionPackageName ) : base( null! )
+    public ZipAllArtifactsSolution( ParametricString zipPackageFileName, string versionPackageName ) : base( null! )
     {
         this._zipPackageFileName = zipPackageFileName;
         this._versionPackageName = versionPackageName;
@@ -26,35 +25,28 @@ internal class ConsolidatedBuildSolution : Solution
 
     public override bool Pack( BuildContext context, BuildSettings settings )
     {
-        var artifactsDirectoryParametric = settings.BuildConfiguration switch
-        {
-            BuildConfiguration.Public => context.Product.PublicArtifactsDirectory,
-            _ => context.Product.PrivateArtifactsDirectory
-        };
-        
+        var artifactsDirectory =
+            Path.Combine(
+                context.RepoDirectory,
+                settings.BuildConfiguration switch
+                {
+                    BuildConfiguration.Public => context.Product.PublicArtifactsDirectory,
+                    _ => context.Product.GetPrivateArtifactsRelativeDirectory( settings.BuildConfiguration )
+                } );
+
         var dependenciesDirectory = Path.Combine( context.RepoDirectory, "dependencies" );
-        
+
         var packageExtensions = new[] { ".nupkg", ".snupkg" };
 
         var packages = Directory.EnumerateFiles( dependenciesDirectory, "*.*", SearchOption.AllDirectories )
             .Where( p => packageExtensions.Contains( Path.GetExtension( p ) ) )
             .ToArray();
 
-        // TODO: The version should not be determined from the package file name.
-        var packageVersionRegex = new Regex(
-            $@"^{Regex.Escape( this._versionPackageName )}\.(?<Version>\d+\.\d+\.\d+(?:\.\d+)?(?:-.+)?)\.nupkg$",
-            RegexOptions.CultureInvariant | RegexOptions.IgnoreCase );
 
-        var packageVersion = packages
-            .Select( p => packageVersionRegex.Match( Path.GetFileName( p ) ) )
-            .Single( m => m.Success )
-            .Groups["Version"].Value;
-
-        var buildInfo = new BuildInfo( packageVersion, settings.BuildConfiguration, context.Product, null );
-        var artifactsDirectory = Path.Combine( context.RepoDirectory, artifactsDirectoryParametric.ToString( buildInfo ) );
+        var buildInfo = BuildArguments.Read( context, settings.BuildConfiguration );
         var zipFileName = this._zipPackageFileName.ToString( buildInfo );
         var zipFilePath = Path.Combine( artifactsDirectory, zipFileName );
-        
+
         context.Console.WriteMessage( $"Creating '{zipFilePath}' archive." );
 
         if ( !Directory.Exists( artifactsDirectory ) )
@@ -66,30 +58,35 @@ internal class ConsolidatedBuildSolution : Solution
         {
             foreach ( var package in packages )
             {
-                context.Console.WriteMessage( $"Adding '{package}' package." );
-                zipFile.CreateEntryFromFile( package, Path.GetFileName( package ) );
+                var packageName = Path.GetFileName( package );
+                
+                if ( packageName.StartsWith( "Metalama.", StringComparison.Ordinal ) || packageName.StartsWith( "Flashtrace", StringComparison.Ordinal ) )
+                {
+                    context.Console.WriteMessage( $"Adding '{packageName}' package." );
+                    zipFile.CreateEntryFromFile( package, Path.GetFileName( package ) );
+                }
             }
         }
-        
+
         context.Console.WriteMessage( "Creating index files." );
-        
+
         var downloadsFolder = DownloadFolder.Create( context, buildInfo );
 
         var packageDownloadFile = DownloadFile.Create(
             zipFilePath,
             "All NuGet packages in a zip file.",
             null );
-    
+
         var mainIndex = new DownloadIndex( downloadsFolder, null, true );
         mainIndex.Write( artifactsDirectory );
 
-        var packageIndex = new DownloadIndex( downloadsFolder.WithFiles( new[] { packageDownloadFile } ), zipFileName, false );
+        var packageIndex = new DownloadIndex( downloadsFolder.WithFiles( [packageDownloadFile] ), zipFileName, false );
         packageIndex.Write( artifactsDirectory );
 
         return true;
     }
 
-    public override bool Test( BuildContext context, BuildSettings settings ) => throw new NotSupportedException();
+    public override bool Test( BuildContext context, BuildSettings settings ) => true;
 
     public override bool Restore( BuildContext context, BuildSettings settings ) => true;
 }
