@@ -1,0 +1,86 @@
+param(
+    [Parameter(Mandatory=$true)]
+    [ValidateSet("none", "preview", "rc")]
+    [string]$Suffix
+)
+
+$root = Resolve-Path "$PSScriptRoot/../.."
+
+# Convert suffix parameter to actual value
+$suffixValue = switch ($Suffix) {
+    "none" { "" }
+    "preview" { "preview" }
+    "rc" { "rc" }
+}
+
+Write-Host "Updating PackageVersionSuffix to '$suffixValue' in all MainVersion.props files..." -ForegroundColor Green
+
+# Find all MainVersion.props files recursively
+$mainVersionFiles = Get-ChildItem -Path $root -Recurse -File | Where-Object { $_.Name -eq "MainVersion.props" }
+
+$filesModified = 0
+
+foreach ($fileObj in $mainVersionFiles) {
+    $fullPath = $fileObj.FullName
+    $relativePath = $fileObj.FullName.Replace($root.Path + "\", "")
+    
+    try {
+        # Load the XML content
+        [xml]$xml = Get-Content $fullPath -ErrorAction Stop
+        
+        # Find and update PackageVersionSuffix element
+        $updated = $false
+        foreach ($propGroup in $xml.Project.PropertyGroup) {
+            if ($null -ne $propGroup.PackageVersionSuffix) {
+                $oldValue = $propGroup.PackageVersionSuffix
+                $propGroup.PackageVersionSuffix = $suffixValue
+                Write-Host "  $relativePath`: '$oldValue' -> '$suffixValue'" -ForegroundColor Yellow
+                $updated = $true
+                break
+            }
+        }
+        
+        if ($updated) {
+            # Save the updated XML
+            $xml.Save($fullPath)
+            $filesModified++
+        }
+    }
+    catch {
+        Write-Host "  Error updating $relativePath`: $($_.Exception.Message)" -ForegroundColor Red
+    }
+}
+
+Write-Host ""
+Write-Host "Modified $filesModified file(s)." -ForegroundColor Green
+
+if ($filesModified -gt 0) {
+    Write-Host "Committing changes..." -ForegroundColor Green
+    
+    # Add all modified files
+    git add -A
+    
+    # Commit with descriptive message
+    $commitMessage = if ($Suffix -eq "none") {
+        "Remove package version suffix"
+    } else {
+        "Set package version suffix to '$suffixValue'"
+    }
+    
+    git commit -m $commitMessage
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Pushing changes..." -ForegroundColor Green
+        git push
+        
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Successfully updated, committed, and pushed changes." -ForegroundColor Green
+        } else {
+            Write-Host "Commit succeeded but push failed. Please check your remote repository access." -ForegroundColor Red
+        }
+    } else {
+        Write-Host "Commit failed. Please check for any errors." -ForegroundColor Red
+    }
+} else {
+    Write-Host "No files were modified. No commit necessary." -ForegroundColor Yellow
+}
