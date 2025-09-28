@@ -3,25 +3,23 @@ param([Parameter(Mandatory=$true)][ValidateSet("none", "preview", "rc")][string]
 $root = Resolve-Path "$PSScriptRoot/../.."
 $suffixValue = if ($Suffix -eq "none") { "" } else { "-$Suffix" }
 
-Get-ChildItem -Path $root -Directory -Name "eng*" | ForEach-Object {
-    $engDir = Join-Path $root $_
-    Get-ChildItem -Path $engDir -File -Name "MainVersion.props"
-} | ForEach-Object {
-    $file = Join-Path $root $_
+# Find files matching pattern $root/*/eng*/MainVersions.props
+Get-ChildItem -Path "$root\*\eng*\MainVersion.props" -File | ForEach-Object {
+
+    $file = $_.FullName
     $dir = Split-Path $file -Parent
 
     Push-Location $dir
 
     git pull --no-edit
     
-    Write-Host "Writing $_"
+    Write-Host "Writing $file"
     [xml]$xml = Get-Content $file
     $xml.Project.PropertyGroup.PackageVersionSuffix = $suffixValue
     $xml.Save($file)
     
-  
-    git add MainVersion.props
-    git commit -m "Set package version suffix to '$suffixValue'."
+    git add MainVersions.props
+    git commit --all -m "Set package version suffix to '$suffixValue'."
     git push
     Pop-Location
 }
