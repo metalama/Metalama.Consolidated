@@ -2,8 +2,8 @@
 
 using Amazon;
 using PostSharp.Engineering.BuildTools.Build.Model;
+using PostSharp.Engineering.BuildTools.Build.Publishing;
 using PostSharp.Engineering.BuildTools.Dependencies.Model;
-using PostSharp.Engineering.BuildTools.S3.Publishers;
 
 namespace BuildMetalamaConsolidated;
 
