@@ -78,15 +78,6 @@ object DebugBuild : BuildType({
         }
     }
 
-    triggers {
-        vcs {
-            watchChangesInDependencies = true
-            branchFilter = "+:develop/2025.1"
-            // Build will not trigger automatically if the commit message contains comment value.
-            triggerRules = "-:comment=<<VERSION_BUMP>>|<<DEPENDENCIES_UPDATED>>:**"
-        }
-    }
-
     dependencies {
         dependency(AbsoluteId("Metalama_Metalama20251_Metalama_DebugBuild")) {
             snapshot {

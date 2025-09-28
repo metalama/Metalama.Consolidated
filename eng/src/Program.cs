@@ -29,22 +29,23 @@ var product = new Product( MetalamaDependencies.Consolidated )
     GenerateNuGetConfig = true,
     DotNetSdkVersion = new DotNetSdkVersion( dotNetSdkVersion ),
     Solutions = [new ZipAllArtifactsSolution( zipPackageName, versionPackageName )],
-
     MainVersionDependency = MetalamaDependencies.Metalama,
-    Configurations = Product.DefaultConfigurations.WithValue(
-        BuildConfiguration.Public,
-        c => c with
-        {
-            PublicPublishers =
-            [
-                new DownloadPublisher(
+    Configurations = Product.DefaultConfigurations
+        .WithValue(
+            BuildConfiguration.Public,
+            c => c with
+            {
+                PublicPublishers =
                 [
-                    S3Helper.CreateConfiguration( zipPackageName, MetalamaDependencies.Consolidated.ProductFamily ),
-                    S3Helper.CreateConfiguration( mainIndexName, MetalamaDependencies.Consolidated.ProductFamily ),
-                    S3Helper.CreateConfiguration( packageIndexName, MetalamaDependencies.Consolidated.ProductFamily )
-                ] )
-            ]
-        } ),
+                    new DownloadPublisher(
+                    [
+                        S3Helper.CreateConfiguration( zipPackageName, MetalamaDependencies.Consolidated.ProductFamily ),
+                        S3Helper.CreateConfiguration( mainIndexName, MetalamaDependencies.Consolidated.ProductFamily ),
+                        S3Helper.CreateConfiguration( packageIndexName, MetalamaDependencies.Consolidated.ProductFamily )
+                    ] )
+                ]
+            } )
+        .WithValue( BuildConfiguration.Debug, c => c with { BuildTriggers = [] } ),
     BuildRequiresSourceDependencies = false,
     AdditionalCiBuildConfigurations = [
         new PowershellAdditionalCiBuildConfiguration( "Bump", "Bump Versions", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "bump" ) { RequiresSourceDependencies = true },
