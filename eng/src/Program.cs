@@ -10,7 +10,7 @@ using PostSharp.Engineering.BuildTools.Build.Publishing.Downloads;
 using PostSharp.Engineering.BuildTools.ContinuousIntegration.Model;
 using PostSharp.Engineering.BuildTools.Docker;
 
-const string productFamilyVersion = "2025.1";
+const string productFamilyVersion = "2025.2";
 const string dotNetSdkVersion = "9.0.205";
 
 var zipPackageName = "Metalama.$(PackageVersion).zip";
