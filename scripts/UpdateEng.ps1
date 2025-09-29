@@ -11,9 +11,13 @@ foreach ($dir in $directories) {
     
     git pull --no-edit
     & ./Build.ps1 dependencies update-eng
-    & ./Build.ps1 generate-scripts
-    git commit --all -m "Update eng."
-    git push
+
+    if ( $LASTEXITCODE == 0 )
+    {
+        & ./Build.ps1 generate-scripts
+        git commit --all -m "Update eng."
+        git push
+    }
 }
 
 # Return to the original directory
