@@ -24,6 +24,9 @@ var product = new Product( MetalamaDependencies.Consolidated )
         Components =
         [
             new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
+            
+            // Some projects are on 9.0.305.
+            new DotNetComponent( "9.0.305", DotNetComponentKind.Sdk ),
         ]
     },
     GenerateNuGetConfig = true,
