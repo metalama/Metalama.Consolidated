@@ -51,6 +51,7 @@ object DebugBuild : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+     checkoutMode = CheckoutMode.ON_AGENT
     }
 
     steps {
@@ -249,6 +250,7 @@ object ReleaseBuild : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+     checkoutMode = CheckoutMode.ON_AGENT
     }
 
     steps {
@@ -447,6 +449,7 @@ object PublicBuild : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+     checkoutMode = CheckoutMode.ON_AGENT
     }
 
     steps {
@@ -640,6 +643,7 @@ object PublicDeployment : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+     checkoutMode = CheckoutMode.ON_AGENT
     }
 
     steps {
@@ -820,6 +824,7 @@ object DownstreamMerge : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
+     checkoutMode = CheckoutMode.ON_AGENT
     }
 
     steps {
@@ -915,45 +920,22 @@ object Bump : BuildType({
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"),
-          """+:eng-Metalama => source-dependencies/Metalama.Compiler/eng-Metalama
-+:DockerBuild.ps1 => source-dependencies/Metalama.Compiler/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Compiler/Build.ps1
-+eng => source-dependencies/Metalama.Compiler/eng""")
+          """+:. => source-dependencies/Metalama.Compiler""")
         root(AbsoluteId("Metalama_Metalama20251_Metalama"),
-          """+:eng => source-dependencies/Metalama/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"),
-          """+:eng => source-dependencies/Metalama.Community/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Community/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Community/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Community""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"),
-          """+:eng => source-dependencies/Metalama.Premium/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Premium/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Premium/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Premium""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"),
-          """+:eng => source-dependencies/Metalama.Samples/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Samples/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Samples/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Samples""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"),
-          """+:eng => source-dependencies/Metalama.Documentation/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Documentation/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Documentation/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Documentation""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"),
-          """+:eng => source-dependencies/Metalama.Vsx/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Vsx/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Vsx/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Vsx""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"),
-          """+:eng => source-dependencies/Metalama.Tests.NopCommerce/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Tests.NopCommerce/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Tests.NopCommerce/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Tests.NopCommerce""")
+     checkoutMode = CheckoutMode.ON_AGENT
     }
 
     steps {
@@ -997,45 +979,22 @@ object PrePublish : BuildType({
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"),
-          """+:eng-Metalama => source-dependencies/Metalama.Compiler/eng-Metalama
-+:DockerBuild.ps1 => source-dependencies/Metalama.Compiler/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Compiler/Build.ps1
-+eng => source-dependencies/Metalama.Compiler/eng""")
+          """+:. => source-dependencies/Metalama.Compiler""")
         root(AbsoluteId("Metalama_Metalama20251_Metalama"),
-          """+:eng => source-dependencies/Metalama/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"),
-          """+:eng => source-dependencies/Metalama.Community/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Community/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Community/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Community""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"),
-          """+:eng => source-dependencies/Metalama.Premium/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Premium/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Premium/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Premium""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"),
-          """+:eng => source-dependencies/Metalama.Samples/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Samples/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Samples/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Samples""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"),
-          """+:eng => source-dependencies/Metalama.Documentation/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Documentation/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Documentation/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Documentation""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"),
-          """+:eng => source-dependencies/Metalama.Vsx/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Vsx/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Vsx/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Vsx""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"),
-          """+:eng => source-dependencies/Metalama.Tests.NopCommerce/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Tests.NopCommerce/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Tests.NopCommerce/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Tests.NopCommerce""")
+     checkoutMode = CheckoutMode.ON_AGENT
     }
 
     steps {
@@ -1079,45 +1038,22 @@ object PostPublish : BuildType({
     vcs {
         root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler"),
-          """+:eng-Metalama => source-dependencies/Metalama.Compiler/eng-Metalama
-+:DockerBuild.ps1 => source-dependencies/Metalama.Compiler/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Compiler/Build.ps1
-+eng => source-dependencies/Metalama.Compiler/eng""")
+          """+:. => source-dependencies/Metalama.Compiler""")
         root(AbsoluteId("Metalama_Metalama20251_Metalama"),
-          """+:eng => source-dependencies/Metalama/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity"),
-          """+:eng => source-dependencies/Metalama.Community/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Community/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Community/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Community""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaPremium"),
-          """+:eng => source-dependencies/Metalama.Premium/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Premium/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Premium/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Premium""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaSamples"),
-          """+:eng => source-dependencies/Metalama.Samples/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Samples/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Samples/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Samples""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation"),
-          """+:eng => source-dependencies/Metalama.Documentation/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Documentation/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Documentation/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Documentation""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaVsx"),
-          """+:eng => source-dependencies/Metalama.Vsx/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Vsx/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Vsx/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Vsx""")
         root(AbsoluteId("Metalama_Metalama20251_MetalamaTestsNopCommerce"),
-          """+:eng => source-dependencies/Metalama.Tests.NopCommerce/eng
-+:DockerBuild.ps1 => source-dependencies/Metalama.Tests.NopCommerce/DockerBuild.ps1
-+:Build.ps1 => source-dependencies/Metalama.Tests.NopCommerce/Build.ps1
-""")
+          """+:. => source-dependencies/Metalama.Tests.NopCommerce""")
+     checkoutMode = CheckoutMode.ON_AGENT
     }
 
     steps {
