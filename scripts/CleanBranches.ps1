@@ -36,10 +36,34 @@ foreach ($dir in $directories) {
                         $remoteExists = git ls-remote --heads origin $remoteBranchName 2>$null
                         if (-not $remoteExists) {
                             Write-Host "  Deleting local branch '$branch' (remote branch no longer exists)" -ForegroundColor Red
+                            
+                            # Remove the local branch
                             git branch -D $branch 2>$null
+                            
+                            # Clean up the git config entries for this branch
+                            Write-Host "  Cleaning up config for branch '$branch'" -ForegroundColor Yellow
+                            git config --unset "branch.$branch.remote" 2>$null
+                            git config --unset "branch.$branch.merge" 2>$null
                         }
                     }
                 }
+            }
+        }
+        
+        # Additional cleanup: Find orphaned branch configs for branches that no longer exist locally
+        Write-Host "Checking for orphaned branch configurations..." -ForegroundColor Magenta
+        $allConfigBranches = git config --get-regexp "^branch\." | ForEach-Object { 
+            if ($_ -match "^branch\.([^.]+)\.") { 
+                $matches[1] 
+            }
+        } | Sort-Object -Unique
+        
+        $currentLocalBranches = git branch --format="%(refname:short)"
+        
+        foreach ($configBranch in $allConfigBranches) {
+            if ($configBranch -and $currentLocalBranches -notcontains $configBranch) {
+                Write-Host "  Cleaning up orphaned config for deleted branch '$configBranch'" -ForegroundColor DarkYellow
+                git config --remove-section "branch.$configBranch" 2>$null
             }
         }
     } else {
