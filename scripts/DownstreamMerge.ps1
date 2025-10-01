@@ -10,14 +10,7 @@ foreach ($dir in $directories) {
     Set-Location $dir.FullName
     
     git pull --no-edit
-    & ./Build.ps1 dependencies update-eng
-
-    if ( $LASTEXITCODE -eq 0 )
-    {
-        & ./Build.ps1 generate-scripts
-        git commit --all -m "Update eng."
-        git push
-    }
+    & ./Build.ps1  tools git merge-downstream
 
     Write-Host ""
     Write-Host ""
