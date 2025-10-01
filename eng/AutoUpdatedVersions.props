@@ -5,11 +5,8 @@
         <MetalamaVersion>2025.1.12</MetalamaVersion>
         <MetalamaCompilerVersion>2025.1.6</MetalamaCompilerVersion>
         <MetalamaCommunityVersion></MetalamaCommunityVersion>
-        <MetalamaPremiumVersion></MetalamaPremiumVersion>
-        <MetalamaDocumentationVersion></MetalamaDocumentationVersion>
-        <MetalamaCommunityVersion></MetalamaCommunityVersion>
-        <MetalamaSamplesVersion></MetalamaSamplesVersion>
-        <MetalamaVsxVersion></MetalamaVsxVersion>
-    </PropertyGroup>
+        <MetalamaSamplesVersion>2025.1.14</MetalamaSamplesVersion>
+        <MetalamaVsxVersion>2025.1.14</MetalamaVsxVersion>
+    <MetalamaConsolidatedReleaseVersion>2025.1.0</MetalamaConsolidatedReleaseVersion><MetalamaConsolidatedReleaseMainVersion>2025.1.0</MetalamaConsolidatedReleaseMainVersion></PropertyGroup>
 
 </Project>

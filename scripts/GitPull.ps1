@@ -6,18 +6,12 @@ $directories = Get-ChildItem -Path $rootPath -Directory
 
 foreach ($dir in $directories) {
 
+    Write-Host "===== $dir ====" -ForegroundColor Cyan
+
     # Change to the directory
     Set-Location $dir.FullName
     
     git pull --no-edit
-    & ./Build.ps1 dependencies update-eng
-
-    if ( $LASTEXITCODE -eq 0 )
-    {
-        & ./Build.ps1 generate-scripts
-        git commit --all -m "Update eng."
-        git push
-    }
 }
 
 # Return to the original directory
