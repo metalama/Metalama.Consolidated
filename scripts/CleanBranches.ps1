@@ -13,7 +13,6 @@ foreach ($dir in $directories) {
     
     # Check if this is a git repository
     if (Test-Path ".git") {
-        Write-Host "Cleaning branches in git repository: $($dir.Name)" -ForegroundColor Yellow
         
         # First, prune remote references to clean up stale remote-tracking branches
         git remote prune origin 
@@ -51,9 +50,8 @@ foreach ($dir in $directories) {
         }
         
         # Additional cleanup: Find orphaned branch configs for branches that no longer exist locally
-        Write-Host "Checking for orphaned branch configurations..." -ForegroundColor Magenta
-        $allConfigBranches = git config --get-regexp "^branch\." | ForEach-Object { 
-            if ($_ -match "^branch\.([^.]+)\.") { 
+        $allConfigBranches = git config --get-regexp "^branch\..*remote" | ForEach-Object { 
+            if ($_ -match "^branch\.(.+)\.remote") { 
                 $matches[1] 
             }
         } | Sort-Object -Unique
@@ -64,6 +62,63 @@ foreach ($dir in $directories) {
             if ($configBranch -and $currentLocalBranches -notcontains $configBranch) {
                 Write-Host "  Cleaning up orphaned config for deleted branch '$configBranch'" -ForegroundColor DarkYellow
                 git config --remove-section "branch.$configBranch" 
+            }
+        }
+        
+        # Clean up bad and duplicate fetch refspecs in [remote "origin"]
+        $fetchRefspecs = git config --get-all remote.origin.fetch 2>$null
+        if ($fetchRefspecs) {
+            $validRefspecs = @()
+            $seenRefspecs = @{}
+            $duplicatesFound = 0
+            
+            foreach ($refspec in $fetchRefspecs) {
+                # Check for duplicates first
+                if ($seenRefspecs.ContainsKey($refspec)) {
+                    Write-Host "  Removing duplicate refspec: $refspec" -ForegroundColor DarkRed
+                    $duplicatesFound++
+                    continue
+                }
+                $seenRefspecs[$refspec] = $true
+                
+                if ($refspec -match '\+refs/heads/([^:]+):refs/remotes/origin/(.+)') {
+                    $remoteBranchName = $matches[1]
+                    
+                    # Check if this remote branch still exists
+                    $remoteExists = git ls-remote --heads origin $remoteBranchName 2>$null
+                    if ($remoteExists) {
+                        $validRefspecs += $refspec
+                    } else {
+                        Write-Host "  Removing invalid refspec: $refspec (remote branch no longer exists)" -ForegroundColor Red
+                    }
+                } else {
+                    # Keep non-standard refspecs (like wildcards) as they might be intentional
+                    $validRefspecs += $refspec
+                    Write-Host "  Keeping non-standard refspec: $refspec" -ForegroundColor Cyan
+                }
+            }
+            
+            # Check if we need to update the config (invalid refspecs or duplicates found)
+            $needsUpdate = ($validRefspecs.Count -lt $fetchRefspecs.Count) -or ($duplicatesFound -gt 0)
+            
+            if ($needsUpdate) {
+                Write-Host "  Updating remote.origin.fetch configuration..." -ForegroundColor Yellow
+                
+                # Remove all current fetch refspecs
+                git config --unset-all remote.origin.fetch 2>$null
+                
+                # Add back only the valid, unique ones
+                foreach ($validRefspec in $validRefspecs) {
+                    git config --add remote.origin.fetch $validRefspec
+                }
+                
+                $removedCount = $fetchRefspecs.Count - $validRefspecs.Count
+                Write-Host "  Updated fetch refspecs: $($fetchRefspecs.Count) -> $($validRefspecs.Count) (removed $removedCount total)" -ForegroundColor Green
+                if ($duplicatesFound -gt 0) {
+                    Write-Host "  Removed $duplicatesFound duplicate(s)" -ForegroundColor Green
+                }
+            } else {
+                Write-Host "  All fetch refspecs are valid and unique" -ForegroundColor Green
             }
         }
     } else {

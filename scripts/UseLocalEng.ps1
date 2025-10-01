@@ -12,7 +12,7 @@ foreach ($dir in $directories) {
     Set-Location $dir.FullName
     
     git pull --no-edit
-    & ./Build.ps1 dependencies set local PostSharp.Engineering --path c:\src\PostSharp.Engineering
+    & ./Build.ps1 dependencies set local PostSharp.Engineering --path c:\src\PostSharp.Engineering --force
 
     Write-Host ""
     Write-Host ""
