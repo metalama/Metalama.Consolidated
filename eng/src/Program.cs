@@ -25,6 +25,9 @@ var product = new Product( MetalamaDependencies.Consolidated )
         Components =
         [
             new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
+            
+            // Some projects are on 9.0.305.
+            new DotNetComponent( "9.0.305", DotNetComponentKind.Sdk ),
         ]
     },
     GenerateNuGetConfig = true,
@@ -49,9 +52,9 @@ var product = new Product( MetalamaDependencies.Consolidated )
         .WithValue( BuildConfiguration.Debug, c => c with { BuildTriggers = [] } ),
     BuildRequiresSourceDependencies = false,
     AdditionalCiBuildConfigurations = [
-        new PowershellAdditionalCiBuildConfiguration( "Bump", "Bump Versions", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "bump" ) { RequiresSourceDependencies = true },
-        new PowershellAdditionalCiBuildConfiguration( "PrePublish", "Prepare Deployment", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "prepublish" ) { RequiresSourceDependencies = true },
-        new PowershellAdditionalCiBuildConfiguration( "PostPublish", "Finalize Deployment", $"release/{productFamilyVersion}", "Orchestrator.ps1", "postpublish" ) { RequiresSourceDependencies = true } ]
+        new PowershellAdditionalCiBuildConfiguration( "Bump", "Bump Versions", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "bump" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full },
+        new PowershellAdditionalCiBuildConfiguration( "PrePublish", "Prepare Deployment", $"develop/{productFamilyVersion}", "Orchestrator.ps1", "prepublish" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full },
+        new PowershellAdditionalCiBuildConfiguration( "PostPublish", "Finalize Deployment", $"release/{productFamilyVersion}", "Orchestrator.ps1", "postpublish" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full } ]
 };
 
 return new EngineeringApp( product ).Run( args );

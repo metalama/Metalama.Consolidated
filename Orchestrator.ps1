@@ -9,7 +9,7 @@ $products = @( "$repo/source-dependencies/Metalama.Compiler",
     "$repo/source-dependencies/Metalama.Samples",
     "$repo/source-dependencies/Metalama.Documentation",
     "$repo/source-dependencies/Metalama.Vsx",
-    "$repo/source-dependencies/NopCommerce",
+    "$repo/source-dependencies/Metalama.Tests.NopCommerce",
     ".")
 
 $errors = 0
