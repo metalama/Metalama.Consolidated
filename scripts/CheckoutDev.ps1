@@ -16,9 +16,9 @@ foreach ($dir in $directories) {
 
     # Use develop/2025.1 for Metalama.Tests.NopCommerce, develop/2025.1 for others (can be customized as needed)
     if ($dir.Name -eq "Metalama.Tests.NopCommerce") {
-        git checkout dev/2025.1
+        git checkout dev/2025.2
     } else {
-        git checkout develop/2025.1
+        git checkout develop/2025.2
     }
     git pull --no-edit
 
