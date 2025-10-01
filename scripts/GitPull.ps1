@@ -12,6 +12,9 @@ foreach ($dir in $directories) {
     Set-Location $dir.FullName
     
     git pull --no-edit
+
+    Write-Host ""
+    Write-Host ""
 }
 
 # Return to the original directory

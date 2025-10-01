@@ -11,6 +11,9 @@ foreach ($dir in $directories) {
     
     git pull --no-edit
     & ./Build.ps1  tools git merge-downstream
+
+    Write-Host ""
+    Write-Host ""
 }
 
 # Return to the original directory

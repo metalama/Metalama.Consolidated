@@ -6,6 +6,8 @@ $directories = Get-ChildItem -Path $rootPath -Directory
 
 foreach ($dir in $directories) {
 
+    Write-Host "===== $dir ====" -ForegroundColor Cyan
+
     # Change to the directory
     Set-Location $dir.FullName
     
@@ -18,6 +20,9 @@ foreach ($dir in $directories) {
         git commit --all -m "Update eng."
         git push
     }
+
+    Write-Host ""
+    Write-Host ""
 }
 
 # Return to the original directory

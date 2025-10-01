@@ -6,6 +6,8 @@ $directories = Get-ChildItem -Path $rootPath -Directory
 
 foreach ($dir in $directories) {
 
+    Write-Host "===== $dir ====" -ForegroundColor Cyan
+
     # Change to the directory
     Set-Location $dir.FullName
     
@@ -16,6 +18,9 @@ foreach ($dir in $directories) {
         git checkout develop/2025.1
     }
     git pull --no-edit
+
+    Write-Host ""
+    Write-Host ""
 }
 
 # Return to the original directory

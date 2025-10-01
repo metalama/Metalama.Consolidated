@@ -18,6 +18,9 @@ foreach ($dir in $directories) {
         git commit --all -m "Update eng."
         git push
     }
+
+    Write-Host ""
+    Write-Host ""
 }
 
 # Return to the original directory
