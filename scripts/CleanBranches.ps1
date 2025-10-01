@@ -16,7 +16,7 @@ foreach ($dir in $directories) {
         Write-Host "Cleaning branches in git repository: $($dir.Name)" -ForegroundColor Yellow
         
         # First, prune remote references to clean up stale remote-tracking branches
-        git remote prune origin 2>$null
+        git remote prune origin 
         
         # Get all local branches except the current one
         $localBranches = git branch --format="%(refname:short)" | Where-Object { $_ -notmatch '^\*' -and $_ -ne 'main' -and $_ -ne 'master' -and $_ -ne 'develop' }
@@ -25,25 +25,25 @@ foreach ($dir in $directories) {
             $branch = $branch.Trim()
             if ($branch) {
                 # Check if the branch has a remote tracking branch
-                $remoteBranch = git config --get "branch.$branch.remote" 2>$null
+                $remoteBranch = git config --get "branch.$branch.remote" 
                 if ($remoteBranch) {
-                    $remoteRef = git config --get "branch.$branch.merge" 2>$null
+                    $remoteRef = git config --get "branch.$branch.merge" 
                     if ($remoteRef) {
                         # Extract the remote branch name from refs/heads/branch-name
                         $remoteBranchName = $remoteRef -replace '^refs/heads/', ''
                         
                         # Check if the remote branch still exists
-                        $remoteExists = git ls-remote --heads origin $remoteBranchName 2>$null
+                        $remoteExists = git ls-remote --heads origin $remoteBranchName 
                         if (-not $remoteExists) {
                             Write-Host "  Deleting local branch '$branch' (remote branch no longer exists)" -ForegroundColor Red
                             
                             # Remove the local branch
-                            git branch -D $branch 2>$null
+                            git branch -D $branch 
                             
                             # Clean up the git config entries for this branch
                             Write-Host "  Cleaning up config for branch '$branch'" -ForegroundColor Yellow
-                            git config --unset "branch.$branch.remote" 2>$null
-                            git config --unset "branch.$branch.merge" 2>$null
+                            git config --unset "branch.$branch.remote" 
+                            git config --unset "branch.$branch.merge" 
                         }
                     }
                 }
@@ -63,7 +63,7 @@ foreach ($dir in $directories) {
         foreach ($configBranch in $allConfigBranches) {
             if ($configBranch -and $currentLocalBranches -notcontains $configBranch) {
                 Write-Host "  Cleaning up orphaned config for deleted branch '$configBranch'" -ForegroundColor DarkYellow
-                git config --remove-section "branch.$configBranch" 2>$null
+                git config --remove-section "branch.$configBranch" 
             }
         }
     } else {
