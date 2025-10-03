@@ -1,3 +1,6 @@
+# Stop script on any error
+$ErrorActionPreference = "Stop"
+
 # Get the absolute path of the root directory
 $rootPath = "$PSScriptRoot/../.."
 
@@ -17,11 +20,26 @@ foreach ($dir in $products) {
 
     Write-Host "===== $dir ====" -ForegroundColor Cyan
     
-    # Change to the directory
-    Set-Location "$rootPath/${dir}"
-    
-    git pull --no-edit
-    & ./Build.ps1 bump --override
+    try {
+        # Change to the directory
+        Set-Location "$rootPath/${dir}"
+        
+        # Execute git pull and check for errors
+        git pull --no-edit
+        if ($LASTEXITCODE -ne 0) {
+            throw "Git pull failed for $dir with exit code $LASTEXITCODE"
+        }
+        
+        # Execute build script and check for errors
+        & ./Build.ps1 bump --override
+        if ($LASTEXITCODE -ne 0) {
+            throw "Build script failed for $dir with exit code $LASTEXITCODE"
+        }
+    }
+    catch {
+        Write-Error "Failed processing $dir`: $_"
+        exit 1
+    }
 
     Write-Host ""
     Write-Host ""
