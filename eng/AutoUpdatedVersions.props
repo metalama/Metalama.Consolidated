@@ -6,7 +6,7 @@
         <MetalamaCompilerVersion>2026.0.1-preview</MetalamaCompilerVersion>
         <MetalamaCommunityVersion>2026.0.1-preview</MetalamaCommunityVersion>
         <MetalamaSamplesVersion>2026.0.1-preview</MetalamaSamplesVersion>
-        <MetalamaVsxVersion>2025.2.4-rc</MetalamaVsxVersion>
+        <MetalamaVsxVersion>2026.0.1-rc</MetalamaVsxVersion>
     <MetalamaConsolidatedReleaseVersion>2026.0.1-rc</MetalamaConsolidatedReleaseVersion><MetalamaConsolidatedReleaseMainVersion>2026.0.1</MetalamaConsolidatedReleaseMainVersion><MetalamaPremiumVersion>2026.0.1-preview</MetalamaPremiumVersion><MetalamaDocumentationVersion>2026.0.0-preview</MetalamaDocumentationVersion></PropertyGroup>
 
 </Project>
