@@ -1,13 +1,22 @@
 # Get the absolute path of the root directory
 $rootPath = "$PSScriptRoot/../.."
 
-# Get all directories in the root path
-$directories = Get-ChildItem -Path $rootPath -Directory
+$products = @( "Metalama.Compiler",
+    "Metalama",
+    "Metalama.Community",
+    "Metalama.Premium",
+    "Metalama.Samples",
+    "Metalama.Documentation",
+    "Metalama.Vsx",
+    "Metalama.Tests.NopCommerce",
+    ".")
 
-foreach ($dir in $directories) {
 
+foreach ($dir in $products) {
+
+    
     # Change to the directory
-    Set-Location $dir.FullName
+    Set-Location "$rootPath/${dir}"
     
     git pull --no-edit
     & ./Build.ps1 bump --override
