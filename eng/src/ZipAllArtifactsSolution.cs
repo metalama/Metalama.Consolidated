@@ -42,9 +42,12 @@ internal class ZipAllArtifactsSolution : Solution
             .Where( p => packageExtensions.Contains( Path.GetExtension( p ) ) )
             .ToArray();
 
+        if ( !BuildArguments.TryCreate( context, settings.BuildConfiguration, out var buildArguments ) )
+        {
+            return false;
+        }
 
-        var buildInfo = BuildArguments.Read( context, settings.BuildConfiguration );
-        var zipFileName = this._zipPackageFileName.ToString( buildInfo );
+        var zipFileName = this._zipPackageFileName.ToString( buildArguments );
         var zipFilePath = Path.Combine( artifactsDirectory, zipFileName );
 
         context.Console.WriteMessage( $"Creating '{zipFilePath}' archive." );
@@ -70,7 +73,7 @@ internal class ZipAllArtifactsSolution : Solution
 
         context.Console.WriteMessage( "Creating index files." );
 
-        var downloadsFolder = DownloadFolder.Create( context, buildInfo );
+        var downloadsFolder = DownloadFolder.Create( context, buildArguments );
 
         var packageDownloadFile = DownloadFile.Create(
             zipFilePath,
