@@ -1,6 +1,7 @@
 # Get the absolute path of the root directory
 $rootPath = "$PSScriptRoot/../.."
 
+# Order of processing is important.
 $products = @( "Metalama.Compiler",
     "Metalama",
     "Metalama.Community",
@@ -14,6 +15,7 @@ $products = @( "Metalama.Compiler",
 
 foreach ($dir in $products) {
 
+    Write-Host "===== $dir ====" -ForegroundColor Cyan
     
     # Change to the directory
     Set-Location "$rootPath/${dir}"
