@@ -52,7 +52,7 @@ object DebugBuild : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0"
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0 "
         }
         powerShell {
             name = "Build"
@@ -61,7 +61,7 @@ object DebugBuild : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage test --configuration Debug --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %Build.Arguments% --timeout %Build.Timeout%"
+            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage test --configuration Debug --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --timeout %Build.Timeout% %Build.Arguments%"
         }
     }
 
@@ -251,7 +251,7 @@ object ReleaseBuild : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0"
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0 "
         }
         powerShell {
             name = "Build"
@@ -260,7 +260,7 @@ object ReleaseBuild : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage test --configuration Release --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %Build.Arguments% --timeout %Build.Timeout%"
+            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage test --configuration Release --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --timeout %Build.Timeout% %Build.Arguments%"
         }
     }
 
@@ -450,7 +450,7 @@ object PublicBuild : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0"
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0 "
         }
         powerShell {
             name = "Build"
@@ -459,7 +459,7 @@ object PublicBuild : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage test --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% %Build.Arguments% --timeout %Build.Timeout%"
+            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage test --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --timeout %Build.Timeout% %Build.Arguments%"
         }
     }
 
@@ -644,7 +644,7 @@ object PublicDeployment : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0"
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0 "
         }
         powerShell {
             name = "Publish"
@@ -653,7 +653,7 @@ object PublicDeployment : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage publish --configuration Public %Publish.Arguments% --timeout %Publish.Timeout%"
+            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage publish --configuration Public --timeout %Publish.Timeout% %Publish.Arguments%"
         }
     }
 
@@ -807,6 +807,10 @@ object Bump : BuildType({
 
     name = "Bump Versions"
 
+    params {
+        text("Exec.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
+    }
+
     vcs {
         root(AbsoluteId("Metalama_Metalama20260_MetalamaConsolidated"))
         root(AbsoluteId("Metalama_Metalama20260_MetalamaCompiler"),
@@ -836,7 +840,7 @@ object Bump : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0"
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0 "
         }
         powerShell {
             name = "Execute Orchestrator.ps1"
@@ -845,7 +849,7 @@ object Bump : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage bump"
+            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage bump %Exec.Arguments%"
         }
     }
 
@@ -866,6 +870,10 @@ object PrePublish : BuildType({
 
     name = "Prepare Deployment"
 
+    params {
+        text("Exec.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
+    }
+
     vcs {
         root(AbsoluteId("Metalama_Metalama20260_MetalamaConsolidated"))
         root(AbsoluteId("Metalama_Metalama20260_MetalamaCompiler"),
@@ -895,7 +903,7 @@ object PrePublish : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0"
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0 "
         }
         powerShell {
             name = "Execute Orchestrator.ps1"
@@ -904,7 +912,7 @@ object PrePublish : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage prepublish"
+            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage prepublish %Exec.Arguments%"
         }
     }
 
@@ -925,6 +933,10 @@ object PostPublish : BuildType({
 
     name = "Finalize Deployment"
 
+    params {
+        text("Exec.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
+    }
+
     vcs {
         root(AbsoluteId("Metalama_Metalama20260_MetalamaConsolidated"))
         root(AbsoluteId("Metalama_Metalama20260_MetalamaCompiler"),
@@ -954,7 +966,7 @@ object PostPublish : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0"
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0 "
         }
         powerShell {
             name = "Execute Orchestrator.ps1"
@@ -963,7 +975,7 @@ object PostPublish : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage postpublish"
+            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage postpublish %Exec.Arguments%"
         }
     }
 
