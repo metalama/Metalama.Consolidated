@@ -11,7 +11,7 @@ using PostSharp.Engineering.BuildTools.ContinuousIntegration.Model;
 using PostSharp.Engineering.BuildTools.Docker;
 
 const string productFamilyVersion = "2025.2";
-const string dotNetSdkVersion = "9.0.205";
+const string dotNetSdkVersion = "10.0.100-rc.1.25451.107";
 
 var zipPackageName = "Metalama.$(PackageVersion).zip";
 var versionPackageName = "Metalama.Framework";
