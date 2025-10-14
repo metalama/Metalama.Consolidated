@@ -43,7 +43,7 @@ internal class ZipAllArtifactsSolution : Solution
             .ToArray();
 
 
-        var buildInfo = BuildArguments.Read( context, settings.BuildConfiguration );
+        var buildInfo = BuildArguments.ReadFromArtifactManifest( context, settings.BuildConfiguration );
         var zipFileName = this._zipPackageFileName.ToString( buildInfo );
         var zipFilePath = Path.Combine( artifactsDirectory, zipFileName );
 
