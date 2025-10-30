@@ -47,7 +47,8 @@ internal class ZipAllArtifactsSolution : Solution
             return false;
         }
 
-        var zipFileName = this._zipPackageFileName.ToString( buildArguments );
+        var buildInfo = BuildArguments.ReadFromArtifactManifest( context, settings.BuildConfiguration );
+        var zipFileName = this._zipPackageFileName.ToString( buildInfo );
         var zipFilePath = Path.Combine( artifactsDirectory, zipFileName );
 
         context.Console.WriteMessage( $"Creating '{zipFilePath}' archive." );
