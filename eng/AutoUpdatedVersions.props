@@ -2,14 +2,14 @@
 <Project>
 
     <PropertyGroup>
-        <MetalamaVersion>2026.0.5-preview</MetalamaVersion>
+        <MetalamaVersion>2026.0.6-preview</MetalamaVersion>
         <MetalamaCompilerVersion>2026.0.4-preview</MetalamaCompilerVersion>
-        <MetalamaCommunityVersion>2026.0.5-preview</MetalamaCommunityVersion>
-        <MetalamaSamplesVersion>2026.0.5-preview</MetalamaSamplesVersion>
-        <MetalamaVsxVersion>2026.0.5-preview</MetalamaVsxVersion>
-        <MetalamaConsolidatedReleaseVersion>2026.0.5-preview</MetalamaConsolidatedReleaseVersion>
-        <MetalamaConsolidatedReleaseMainVersion>2026.0.5</MetalamaConsolidatedReleaseMainVersion>
-        <MetalamaPremiumVersion>2026.0.5-preview</MetalamaPremiumVersion>
-        <MetalamaDocumentationVersion>2026.0.1-preview</MetalamaDocumentationVersion></PropertyGroup>
+        <MetalamaCommunityVersion>2026.0.6-preview</MetalamaCommunityVersion>
+        <MetalamaSamplesVersion>2026.0.6-preview</MetalamaSamplesVersion>
+        <MetalamaVsxVersion>2026.0.6-rc</MetalamaVsxVersion>
+        <MetalamaConsolidatedReleaseVersion>2026.0.6-preview</MetalamaConsolidatedReleaseVersion>
+        <MetalamaConsolidatedReleaseMainVersion>2026.0.6</MetalamaConsolidatedReleaseMainVersion>
+        <MetalamaPremiumVersion>2026.0.6-preview</MetalamaPremiumVersion>
+        <MetalamaDocumentationVersion>2026.0.2-preview</MetalamaDocumentationVersion></PropertyGroup>
 
 </Project>
