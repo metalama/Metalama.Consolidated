@@ -2,14 +2,14 @@
 <Project>
 
     <PropertyGroup>
-        <MetalamaVersion>2025.1.16</MetalamaVersion>
-        <MetalamaCompilerVersion>2025.1.10</MetalamaCompilerVersion>
-        <MetalamaCommunityVersion>2025.1.17</MetalamaCommunityVersion>
-        <MetalamaPremiumVersion>2025.1.16</MetalamaPremiumVersion>
+        <MetalamaVersion>2025.1.17</MetalamaVersion>
+        <MetalamaCompilerVersion>2025.1.11</MetalamaCompilerVersion>
+        <MetalamaCommunityVersion>2025.1.18</MetalamaCommunityVersion>
+        <MetalamaPremiumVersion>2025.1.17</MetalamaPremiumVersion>
         <MetalamaDocumentationVersion>2025.1.0</MetalamaDocumentationVersion>
         <MetalamaCommunityVersion></MetalamaCommunityVersion>
-        <MetalamaSamplesVersion>2025.1.16</MetalamaSamplesVersion>
-        <MetalamaVsxVersion>2025.1.16</MetalamaVsxVersion>
-    <MetalamaConsolidatedReleaseVersion>2025.1.16</MetalamaConsolidatedReleaseVersion><MetalamaConsolidatedReleaseMainVersion>2025.1.16</MetalamaConsolidatedReleaseMainVersion></PropertyGroup>
+        <MetalamaSamplesVersion>2025.1.17</MetalamaSamplesVersion>
+        <MetalamaVsxVersion>2025.1.17</MetalamaVsxVersion>
+    <MetalamaConsolidatedReleaseVersion>2025.1.17</MetalamaConsolidatedReleaseVersion><MetalamaConsolidatedReleaseMainVersion>2025.1.17</MetalamaConsolidatedReleaseMainVersion></PropertyGroup>
 
 </Project>
