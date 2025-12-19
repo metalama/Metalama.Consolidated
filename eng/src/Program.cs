@@ -41,12 +41,10 @@ var product = new Product( MetalamaDependencies.Consolidated )
             {
                 PublicPublishers =
                 [
-                    new DownloadPublisher(
-                    [
-                        S3Helper.CreateConfiguration( zipPackageName, MetalamaDependencies.Consolidated.ProductFamily ),
-                        S3Helper.CreateConfiguration( mainIndexName, MetalamaDependencies.Consolidated.ProductFamily ),
-                        S3Helper.CreateConfiguration( packageIndexName, MetalamaDependencies.Consolidated.ProductFamily )
-                    ] )
+                    // Putting each publisher separately so we get errors when a pattern does not evaluate to files.
+                    new DownloadPublisher( [S3Helper.CreateConfiguration( zipPackageName, MetalamaDependencies.Consolidated.ProductFamily ) ] ),
+                    new DownloadPublisher( [S3Helper.CreateConfiguration( mainIndexName, MetalamaDependencies.Consolidated.ProductFamily ) ]),
+                    new DownloadPublisher( [S3Helper.CreateConfiguration( packageIndexName, MetalamaDependencies.Consolidated.ProductFamily )])
                 ]
             } )
         .WithValue( BuildConfiguration.Debug, c => c with { BuildTriggers = [] } ),
