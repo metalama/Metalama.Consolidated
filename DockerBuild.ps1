@@ -481,7 +481,8 @@ if (Test-Path $sourceDependenciesDir)
     $sourceDirectories = Get-ChildItem -Path $sourceDependenciesDir -Force | Where-Object { $_.LinkType -eq $null }
     foreach ($sourceDirectory in $sourceDirectories)
     {
-        $GitDirectories += $sourceDirectory
+        Write-Host "Mounting source-dependencies directory: $($sourceDirectory.FullName)" -ForegroundColor Cyan
+        $GitDirectories += $sourceDirectory.FullName    
     }
 }
 
