@@ -34,6 +34,11 @@ $dockerContextDirectory = "$EngPath/docker-context"
 
 Set-Location $PSScriptRoot
 
+if ($env:IS_TEAMCITY_AGENT)
+{
+    Write-Host "Running on TeamCity agent at '$BuildAgentPath'" -ForegroundColor Cyan
+}
+
 # Function to create secrets JSON file
 function New-EnvJson
 {
