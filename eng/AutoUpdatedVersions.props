@@ -8,6 +8,6 @@
     <MetalamaConsolidatedReleaseVersion>2026.0.12</MetalamaConsolidatedReleaseVersion>
     <MetalamaConsolidatedReleaseMainVersion>2026.0.12</MetalamaConsolidatedReleaseMainVersion>
     <MetalamaPremiumVersion Condition="'$(MetalamaPremiumVersion)' == ''">2026.0.12</MetalamaPremiumVersion>
-    <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2026.0.11</MetalamaDocumentationVersion>
+    <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2026.0.12</MetalamaDocumentationVersion>
   </PropertyGroup>
 </Project>
