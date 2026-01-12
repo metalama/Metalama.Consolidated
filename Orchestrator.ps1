@@ -8,7 +8,6 @@ $products = @( "$repo/source-dependencies/Metalama.Compiler",
     "$repo/source-dependencies/Metalama.Premium",
     "$repo/source-dependencies/Metalama.Samples",
     "$repo/source-dependencies/Metalama.Documentation",
-    "$repo/source-dependencies/Metalama.Vsx",
     "$repo/source-dependencies/Metalama.Tests.NopCommerce",
     ".")
 
