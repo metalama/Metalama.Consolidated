@@ -15,11 +15,12 @@ project {
     buildType(ReleaseBuild)
     buildType(PublicBuild)
     buildType(PublicDeployment)
+    buildType(DownstreamMerge)
     buildType(Bump)
     buildType(PrePublish)
     buildType(PostPublish)
 
-    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,PublicBuild,PublicDeployment,Bump,PrePublish,PostPublish)
+    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,PublicBuild,PublicDeployment,DownstreamMerge,Bump,PrePublish,PostPublish)
 
 }
 
@@ -191,31 +192,6 @@ pullRequests {
         dependency(AbsoluteId("Metalama_Metalama20260_MetalamaTests_MetalamaTestsNopCommerce_DebugBuild")) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaVsx_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Vsx"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaVsx_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("PostSharpGitHub_PostSharp20260_BuildDistribution")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/PostSharpPackage"
             }
         }
      }
@@ -392,31 +368,6 @@ pullRequests {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaVsx_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Vsx"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaVsx_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("PostSharpGitHub_PostSharp20260_BuildDistribution")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/PostSharpPackage"
-            }
-        }
      }
 
 })
@@ -591,31 +542,6 @@ pullRequests {
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaVsx_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Vsx"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaVsx_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("PostSharpGitHub_PostSharp20260_BuildDistribution")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/PostSharpPackage"
-            }
-        }
      }
 
 })
@@ -764,31 +690,6 @@ object PublicDeployment : BuildType({
                      onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaVsx_PublicBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Vsx"
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaVsx_PublicDeployment")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("PostSharpGitHub_PostSharp20260_BuildDistribution")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/PostSharpPackage"
-            }
-        }
         dependency(PublicBuild) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
@@ -797,6 +698,92 @@ object PublicDeployment : BuildType({
             artifacts {
                 cleanDestination = true
                 artifactRules = "+:artifacts/publish/public/**/*=>artifacts/publish/public\n+:artifacts/publish/private/**/*=>artifacts/publish/private"
+            }
+        }
+     }
+
+})
+
+object DownstreamMerge : BuildType({
+
+    name = "Downstream Merge"
+
+    params {
+        text("DownstreamMerge.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Merge downstream' build step.", allowEmpty = true)
+        param("DownstreamMerge.Timeout", "15")
+    }
+
+    vcs {
+        root(AbsoluteId("Metalama_Metalama20260_MetalamaConsolidated"))
+     checkoutMode = CheckoutMode.ON_AGENT
+    }
+
+    steps {
+        powerShell {
+            name = "Prepare Docker image metalamaconsolidated-2026.0"
+            id = "PrepareImage"
+            scriptMode = file {
+                path = "DockerBuild.ps1"
+            }
+            noProfile = false
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0 "
+        }
+        powerShell {
+            name = "Merge downstream"
+            id = "DownstreamMerge"
+            scriptMode = file {
+                path = "DockerBuild.ps1"
+            }
+            noProfile = false
+            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.0 -NoBuildImage tools git merge-downstream --timeout %DownstreamMerge.Timeout% %DownstreamMerge.Arguments%"
+        }
+    }
+
+    requirements {
+        equals("env.BuildAgentType", "docker-win-x64-md")
+    }
+
+    features {
+        swabra {
+            lockingProcesses = Swabra.LockingProcessPolicy.KILL
+            verbose = true
+        }
+    }
+
+    dependencies {
+        dependency(DebugBuild) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaCompiler_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20260_Metalama_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaCommunity_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaPremium_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaSamples_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20260_MetalamaDocumentation_DownstreamMerge")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.ADD_PROBLEM
             }
         }
      }
@@ -825,8 +812,6 @@ object Bump : BuildType({
           """+:. => source-dependencies/Metalama.Samples""")
         root(AbsoluteId("Metalama_Metalama20260_MetalamaDocumentation"),
           """+:. => source-dependencies/Metalama.Documentation""")
-        root(AbsoluteId("Metalama_Metalama20260_MetalamaVsx"),
-          """+:. => source-dependencies/Metalama.Vsx""")
         root(AbsoluteId("Metalama_Metalama20260_MetalamaTestsNopCommerce"),
           """+:. => source-dependencies/Metalama.Tests.NopCommerce""")
      checkoutMode = CheckoutMode.ON_AGENT
@@ -888,8 +873,6 @@ object PrePublish : BuildType({
           """+:. => source-dependencies/Metalama.Samples""")
         root(AbsoluteId("Metalama_Metalama20260_MetalamaDocumentation"),
           """+:. => source-dependencies/Metalama.Documentation""")
-        root(AbsoluteId("Metalama_Metalama20260_MetalamaVsx"),
-          """+:. => source-dependencies/Metalama.Vsx""")
         root(AbsoluteId("Metalama_Metalama20260_MetalamaTestsNopCommerce"),
           """+:. => source-dependencies/Metalama.Tests.NopCommerce""")
      checkoutMode = CheckoutMode.ON_AGENT
@@ -951,8 +934,6 @@ object PostPublish : BuildType({
           """+:. => source-dependencies/Metalama.Samples""")
         root(AbsoluteId("Metalama_Metalama20260_MetalamaDocumentation"),
           """+:. => source-dependencies/Metalama.Documentation""")
-        root(AbsoluteId("Metalama_Metalama20260_MetalamaVsx"),
-          """+:. => source-dependencies/Metalama.Vsx""")
         root(AbsoluteId("Metalama_Metalama20260_MetalamaTestsNopCommerce"),
           """+:. => source-dependencies/Metalama.Tests.NopCommerce""")
      checkoutMode = CheckoutMode.ON_AGENT
