@@ -10,7 +10,7 @@ foreach ($dir in $directories) {
     Set-Location $dir.FullName
     
     git pull --no-edit
-    & ./Build.ps1 dependencies update-eng
+    & ./Build.ps1 dependencies update-eng 
     & ./Build.ps1 dependencies reset PostSharp.Engineering
     & ./Build.ps1 generate-scripts
     git commit --all -m "Update eng."
