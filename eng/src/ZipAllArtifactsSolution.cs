@@ -42,7 +42,7 @@ internal class ZipAllArtifactsSolution : Solution
             .Where( p => packageExtensions.Contains( Path.GetExtension( p ) ) )
             .ToArray();
 
-        if ( !BuildArguments.TryCreate( context, settings.BuildConfiguration, out var buildArguments ) )
+        if ( !BuildArguments.TryReadFromAutoUpdatedVersionsFile( context, settings.BuildConfiguration, out var buildArguments ) )
         {
             return false;
         }
