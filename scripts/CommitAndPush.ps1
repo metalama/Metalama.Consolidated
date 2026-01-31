@@ -11,6 +11,11 @@ $directories = Get-ChildItem -Path $rootPath -Directory
 
 foreach ($dir in $directories) {
 
+    # Skip directories without Build.ps1
+    if (-not (Test-Path (Join-Path $dir.FullName "Build.ps1"))) {
+        continue
+    }
+
     Write-Host "===== $dir ====" -ForegroundColor Cyan
 
     # Change to the directory
