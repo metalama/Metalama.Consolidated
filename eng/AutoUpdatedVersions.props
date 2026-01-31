@@ -2,12 +2,12 @@
   <PropertyGroup>
     <MetalamaVersion Condition="'$(MetalamaVersion)' == ''">2026.1.0</MetalamaVersion>
     <MetalamaCompilerVersion Condition="'$(MetalamaCompilerVersion)' == ''">2026.1.0</MetalamaCompilerVersion>
-    <MetalamaCommunityVersion Condition="'$(MetalamaCommunityVersion)' == ''">2026.1.0</MetalamaCommunityVersion>
+    <MetalamaCommunityVersion Condition="'$(MetalamaCommunityVersion)' == ''">2026.1.0-preview</MetalamaCommunityVersion>
     <MetalamaSamplesVersion Condition="'$(MetalamaSamplesVersion)' == ''">2026.1.0</MetalamaSamplesVersion>
     <MetalamaVsxVersion Condition="'$(MetalamaVsxVersion)' == ''">2026.1.0</MetalamaVsxVersion>
-    <MetalamaConsolidatedReleaseVersion>2026.1.0</MetalamaConsolidatedReleaseVersion>
+    <MetalamaConsolidatedReleaseVersion>2026.1.0-preview</MetalamaConsolidatedReleaseVersion>
     <MetalamaConsolidatedReleaseMainVersion>2026.1.0</MetalamaConsolidatedReleaseMainVersion>
     <MetalamaPremiumVersion Condition="'$(MetalamaPremiumVersion)' == ''">2026.1.0</MetalamaPremiumVersion>
-    <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2026.1.0</MetalamaDocumentationVersion>
+    <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2026.1.0-preview</MetalamaDocumentationVersion>
   </PropertyGroup>
 </Project>
