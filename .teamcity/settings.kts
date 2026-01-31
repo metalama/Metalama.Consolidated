@@ -771,29 +771,9 @@ object UpstreamMerge : BuildType({
     }
 
     dependencies {
-        dependency(AbsoluteId("Metalama_Metalama20261_Metalama_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama"
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20261_Metalama_UpstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.ADD_PROBLEM
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Community"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_UpstreamMerge")) {
@@ -801,34 +781,9 @@ object UpstreamMerge : BuildType({
                      onDependencyFailure = FailureAction.ADD_PROBLEM
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_ReleaseBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/packages/Release/Shipping/**/*=>dependencies/Metalama.Compiler"
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_UpstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.ADD_PROBLEM
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Documentation"
             }
         }
         dependency(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_UpstreamMerge")) {
@@ -836,39 +791,14 @@ object UpstreamMerge : BuildType({
                      onDependencyFailure = FailureAction.ADD_PROBLEM
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Premium"
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_UpstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.ADD_PROBLEM
             }
         }
-        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-
-            artifacts {
-                cleanDestination = true
-                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Samples"
-            }
-        }
         dependency(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_UpstreamMerge")) {
             snapshot {
                      onDependencyFailure = FailureAction.ADD_PROBLEM
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaTests_MetalamaTestsNopCommerce_DebugBuild")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
             }
         }
      }
