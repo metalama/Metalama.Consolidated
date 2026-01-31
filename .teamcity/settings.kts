@@ -35,7 +35,11 @@ object DebugBuild : BuildType({
 """
 
     params {
-        text("Build.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text(
+            "Build.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
         param("Build.Timeout", "30")
     }
 
@@ -209,7 +213,11 @@ object ReleaseBuild : BuildType({
 """
 
     params {
-        text("Build.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text(
+            "Build.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
         param("Build.Timeout", "30")
     }
 
@@ -383,7 +391,11 @@ object PublicBuild : BuildType({
 """
 
     params {
-        text("Build.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text(
+            "Build.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
         param("Build.Timeout", "30")
     }
 
@@ -552,7 +564,11 @@ object PublicDeployment : BuildType({
     type = Type.DEPLOYMENT
 
     params {
-        text("Publish.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Publish' build step.", allowEmpty = true)
+        text(
+            "Publish.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Publish' build step.", allowEmpty = true)
         param("Publish.Timeout", "30")
     }
 
@@ -708,7 +724,11 @@ object Bump : BuildType({
     name = "Bump Versions"
 
     params {
-        text("Exec.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
+        text(
+            "Exec.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
     }
 
     vcs {
@@ -769,7 +789,11 @@ object PrePublish : BuildType({
     name = "Prepare Deployment"
 
     params {
-        text("Exec.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
+        text(
+            "Exec.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
     }
 
     vcs {
@@ -830,7 +854,11 @@ object PostPublish : BuildType({
     name = "Finalize Deployment"
 
     params {
-        text("Exec.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
+        text(
+            "Exec.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
     }
 
     vcs {
