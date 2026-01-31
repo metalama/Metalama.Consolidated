@@ -17,6 +17,7 @@ foreach ($dir in $directories) {
     Set-Location $dir.FullName
 
     git reset --hard
+    git clean -xfd
 
     Write-Host ""
     Write-Host ""
