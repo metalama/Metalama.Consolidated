@@ -11,7 +11,6 @@ using PostSharp.Engineering.BuildTools.ContinuousIntegration.Model;
 using PostSharp.Engineering.BuildTools.Docker;
 
 const string productFamilyVersion = "2025.2";
-const string dotNetSdkVersion = "10.0.100";
 
 var zipPackageName = "Metalama.$(PackageVersion).zip";
 var versionPackageName = "Metalama.Framework";
@@ -24,14 +23,14 @@ var product = new Product( MetalamaDependencies.Consolidated )
     {
         Components =
         [
-            new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
-            
-            // Some projects are on 9.0.305.
-            new DotNetComponent( "9.0.305", DotNetComponentKind.Sdk ),
+            new DotNetComponent( PreferredVersions.DotNetSdk.V_10_0, DotNetComponentKind.Sdk ),
+
+            // Some projects are on 9.0.
+            new DotNetComponent( PreferredVersions.DotNetSdk.V_9_0, DotNetComponentKind.Sdk ),
         ]
     },
     GenerateNuGetConfig = true,
-    DotNetSdkVersion = new DotNetSdkVersion( dotNetSdkVersion ),
+    DotNetSdkVersion = new DotNetSdkVersion( PreferredVersions.DotNetSdk.V_10_0 ),
     Solutions = [new ZipAllArtifactsSolution( zipPackageName, versionPackageName )],
     MainVersionDependency = MetalamaDependencies.Metalama,
     Configurations = Product.DefaultConfigurations
