@@ -11,18 +11,16 @@ foreach ($dir in $directories) {
         continue
     }
 
+    Write-Host "===== $dir ====" -ForegroundColor Cyan
+
     # Change to the directory
     Set-Location $dir.FullName
 
-    # Work around a bug in a a previous version of eng.
-    $env:ENG_REPO_DIRECTORY = $dir.FullName
-
+    git fetch origin
+    git checkout release/2026.0
     git pull --no-edit
-    & ./Build.ps1 dependencies update-eng 
-    & ./Build.ps1 dependencies reset PostSharp.Engineering
-    & ./Build.ps1 generate-scripts
-    git commit --all -m "Update eng."
-    git push
+    git checkout -b release/2026.1
+    git push -u origin release/2026.1
 
     Write-Host ""
     Write-Host ""

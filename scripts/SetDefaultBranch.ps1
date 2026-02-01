@@ -3,7 +3,9 @@ param(
 )
 
 $parentDir = Get-Location
-$repos = Get-ChildItem -Path $parentDir -Directory | Where-Object { Test-Path (Join-Path $_.FullName ".git") }
+$repos = Get-ChildItem -Path $parentDir -Directory | Where-Object {
+    (Test-Path (Join-Path $_.FullName ".git")) -and (Test-Path (Join-Path $_.FullName "Build.ps1"))
+}
 
 Write-Host "Found $($repos.Count) repositories in $parentDir" -ForegroundColor Cyan
 

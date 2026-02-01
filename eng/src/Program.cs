@@ -10,8 +10,8 @@ using PostSharp.Engineering.BuildTools.Build.Publishing.Downloads;
 using PostSharp.Engineering.BuildTools.ContinuousIntegration.Model;
 using PostSharp.Engineering.BuildTools.Docker;
 
-const string productFamilyVersion = "2025.2";
-const string dotNetSdkVersion = "10.0.100";
+const string productFamilyVersion = "2025.1";
+const string dotNetSdkVersion = PreferredVersions.DotNetSdk.V_9_0;
 
 var zipPackageName = "Metalama.$(PackageVersion).zip";
 var versionPackageName = "Metalama.Framework";
@@ -25,9 +25,6 @@ var product = new Product( MetalamaDependencies.Consolidated )
         Components =
         [
             new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
-            
-            // Some projects are on 9.0.305.
-            new DotNetComponent( "9.0.305", DotNetComponentKind.Sdk ),
         ]
     },
     GenerateNuGetConfig = true,
@@ -50,9 +47,9 @@ var product = new Product( MetalamaDependencies.Consolidated )
         .WithValue( BuildConfiguration.Debug, c => c with { BuildTriggers = [] } ),
     BuildRequiresSourceDependencies = false,
     AdditionalCiBuildConfigurations = [
-        new PowershellAdditionalCiBuildConfiguration( "Bump", "Bump Versions",  "Orchestrator.ps1", "bump" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full, Branch = $"develop/{productFamilyVersion}" },
-        new PowershellAdditionalCiBuildConfiguration( "PrePublish", "Prepare Deployment",  "Orchestrator.ps1", "prepublish" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full, Branch = $"develop/{productFamilyVersion}" },
-        new PowershellAdditionalCiBuildConfiguration( "PostPublish", "Finalize Deployment",  "Orchestrator.ps1", "postpublish" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full, Branch = $"develop/{productFamilyVersion}" } ]
+        new PowershellAdditionalCiBuildConfiguration( "Bump", "Bump Versions", "Orchestrator.ps1", "bump" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full },
+        new PowershellAdditionalCiBuildConfiguration( "PrePublish", "Prepare Deployment", "Orchestrator.ps1", "prepublish" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full },
+        new PowershellAdditionalCiBuildConfiguration( "PostPublish", "Finalize Deployment",  "Orchestrator.ps1", "postpublish" ) { Branch = $"release/{productFamilyVersion}", SourceDependenciesRequirements = SourceDependenciesRequirements.Full } ]
 };
 
 return new EngineeringApp( product ).Run( args );
