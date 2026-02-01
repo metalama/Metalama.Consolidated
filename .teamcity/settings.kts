@@ -15,12 +15,11 @@ project {
     buildType(ReleaseBuild)
     buildType(PublicBuild)
     buildType(PublicDeployment)
-    buildType(DownstreamMerge)
     buildType(Bump)
     buildType(PrePublish)
     buildType(PostPublish)
 
-    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,PublicBuild,PublicDeployment,DownstreamMerge,Bump,PrePublish,PostPublish)
+    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,PublicBuild,PublicDeployment,Bump,PrePublish,PostPublish)
 
 }
 
@@ -36,7 +35,11 @@ object DebugBuild : BuildType({
 """
 
     params {
-        text("Build.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text(
+            "Build.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
         param("Build.Timeout", "30")
     }
 
@@ -72,6 +75,7 @@ object DebugBuild : BuildType({
 
     features {
         swabra {
+            filesCleanup = Swabra.FilesCleanup.BEFORE_BUILD
             lockingProcesses = Swabra.LockingProcessPolicy.KILL
             verbose = true
         }
@@ -235,7 +239,11 @@ object ReleaseBuild : BuildType({
 """
 
     params {
-        text("Build.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text(
+            "Build.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
         param("Build.Timeout", "30")
     }
 
@@ -271,6 +279,7 @@ object ReleaseBuild : BuildType({
 
     features {
         swabra {
+            filesCleanup = Swabra.FilesCleanup.BEFORE_BUILD
             lockingProcesses = Swabra.LockingProcessPolicy.KILL
             verbose = true
         }
@@ -434,7 +443,11 @@ object PublicBuild : BuildType({
 """
 
     params {
-        text("Build.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
+        text(
+            "Build.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Build' build step.", allowEmpty = true)
         param("Build.Timeout", "30")
     }
 
@@ -470,6 +483,7 @@ object PublicBuild : BuildType({
 
     features {
         swabra {
+            filesCleanup = Swabra.FilesCleanup.BEFORE_BUILD
             lockingProcesses = Swabra.LockingProcessPolicy.KILL
             verbose = true
         }
@@ -628,7 +642,11 @@ object PublicDeployment : BuildType({
     type = Type.DEPLOYMENT
 
     params {
-        text("Publish.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Publish' build step.", allowEmpty = true)
+        text(
+            "Publish.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Publish' build step.", allowEmpty = true)
         param("Publish.Timeout", "30")
     }
 
@@ -664,6 +682,7 @@ object PublicDeployment : BuildType({
 
     features {
         swabra {
+            filesCleanup = Swabra.FilesCleanup.BEFORE_BUILD
             lockingProcesses = Swabra.LockingProcessPolicy.KILL
             verbose = true
         }
@@ -804,103 +823,16 @@ object PublicDeployment : BuildType({
 
 })
 
-object DownstreamMerge : BuildType({
-
-    name = "Downstream Merge"
-
-    params {
-        text("DownstreamMerge.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Merge downstream' build step.", allowEmpty = true)
-        param("DownstreamMerge.Timeout", "15")
-    }
-
-    vcs {
-        root(AbsoluteId("Metalama_Metalama20251_MetalamaConsolidated"))
-     checkoutMode = CheckoutMode.ON_AGENT
-    }
-
-    steps {
-        powerShell {
-            name = "Prepare Docker image metalamaconsolidated-2025.1"
-            id = "PrepareImage"
-            scriptMode = file {
-                path = "DockerBuild.ps1"
-            }
-            noProfile = false
-            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2025.1 "
-        }
-        powerShell {
-            name = "Merge downstream"
-            id = "DownstreamMerge"
-            scriptMode = file {
-                path = "DockerBuild.ps1"
-            }
-            noProfile = false
-            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2025.1 -NoBuildImage tools git merge-downstream --timeout %DownstreamMerge.Timeout% %DownstreamMerge.Arguments%"
-        }
-    }
-
-    requirements {
-        equals("env.BuildAgentType", "docker-win-x64-md")
-    }
-
-    features {
-        swabra {
-            lockingProcesses = Swabra.LockingProcessPolicy.KILL
-            verbose = true
-        }
-    }
-
-    dependencies {
-        dependency(DebugBuild) {
-            snapshot {
-                     onDependencyFailure = FailureAction.FAIL_TO_START
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCompiler_DownstreamMerge")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.ADD_PROBLEM
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_Metalama_DownstreamMerge")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.ADD_PROBLEM
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaCommunity_DownstreamMerge")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.ADD_PROBLEM
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaPremium_DownstreamMerge")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.ADD_PROBLEM
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaSamples_DownstreamMerge")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.ADD_PROBLEM
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaDocumentation_DownstreamMerge")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.ADD_PROBLEM
-            }
-        }
-        dependency(AbsoluteId("Metalama_Metalama20251_MetalamaVsx_DownstreamMerge")) {
-            snapshot {
-                     onDependencyFailure = FailureAction.ADD_PROBLEM
-            }
-        }
-     }
-
-})
-
 object Bump : BuildType({
 
     name = "Bump Versions"
 
     params {
-        text("Exec.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
+        text(
+            "Exec.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
     }
 
     vcs {
@@ -951,6 +883,7 @@ object Bump : BuildType({
 
     features {
         swabra {
+            filesCleanup = Swabra.FilesCleanup.BEFORE_BUILD
             lockingProcesses = Swabra.LockingProcessPolicy.KILL
             verbose = true
         }
@@ -963,7 +896,11 @@ object PrePublish : BuildType({
     name = "Prepare Deployment"
 
     params {
-        text("Exec.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
+        text(
+            "Exec.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
     }
 
     vcs {
@@ -1014,6 +951,7 @@ object PrePublish : BuildType({
 
     features {
         swabra {
+            filesCleanup = Swabra.FilesCleanup.BEFORE_BUILD
             lockingProcesses = Swabra.LockingProcessPolicy.KILL
             verbose = true
         }
@@ -1026,7 +964,11 @@ object PostPublish : BuildType({
     name = "Finalize Deployment"
 
     params {
-        text("Exec.Arguments", "", label = "DockerBuild.ps1 Arguments", description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
+        text(
+            "Exec.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Execute Orchestrator.ps1' build step.", allowEmpty = true)
     }
 
     vcs {
@@ -1077,6 +1019,7 @@ object PostPublish : BuildType({
 
     features {
         swabra {
+            filesCleanup = Swabra.FilesCleanup.BEFORE_BUILD
             lockingProcesses = Swabra.LockingProcessPolicy.KILL
             verbose = true
         }
