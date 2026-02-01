@@ -62,6 +62,39 @@ ENV PATH="C:\Program Files\dotnet;${PATH}"
 RUN & .\dotnet-install.ps1 -Version 9.0.310 -InstallDir 'C:\Program Files\dotnet'
 
 
+# Install Node.js
+RUN Invoke-WebRequest -Uri "https://nodejs.org/dist/v22.0.0/node-v22.0.0-win-x64.zip" -OutFile node.zip; `
+    Expand-Archive node.zip -DestinationPath C:\; `
+    Rename-Item "C:\node-v22.0.0-win-x64" "C:\nodejs"; `
+    Remove-Item node.zip
+
+ENV NPM_CONFIG_PREFIX=C:\npm
+ENV PATH="C:\nodejs;C:\npm;${PATH}"
+
+
+# Install Claude CLI
+# Set HOME/USERPROFILE so Claude CLI finds credentials during build
+ENV HOME=C:\\Users\\ContainerAdministrator
+ENV USERPROFILE=C:\\Users\\ContainerAdministrator
+
+# Install Claude CLI and configure using cmd shell to avoid HCS issues with PowerShell
+SHELL ["cmd", "/S", "/C"]
+RUN C:\nodejs\npm.cmd install --global @anthropic-ai/claude-code@2.1.27
+RUN mkdir C:\Users\ContainerAdministrator\.claude && echo {"hasCompletedOnboarding": true} > C:\Users\ContainerAdministrator\.claude.json && echo {"alwaysThinkingEnabled": true} > C:\Users\ContainerAdministrator\.claude\settings.json
+
+# Restore PowerShell shell using full path
+SHELL ["C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-Command"]
+
+
+# Install Claude CLI Add-ins
+# Install Claude plugins using cmd shell to avoid HCS issues with PowerShell
+SHELL ["cmd", "/S", "/C"]
+RUN echo Installing Claude plugins && C:\npm\claude plugin marketplace add https://github.com/metalama/Metalama.AI.Skills && C:\npm\claude plugin marketplace add https://github.com/postsharp/PostSharp.Engineering.AISkills && C:\npm\claude plugin install metalama && C:\npm\claude plugin install metalama-dev && C:\npm\claude plugin install eng
+
+# Restore PowerShell shell using full path
+SHELL ["C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-Command"]
+
+
 # Epilogue
 # Create docker-context directory for build scripts
 RUN New-Item -ItemType Directory -Path c:\docker-context -Force | Out-Null

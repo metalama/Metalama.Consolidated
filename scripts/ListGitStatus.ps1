@@ -4,8 +4,13 @@ $root = Resolve-Path "$PSScriptRoot/../.."
 $directories = Get-ChildItem -Path $root -Directory
 
 foreach ($dir in $directories) {
+    # Skip directories without Build.ps1
+    if (-not (Test-Path (Join-Path $dir.FullName "Build.ps1"))) {
+        continue
+    }
+
     $gitDir = Join-Path $dir.FullName ".git"
-    
+
     # Check if this directory is a git repository
     if (Test-Path $gitDir) {
         Push-Location $dir.FullName

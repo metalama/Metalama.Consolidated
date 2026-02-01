@@ -14,12 +14,7 @@ foreach ($dir in $directories) {
     # Change to the directory
     Set-Location $dir.FullName
 
-    # Work around a bug in a a previous version of eng.
-    $env:ENG_REPO_DIRECTORY = $dir.FullName
-
     git pull --no-edit
-    & ./Build.ps1 dependencies update-eng 
-    & ./Build.ps1 dependencies reset PostSharp.Engineering
     & ./Build.ps1 generate-scripts
     git commit --all -m "Update eng."
     git push
