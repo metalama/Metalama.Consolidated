@@ -49,9 +49,9 @@ var product = new Product( MetalamaDependencies.Consolidated )
         .WithValue( BuildConfiguration.Debug, c => c with { BuildTriggers = [] } ),
     BuildRequiresSourceDependencies = false,
     AdditionalCiBuildConfigurations = [
-        new PowershellAdditionalCiBuildConfiguration( "Bump", "Bump Versions",  "Orchestrator.ps1", "bump" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full, Branch = $"develop/{productFamilyVersion}" },
-        new PowershellAdditionalCiBuildConfiguration( "PrePublish", "Prepare Deployment",  "Orchestrator.ps1", "prepublish" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full, Branch = $"develop/{productFamilyVersion}" },
-        new PowershellAdditionalCiBuildConfiguration( "PostPublish", "Finalize Deployment",  "Orchestrator.ps1", "postpublish" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full, Branch = $"develop/{productFamilyVersion}" } ]
+        new PowershellAdditionalCiBuildConfiguration( "Bump", "Bump Versions", "Orchestrator.ps1", "bump" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full },
+        new PowershellAdditionalCiBuildConfiguration( "PrePublish", "Prepare Deployment", "Orchestrator.ps1", "prepublish" ) { SourceDependenciesRequirements = SourceDependenciesRequirements.Full },
+        new PowershellAdditionalCiBuildConfiguration( "PostPublish", "Finalize Deployment",  "Orchestrator.ps1", "postpublish" ) { Branch = $"release/{productFamilyVersion}", SourceDependenciesRequirements = SourceDependenciesRequirements.Full } ]
 };
 
 return new EngineeringApp( product ).Run( args );
