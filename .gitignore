@@ -51,4 +51,4 @@ nuget.config
 global.json
 **/.idea/copilot.data.*
 source-dependencies
-eng/docket-context/.g/
+eng/docker-context/.g
