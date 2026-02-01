@@ -10,7 +10,7 @@ using PostSharp.Engineering.BuildTools.Docker;
 using MetalamaDependencies = PostSharp.Engineering.BuildTools.Dependencies.Definitions.MetalamaDependencies.V2025_1;
 
 const string productFamilyVersion = "2025.1";
-const string dotNetSdkVersion = "9.0.205";
+const string dotNetSdkVersion = "9.0.310";
 
 var zipPackageName = "Metalama.$(PackageVersion).zip";
 var versionPackageName = "Metalama.Framework";
