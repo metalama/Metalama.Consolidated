@@ -15,19 +15,12 @@ project {
     buildType(ReleaseBuild)
     buildType(PublicBuild)
     buildType(PublicDeployment)
-<<<<<<< HEAD
     buildType(UpstreamMerge)
-=======
->>>>>>> origin/develop/2025.1
     buildType(Bump)
     buildType(PrePublish)
     buildType(PostPublish)
 
-<<<<<<< HEAD
     buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,PublicBuild,PublicDeployment,UpstreamMerge,Bump,PrePublish,PostPublish)
-=======
-    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,PublicBuild,PublicDeployment,Bump,PrePublish,PostPublish)
->>>>>>> origin/develop/2025.1
 
 }
 
@@ -731,7 +724,6 @@ object PublicDeployment : BuildType({
 
 })
 
-<<<<<<< HEAD
 object UpstreamMerge : BuildType({
 
     name = "Upstream Merge"
@@ -823,8 +815,6 @@ object UpstreamMerge : BuildType({
 
 })
 
-=======
->>>>>>> origin/develop/2025.1
 object Bump : BuildType({
 
     name = "Bump Versions"
