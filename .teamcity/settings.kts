@@ -3,6 +3,7 @@
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.*
 import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
+import jetbrains.buildServer.configs.kotlin.buildSteps.PowerShellStep
 import jetbrains.buildServer.configs.kotlin.failureConditions.*
 import jetbrains.buildServer.configs.kotlin.triggers.*
 import jetbrains.buildServer.configs.kotlin.projectFeatures.*
@@ -53,6 +54,7 @@ object DebugBuild : BuildType({
         powerShell {
             name = "Prepare Docker image metalamaconsolidated-2026.1"
             id = "PrepareImage"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -62,6 +64,7 @@ object DebugBuild : BuildType({
         powerShell {
             name = "Build"
             id = "Build"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -71,6 +74,8 @@ object DebugBuild : BuildType({
     }
 
     requirements {
+        matches("teamcity.agent.jvm.os.family", "Windows")
+        matches("teamcity.agent.jvm.os.arch", "amd64")
         equals("env.BuildAgentType", "docker-win-x64-md")
     }
 
@@ -232,6 +237,7 @@ object ReleaseBuild : BuildType({
         powerShell {
             name = "Prepare Docker image metalamaconsolidated-2026.1"
             id = "PrepareImage"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -241,6 +247,7 @@ object ReleaseBuild : BuildType({
         powerShell {
             name = "Build"
             id = "Build"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -250,6 +257,8 @@ object ReleaseBuild : BuildType({
     }
 
     requirements {
+        matches("teamcity.agent.jvm.os.family", "Windows")
+        matches("teamcity.agent.jvm.os.arch", "amd64")
         equals("env.BuildAgentType", "docker-win-x64-md")
     }
 
@@ -411,6 +420,7 @@ object PublicBuild : BuildType({
         powerShell {
             name = "Prepare Docker image metalamaconsolidated-2026.1"
             id = "PrepareImage"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -420,6 +430,7 @@ object PublicBuild : BuildType({
         powerShell {
             name = "Build"
             id = "Build"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -429,6 +440,8 @@ object PublicBuild : BuildType({
     }
 
     requirements {
+        matches("teamcity.agent.jvm.os.family", "Windows")
+        matches("teamcity.agent.jvm.os.arch", "amd64")
         equals("env.BuildAgentType", "docker-win-x64-md")
     }
 
@@ -585,6 +598,7 @@ object PublicDeployment : BuildType({
         powerShell {
             name = "Prepare Docker image metalamaconsolidated-2026.1"
             id = "PrepareImage"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -594,6 +608,7 @@ object PublicDeployment : BuildType({
         powerShell {
             name = "Publish"
             id = "Publish"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -603,6 +618,8 @@ object PublicDeployment : BuildType({
     }
 
     requirements {
+        matches("teamcity.agent.jvm.os.family", "Windows")
+        matches("teamcity.agent.jvm.os.arch", "amd64")
         equals("env.BuildAgentType", "docker-win-x64-md")
     }
 
@@ -746,6 +763,7 @@ object UpstreamMerge : BuildType({
         powerShell {
             name = "Prepare Docker image metalamaconsolidated-2026.1"
             id = "PrepareImage"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -755,6 +773,7 @@ object UpstreamMerge : BuildType({
         powerShell {
             name = "Merge upstream"
             id = "UpstreamMerge"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -764,6 +783,8 @@ object UpstreamMerge : BuildType({
     }
 
     requirements {
+        matches("teamcity.agent.jvm.os.family", "Windows")
+        matches("teamcity.agent.jvm.os.arch", "amd64")
         equals("env.BuildAgentType", "docker-win-x64-md")
     }
 
@@ -850,6 +871,7 @@ object Bump : BuildType({
         powerShell {
             name = "Prepare Docker image metalamaconsolidated-2026.1"
             id = "PrepareImage"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -859,6 +881,7 @@ object Bump : BuildType({
         powerShell {
             name = "Execute Orchestrator.ps1"
             id = "Exec"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -868,6 +891,8 @@ object Bump : BuildType({
     }
 
     requirements {
+        matches("teamcity.agent.jvm.os.family", "Windows")
+        matches("teamcity.agent.jvm.os.arch", "amd64")
         equals("env.BuildAgentType", "docker-win-x64-md")
     }
 
@@ -916,6 +941,7 @@ object PrePublish : BuildType({
         powerShell {
             name = "Prepare Docker image metalamaconsolidated-2026.1"
             id = "PrepareImage"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -925,6 +951,7 @@ object PrePublish : BuildType({
         powerShell {
             name = "Execute Orchestrator.ps1"
             id = "Exec"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -934,6 +961,8 @@ object PrePublish : BuildType({
     }
 
     requirements {
+        matches("teamcity.agent.jvm.os.family", "Windows")
+        matches("teamcity.agent.jvm.os.arch", "amd64")
         equals("env.BuildAgentType", "docker-win-x64-md")
     }
 
@@ -982,6 +1011,7 @@ object PostPublish : BuildType({
         powerShell {
             name = "Prepare Docker image metalamaconsolidated-2026.1"
             id = "PrepareImage"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -991,6 +1021,7 @@ object PostPublish : BuildType({
         powerShell {
             name = "Execute Orchestrator.ps1"
             id = "Exec"
+            edition = PowerShellStep.Edition.Core
             scriptMode = file {
                 path = "DockerBuild.ps1"
             }
@@ -1000,6 +1031,8 @@ object PostPublish : BuildType({
     }
 
     requirements {
+        matches("teamcity.agent.jvm.os.family", "Windows")
+        matches("teamcity.agent.jvm.os.arch", "amd64")
         equals("env.BuildAgentType", "docker-win-x64-md")
     }
 
