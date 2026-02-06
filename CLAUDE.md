@@ -159,9 +159,9 @@ NOW you may read the source code to understand the root cause and implement a fi
 3. Run all tests in the solution. Fix the implementation (NOT the test, unless the test is really wrong). Iterate until they all pass.
 4. Commit and push.
 
-### Phase 4. Build all repositories
+### Phase 4. Build the whole repository
 
-1. Build all repositories with `BuildAll.ps1` (in the root working directory).
+1. Build the whole repository with `Build.ps1 build` (in sub repo that you modified).
 2. Verify there are zero unintentional warnings.
 3. If there are changes, commit and push.
 
