@@ -68,10 +68,15 @@ if (-not (Test-Path $claudeJsonPath)) {
 
 # Configure GitHub authentication
 # gh CLI automatically uses the GITHUB_TOKEN env var, no login needed.
-# For git push, configure git to use the token via URL rewriting.
+# For git push, configure git to use a GIT_ASKPASS script that echoes the token.
 if ($env:GITHUB_TOKEN) {
-    git config --global url."https://x-access-token:$($env:GITHUB_TOKEN)@github.com/".insteadOf "https://github.com/"
-    Write-Host "Git credential helper configured for github.com." -ForegroundColor Green
+    $tempFileName = Join-Path ([System.IO.Path]::GetTempPath()) "git-askpass.cmd"
+    Set-Content -Path $tempFileName -Value "@echo off`r`necho %GITHUB_TOKEN%" -Encoding ASCII
+
+    git config --global credential.helper ""
+    git config --global core.askPass "$tempFileName"
+
+    Write-Host "Git askpass configured for github.com." -ForegroundColor Green
 } else {
     Write-Warning "GITHUB_TOKEN environment variable is not set. git push and gh commands will not be authenticated."
 }
