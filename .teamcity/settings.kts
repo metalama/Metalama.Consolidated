@@ -114,7 +114,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_Metalama_DebugBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_Metalama_DebugBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama"
         }
@@ -125,7 +125,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_DebugBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_DebugBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Community"
         }
@@ -139,7 +139,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_ReleaseBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_ReleaseBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/packages/Release/Shipping/**/*=>dependencies/Metalama.Compiler"
         }
@@ -147,7 +147,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_DebugBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_DebugBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Documentation"
         }
@@ -158,7 +158,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_DebugBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_DebugBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Premium"
         }
@@ -169,7 +169,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_DebugBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_DebugBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Samples"
         }
@@ -271,7 +271,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_Metalama_ReleaseBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_Metalama_ReleaseBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama"
         }
@@ -282,7 +282,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_ReleaseBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_ReleaseBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Community"
         }
@@ -293,7 +293,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_ReleaseBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_ReleaseBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/packages/Release/Shipping/**/*=>dependencies/Metalama.Compiler"
         }
@@ -304,7 +304,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_ReleaseBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_ReleaseBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Documentation"
         }
@@ -315,7 +315,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_ReleaseBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_ReleaseBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Premium"
         }
@@ -326,7 +326,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_ReleaseBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_ReleaseBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Samples"
         }
@@ -428,7 +428,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_Metalama_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_Metalama_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama"
         }
@@ -439,7 +439,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Community"
         }
@@ -450,7 +450,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/packages/Release/Shipping/**/*=>dependencies/Metalama.Compiler"
         }
@@ -461,7 +461,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Documentation"
         }
@@ -472,7 +472,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Premium"
         }
@@ -483,7 +483,7 @@ pullRequests {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Samples"
         }
@@ -559,7 +559,7 @@ object PublicDeployment : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_Metalama_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_Metalama_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama"
         }
@@ -570,7 +570,7 @@ object PublicDeployment : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Community"
         }
@@ -581,7 +581,7 @@ object PublicDeployment : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/packages/Release/Shipping/**/*=>dependencies/Metalama.Compiler"
         }
@@ -592,7 +592,7 @@ object PublicDeployment : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Documentation"
         }
@@ -603,7 +603,7 @@ object PublicDeployment : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Premium"
         }
@@ -614,7 +614,7 @@ object PublicDeployment : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_PublicBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_PublicBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Samples"
         }
@@ -628,7 +628,7 @@ object PublicDeployment : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(PublicBuild) 
+        artifacts(PublicBuild) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/public/**/*=>artifacts/publish/public\n+:artifacts/publish/private/**/*=>artifacts/publish/private"
         }
@@ -1020,7 +1020,7 @@ object Claude : BuildType({
 
     dependencies {
 
-        artifacts(DebugBuild) 
+        artifacts(DebugBuild) { 
                               buildRule = lastSuccessful()
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private"
@@ -1029,7 +1029,7 @@ object Claude : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_ReleaseBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_ReleaseBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/packages/Release/Shipping/**/*=>dependencies/Metalama.Compiler"
         }
@@ -1037,7 +1037,7 @@ object Claude : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_Metalama_DebugBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_Metalama_DebugBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama"
         }
@@ -1045,7 +1045,7 @@ object Claude : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_DebugBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_DebugBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Community"
         }
@@ -1053,7 +1053,7 @@ object Claude : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_DebugBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_DebugBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Premium"
         }
@@ -1061,7 +1061,7 @@ object Claude : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_DebugBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_DebugBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Samples"
         }
@@ -1069,7 +1069,7 @@ object Claude : BuildType({
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
 
-        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_DebugBuild")) 
+        artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_DebugBuild")) { 
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Documentation"
         }
