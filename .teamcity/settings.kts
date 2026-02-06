@@ -20,8 +20,9 @@ project {
     buildType(Bump)
     buildType(PrePublish)
     buildType(PostPublish)
+    buildType(Claude)
 
-    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,PublicBuild,PublicDeployment,UpstreamMerge,Bump,PrePublish,PostPublish)
+    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,PublicBuild,PublicDeployment,UpstreamMerge,Bump,PrePublish,PostPublish,Claude)
 
 }
 
@@ -1027,6 +1028,81 @@ object PostPublish : BuildType({
             }
             noProfile = false
             scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage postpublish %Exec.Arguments%"
+        }
+    }
+
+    requirements {
+        matches("teamcity.agent.jvm.os.family", "Windows")
+        matches("teamcity.agent.jvm.os.arch", "amd64")
+        equals("env.BuildAgentType", "docker-win-x64-md")
+    }
+
+    features {
+        swabra {
+            filesCleanup = Swabra.FilesCleanup.BEFORE_BUILD
+            lockingProcesses = Swabra.LockingProcessPolicy.KILL
+            verbose = true
+        }
+    }
+
+})
+
+object Claude : BuildType({
+
+    name = "Run Claude on Issue"
+
+    params {
+        text(
+            "Exec.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Execute DockerBuild.ps1' build step.", allowEmpty = true)
+        text(
+            "Issue", 
+            "", 
+            label ="Issue",
+            description = "The issue for Claude to work on autonomously")
+    }
+
+    vcs {
+        root(AbsoluteId("Metalama_Metalama20261_MetalamaConsolidated"))
+        root(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler"),
+          """+:. => source-dependencies/Metalama.Compiler""")
+        root(AbsoluteId("Metalama_Metalama20261_Metalama"),
+          """+:. => source-dependencies/Metalama""")
+        root(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity"),
+          """+:. => source-dependencies/Metalama.Community""")
+        root(AbsoluteId("Metalama_Metalama20261_MetalamaPremium"),
+          """+:. => source-dependencies/Metalama.Premium""")
+        root(AbsoluteId("Metalama_Metalama20261_MetalamaSamples"),
+          """+:. => source-dependencies/Metalama.Samples""")
+        root(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation"),
+          """+:. => source-dependencies/Metalama.Documentation""")
+        root(AbsoluteId("Metalama_Metalama20261_MetalamaTestsNopCommerce"),
+          """+:. => source-dependencies/Metalama.Tests.NopCommerce""")
+     checkoutMode = CheckoutMode.ON_AGENT
+    }
+
+    steps {
+        powerShell {
+            name = "Prepare Docker image metalamaconsolidated-2026.1"
+            id = "PrepareImage"
+            edition = PowerShellStep.Edition.Core
+            scriptMode = file {
+                path = "DockerBuild.ps1"
+            }
+            noProfile = false
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.1 "
+        }
+        powerShell {
+            name = "Execute DockerBuild.ps1"
+            id = "Exec"
+            edition = PowerShellStep.Edition.Core
+            scriptMode = file {
+                path = "DockerBuild.ps1"
+            }
+            noProfile = false
+            scriptArgs = "-Script DockerBuild.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage -Claude -NoMcp -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\" %Exec.Arguments%"
         }
     }
 
