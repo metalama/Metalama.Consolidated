@@ -4,9 +4,9 @@
 
 Metalama is composed of several repositories under https://github.com/metalama:
 - https://github.com/metalama/Metalama
-- https://github.com/metalama/Metalama.Premium
-- https://github.com/metalama/Metalama.Community
-- https://github.com/metalama/Metalama.Samples
+- https://github.com/metalama/Metalama.Premium (depends on `Metalama`)
+- https://github.com/metalama/Metalama.Community (depends on `Metalama`)
+- https://github.com/metalama/Metalama.Samples (depends on `Metalama` and `Metalama.Premium`)
 
 All source repositories (sub repos) are cloned in the `source-dependencies/` directory (or as sibling directories of the current repo). Topic branches and code changes are NEVER in Metalama.Consolidated — always in repos under `source-dependencies/`.
 
@@ -99,7 +99,7 @@ This phase determines where to resume. Always start here.
    wait
    ```
    Also search for existing PRs: `gh search prs --owner metalama --state open "{issue_number}"`.
-   If a topic branch is found, fetch and checkout that branch in the corresponding source-dependency repo.
+   If a topic branch is found, fetch it, discard any local changes, checkout, and **pull** to ensure you have the latest commits: `git -C source-dependencies/<repo> fetch origin <branch> && git -C source-dependencies/<repo> checkout -f <branch> && git -C source-dependencies/<repo> reset --hard origin/<branch>`.
 4. If existing PRs are found, read ALL PR comments and review comments using `gh pr view <number> --repo metalama/<repo> --comments` and `gh api repos/metalama/<repo>/pulls/<number>/comments`. Look for feedback from @gfraiteur. For each comment:
    - If the feedback is actionable, implement the requested changes, push, and reply to the comment confirming what you did.
    - If you disagree or the feedback doesn't apply, reply to the comment explaining your reasoning.
@@ -140,7 +140,7 @@ Write a regression test based on your understanding of the expected behavior fro
 **FORBIDDEN in Phase 2:** Do NOT read implementation/production source code (non-test `.cs` files). You do not need to understand the implementation to write a test that reproduces the bug.
 
 1. If no topic branch exists yet, create one as explained in the `eng` skill.
-2. Build all repos using `BuildAll.ps1`.
+2. Build the sub-repo you are working on using `Build.ps1 build`.
 3. Create a regression test that FAILS.
 4. Commit and push.
 5. Create a DRAFT PR to the current development branch for each repo that required a change, linking the GitHub issue.
@@ -157,7 +157,7 @@ NOW you may read the source code to understand the root cause and implement a fi
 
 ### Phase 4. Build all repositories
 
-1. Build all repositories with `BuildAll.ps1`.
+1. Build all repositories with `BuildAll.ps1` (in the root working directory).
 2. Verify there are zero unintentional warnings.
 3. If there are changes, commit and push.
 
