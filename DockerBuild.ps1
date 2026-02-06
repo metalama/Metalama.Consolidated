@@ -648,7 +648,7 @@ try
         if ($dockerRegistry)
         {
             # Registry mode: use registry URL with image name and content hash
-            $ImageTag = "${dockerRegistry}/build-${contentHash}"
+            $ImageTag = "${dockerRegistry}/build-${contentHash}:${contentHash}"
             Write-Host "Registry image tag: $ImageTag" -ForegroundColor Cyan
         }
         elseif ([string]::IsNullOrEmpty($ImageName))
@@ -1416,41 +1416,51 @@ $envVarAssignments$gitConfigCommands$postInitCommands
 
     if ($dockerRegistry -and -not $NoBuildImage -and -not $existingContainerId)
     {
-        # Create a temporary Docker config directory to avoid credential helper issues
-        # (e.g., docker-credential-desktop not found when using Docker Engine without Desktop)
-        $tempDockerConfig = Join-Path $env:TEMP "docker-config-$( New-Guid )"
-        New-Item -ItemType Directory -Path $tempDockerConfig -Force | Out-Null
-        @{ auths = @{ } } | ConvertTo-Json | Set-Content (Join-Path $tempDockerConfig "config.json")
-        $dockerConfigArg = @("--config", $tempDockerConfig)
-
-        # Authenticate to registry
-        $dockerPassword = $env:DOCKER_PASSWORD
-        $dockerUsername = $env:DOCKER_USERNAME
-        if ($dockerPassword -and $dockerUsername)
-        {
-            Write-Host "Authenticating to registry..." -ForegroundColor Gray
-            $dockerPassword | docker @dockerConfigArg login $dockerRegistry --username $dockerUsername --password-stdin 2> $null
-            if ($LASTEXITCODE -ne 0)
-            {
-                Write-Host "Warning: Registry authentication failed. Pull/push may fail." -ForegroundColor Yellow
-            }
-        }
-        else
-        {
-            Write-Host "Warning: DOCKER_USERNAME/DOCKER_PASSWORD not set. Registry pull/push may fail." -ForegroundColor Yellow
-        }
-
-        # Try to pull the image
-        Write-Host "Checking registry for existing image: $ImageTag" -ForegroundColor Cyan
-        docker @dockerConfigArg pull $ImageTag 2> $null
+        # Check if image already exists locally before pulling from registry
+        docker image inspect $ImageTag *> $null
         if ($LASTEXITCODE -eq 0)
         {
-            Write-Host "Using cached image from registry." -ForegroundColor Green
+            Write-Host "Using locally cached image: $ImageTag" -ForegroundColor Green
             $NoBuildImage = $true
         }
         else
         {
-            Write-Host "Image not found in registry, will build locally." -ForegroundColor Yellow
+            # Create a temporary Docker config directory to avoid credential helper issues
+            # (e.g., docker-credential-desktop not found when using Docker Engine without Desktop)
+            $tempDockerConfig = Join-Path $env:TEMP "docker-config-$( New-Guid )"
+            New-Item -ItemType Directory -Path $tempDockerConfig -Force | Out-Null
+            @{ auths = @{ } } | ConvertTo-Json | Set-Content (Join-Path $tempDockerConfig "config.json")
+            $dockerConfigArg = @("--config", $tempDockerConfig)
+
+            # Authenticate to registry
+            $dockerPassword = $env:DOCKER_PASSWORD
+            $dockerUsername = $env:DOCKER_USERNAME
+            if ($dockerPassword -and $dockerUsername)
+            {
+                Write-Host "Authenticating to registry..." -ForegroundColor Gray
+                $dockerPassword | docker @dockerConfigArg login $dockerRegistry --username $dockerUsername --password-stdin 2> $null
+                if ($LASTEXITCODE -ne 0)
+                {
+                    Write-Host "Warning: Registry authentication failed. Pull/push may fail." -ForegroundColor Yellow
+                }
+            }
+            else
+            {
+                Write-Host "Warning: DOCKER_USERNAME/DOCKER_PASSWORD not set. Registry pull/push may fail." -ForegroundColor Yellow
+            }
+
+            # Try to pull the image
+            Write-Host "Checking registry for existing image: $ImageTag" -ForegroundColor Cyan
+            docker @dockerConfigArg pull $ImageTag 2> $null
+            if ($LASTEXITCODE -eq 0)
+            {
+                Write-Host "Using cached image from registry." -ForegroundColor Green
+                $NoBuildImage = $true
+            }
+            else
+            {
+                Write-Host "Image not found in registry, will build locally." -ForegroundColor Yellow
+            }
         }
     }
 
