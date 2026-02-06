@@ -648,8 +648,7 @@ try
         if ($dockerRegistry)
         {
             # Registry mode: use registry URL with image name and content hash
-            $registryImageName = if ([string]::IsNullOrEmpty($ImageName)) { (Split-Path $PSScriptRoot -Leaf).ToLower() } else { $ImageName }
-            $ImageTag = "${dockerRegistry}/${registryImageName}:${contentHash}"
+            $ImageTag = "${dockerRegistry}/build-${contentHash}"
             Write-Host "Registry image tag: $ImageTag" -ForegroundColor Cyan
         }
         elseif ([string]::IsNullOrEmpty($ImageName))

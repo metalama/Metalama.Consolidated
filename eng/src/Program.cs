@@ -87,10 +87,11 @@ var product = new Product( MetalamaDependencies.Consolidated )
             "Claude",
             "Run Claude on Issue",
             "DockerBuild.ps1",
-            "-Claude -NoMcp -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\"" )
+            "-Claude -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\"" )
         {
+            Dockerfile = @".\eng\docker\Dockerfile.agent.claude",
             SourceDependenciesRequirements = SourceDependenciesRequirements.Full,
-            Parameters = [new TextBuildConfigurationParameter( "Issue", "Issue", "The issue for Claude to work on autonomously" )]
+            Parameters = [new TextBuildConfigurationParameter( "Issue", "Issue", "The issue for Claude to work on autonomously" ) { Display = ParameterDisplay.Prompt }]
         } ]
 };
 
