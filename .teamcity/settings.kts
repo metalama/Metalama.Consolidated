@@ -1025,51 +1025,39 @@ object Claude : BuildType({
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private"
         }
-        snapshot(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_ReleaseBuild")) {
-                 onDependencyFailure = FailureAction.FAIL_TO_START
-        }
 
         artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_ReleaseBuild")) { 
+                              buildRule = lastSuccessful()
             cleanDestination = true
             artifactRules = "+:artifacts/packages/Release/Shipping/**/*=>dependencies/Metalama.Compiler"
         }
-        snapshot(AbsoluteId("Metalama_Metalama20261_Metalama_DebugBuild")) {
-                 onDependencyFailure = FailureAction.FAIL_TO_START
-        }
 
         artifacts(AbsoluteId("Metalama_Metalama20261_Metalama_DebugBuild")) { 
+                              buildRule = lastSuccessful()
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama"
         }
-        snapshot(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_DebugBuild")) {
-                 onDependencyFailure = FailureAction.FAIL_TO_START
-        }
 
         artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_DebugBuild")) { 
+                              buildRule = lastSuccessful()
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Community"
         }
-        snapshot(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_DebugBuild")) {
-                 onDependencyFailure = FailureAction.FAIL_TO_START
-        }
 
         artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_DebugBuild")) { 
+                              buildRule = lastSuccessful()
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Premium"
         }
-        snapshot(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_DebugBuild")) {
-                 onDependencyFailure = FailureAction.FAIL_TO_START
-        }
 
         artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_DebugBuild")) { 
+                              buildRule = lastSuccessful()
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Samples"
         }
-        snapshot(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_DebugBuild")) {
-                 onDependencyFailure = FailureAction.FAIL_TO_START
-        }
 
         artifacts(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_DebugBuild")) { 
+                              buildRule = lastSuccessful()
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Documentation"
         }
