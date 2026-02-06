@@ -91,8 +91,12 @@ var product = new Product( MetalamaDependencies.Consolidated )
         {
             Dockerfile = @".\eng\docker\Dockerfile.agent.claude",
             SourceDependenciesRequirements = SourceDependenciesRequirements.Full,
+            ReuseLastSuccessfulBuild = true,
             BuildSnapshotDependency = BuildConfiguration.Debug,
-            Parameters = [new TextBuildConfigurationParameter( "Issue", "Issue", "The issue for Claude to work on autonomously" ) { Display = ParameterDisplay.Prompt }]
+            Parameters = [new TextBuildConfigurationParameter( "Issue", "Issue", "The issue for Claude to work on autonomously" )
+            {
+                Display = ParameterDisplay.Prompt
+            }]
         } ]
 };
 

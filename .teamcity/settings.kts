@@ -1085,6 +1085,24 @@ object Claude : BuildType({
 
     steps {
         powerShell {
+            name = "Copy nuget.restored.config to nuget.config"
+            id = "CopyNuGetConfig"
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "Copy-Item -Path \"artifacts/publish/private/nuget.restored.config\" -Destination \"nuget.config\" -Force;"
+            }
+            noProfile = false
+        }
+        powerShell {
+            name = "Create eng/Versions.g.props"
+            id = "CreateVersionsFile"
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "New-Item -Path \"eng/Versions.g.props\" -ItemType File -Force -Value \"<Project><Import Project=`\"../artifacts/publish/private/Metalama.Consolidated.version.props`\" /><Import Project=`\"../dependencies/Metalama.Compiler/Metalama.Compiler.version.props`\" /><Import Project=`\"../dependencies/Metalama/Metalama.version.props`\" /><Import Project=`\"../dependencies/Metalama.Community/Metalama.Community.version.props`\" /><Import Project=`\"../dependencies/Metalama.Premium/Metalama.Premium.version.props`\" /><Import Project=`\"../dependencies/Metalama.Samples/Metalama.Samples.version.props`\" /><Import Project=`\"../dependencies/Metalama.Documentation/Metalama.Documentation.version.props`\" /></Project>\" | Out-Null;"
+            }
+            noProfile = false
+        }
+        powerShell {
             name = "Prepare Docker image metalamaconsolidated-2026.1"
             id = "PrepareImage"
             edition = PowerShellStep.Edition.Core
@@ -1119,6 +1137,80 @@ object Claude : BuildType({
             verbose = true
         }
     }
+
+    dependencies {
+        dependency(DebugBuild) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+                     reuseBuilds = ReuseBuilds.SUCCESSFUL
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private"
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaCompiler_ReleaseBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/packages/Release/Shipping/**/*=>dependencies/Metalama.Compiler"
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20261_Metalama_DebugBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama"
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaCommunity_DebugBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Community"
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaPremium_DebugBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Premium"
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaSamples_DebugBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Samples"
+            }
+        }
+        dependency(AbsoluteId("Metalama_Metalama20261_MetalamaDocumentation_DebugBuild")) {
+            snapshot {
+                     onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                cleanDestination = true
+                artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Documentation"
+            }
+        }
+     }
 
 })
 
