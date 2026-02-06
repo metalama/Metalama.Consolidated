@@ -1142,7 +1142,7 @@ object Claude : BuildType({
         dependency(DebugBuild) {
             snapshot {
                      onDependencyFailure = FailureAction.FAIL_TO_START
-                     reuseBuilds = ReuseBuilds.SUCCESSFUL
+                     synchronizeRevisions = false
             }
 
             artifacts {
