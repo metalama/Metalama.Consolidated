@@ -1092,7 +1092,7 @@ object Claude : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.1 "
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.1 -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude "
         }
         powerShell {
             name = "Execute DockerBuild.ps1"
@@ -1102,7 +1102,7 @@ object Claude : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script DockerBuild.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage -Claude -NoMcp -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\" %Exec.Arguments%"
+            scriptArgs = "-Script DockerBuild.ps1 -ImageName metalamaconsolidated-2026.1 -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude -NoBuildImage -Claude -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\" %Exec.Arguments%"
         }
     }
 
