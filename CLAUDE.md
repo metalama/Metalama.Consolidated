@@ -60,7 +60,7 @@ This phase determines where to resume. Always start here.
 
 1. Record the session start time: run `date +%s | tee /tmp/claude-session-start > /tmp/claude-last-progress`.
 2. Read the issue on GitHub including ALL comments.
-2. Check all repos for an existing topic branch. Branch names follow the pattern `topic/{version}/{issue_number}-*` (e.g. `topic/2026.1/1234-fix-something`), where `{version}` is the current version and `{issue_number}` is the GitHub issue number. Checkout these branches.
+2. Check all repos for an existing topic branch. Branch names follow the pattern `topic/{version}/{issue_number}-*` (e.g. `topic/2026.1/1234-fix-something`), where `{version}` is the current version and `{issue_number}` is the GitHub issue number. Use `git ls-remote --heads origin "topic/{version}/{issue_number}-*"` to check without fetching. If a match is found, fetch and checkout that branch.
 4. Check for existing draft or open PRs linked to this issue.
 5. Load the skills: `metalama*`, `eng:eng`, `metalama-dev:metalama-dev`.
 
