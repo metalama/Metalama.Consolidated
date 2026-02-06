@@ -1000,7 +1000,7 @@ object Claude : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script DockerBuild.ps1 -ImageName metalamaconsolidated-2026.1 -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude -NoBuildImage -Claude -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\" %Exec.Arguments%"
+            scriptArgs = "-Script DockerBuild.ps1 -ImageName metalamaconsolidated-2026.1 -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude -NoBuildImage -Claude -PostInit eng/InitClaudeCode.ps1 -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\" %Exec.Arguments%"
         }
     }
 

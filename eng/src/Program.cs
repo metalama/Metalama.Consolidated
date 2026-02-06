@@ -87,7 +87,7 @@ var product = new Product( MetalamaDependencies.Consolidated )
             "Claude",
             "Run Claude on Issue",
             "DockerBuild.ps1",
-            "-Claude -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\"" )
+            "-Claude -PostInit eng/InitClaudeCode.ps1 -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\"" )
         {
             Dockerfile = @".\eng\docker\Dockerfile.agent.claude",
             SourceDependenciesRequirements = SourceDependenciesRequirements.Full,

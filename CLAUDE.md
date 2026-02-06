@@ -60,7 +60,7 @@ This phase determines where to resume. Always start here.
 
 1. Record the session start time: run `date +%s | tee /tmp/claude-session-start > /tmp/claude-last-progress`.
 2. Read the issue on GitHub including ALL comments.
-2. Check all repos for an existing topic branch. Branch names follow the pattern `topic/{version}/{issue_number}-*` (e.g. `topic/2026.1/1234-fix-something`), where `{version}` is the current version and `{issue_number}` is the GitHub issue number. Use `git ls-remote --heads origin "topic/{version}/{issue_number}-*"` to check without fetching. If a match is found, fetch and checkout that branch.
+2. Check all source-dependency repos for an existing topic branch. Topic branches are NEVER in Metalama.Consolidated — they are always in repos under `source-dependencies/`. Branch names follow the pattern `topic/{version}/{issue_number}-*` (e.g. `topic/2026.1/1234-fix-something`), where `{version}` is the current version and `{issue_number}` is the GitHub issue number. For each repo in `source-dependencies/`, run `git -C source-dependencies/{repo} ls-remote --heads origin "topic/{version}/{issue_number}-*"` to check without fetching. If a match is found, fetch and checkout that branch in the corresponding repo.
 4. Check for existing draft or open PRs linked to this issue.
 5. Load the skills: `metalama*`, `eng:eng`, `metalama-dev:metalama-dev`.
 
@@ -98,11 +98,15 @@ Write a regression test based on your understanding of the expected behavior fro
 **FORBIDDEN in Phase 2:** Do NOT read implementation/production source code (non-test `.cs` files). You do not need to understand the implementation to write a test that reproduces the bug.
 
 1. If no topic branch exists yet, create one as explained in the `eng` skill.
-2. Build all repos using the `BuildAll.ps1` script in the current directory.
+2. Build all repos using the `BuildAll.ps1` script in the current directory. 
 3. Create a regression test that FAILS.
 4. Commit and push.
 5. Create a DRAFT PR to the current development branch for each repo that required a change, linking the GitHub issue.
 6. Add a comment to the issue confirming the bug is reproduced, explaining how, with a link to the PR.
+
+ 
+NOTE: `BuildAll.ps1` or `Build.ps1` do NOT build the test projects. Use `dotnet test` for these test projects.
+
 
 ### Phase 3. Fix the issue
 
