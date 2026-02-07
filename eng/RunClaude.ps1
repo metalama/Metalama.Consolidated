@@ -132,7 +132,7 @@ function ConvertFrom-ClaudeJsonLine {
                         $content = $content -replace "(?s)<function_calls>.*?$closingTag", ''
                         $sanitized = Sanitize-ClaudeOutput $content
                         $lines = $sanitized -split "`n"
-                        $maxLines = 5000
+                        $maxLines = 5
                         $color = if ($block.is_error) { "Red" } else { "DarkGray" }
                         $prefix = if ($block.is_error) { "  [ERROR] " } else { "  ->" }
                         for ($i = 0; $i -lt [Math]::Min($lines.Count, $maxLines); $i++) {

@@ -41,10 +41,12 @@ Do not attempt to build your root directory repo (`Metalama.Consolidated`). Do n
 
 ### Cross-repo builds
 
-If you changed a parent repo and need to test from a dependent child repo, you must propagate via packages:
+**Only build repos you actually changed.** Do NOT build upstream/parent repos (e.g. Metalama.Compiler) if you made no changes there.
 
-1. Build the parent repo with `Build.ps1 build` (to produce packages).
-2. In the child repo, run `Build.ps1 dependencies set local <parent-repo>`.
+If you changed a repo and need to test from a dependent child repo, you must propagate via packages:
+
+1. Build the repo you changed with `Build.ps1 build` (to produce packages).
+2. In the child repo, run `Build.ps1 dependencies set local <changed-repo>`.
 3. Then run `Build.ps1 build` in the child repo.
 
 Example — changed Metalama, need to test from Metalama.Premium:
@@ -159,11 +161,14 @@ NOW you may read the source code to understand the root cause and implement a fi
 3. Run all tests in the solution. Fix the implementation (NOT the test, unless the test is really wrong). Iterate until they all pass.
 4. Commit and push.
 
-### Phase 4. Build the whole repository
+### Phase 4. Build changed repos and their dependents
 
-1. Build the whole repository with `Build.ps1 build` (in sub repo that you modified).
-2. Verify there are zero unintentional warnings.
-3. If there are changes, commit and push.
+Only build the repos you actually modified and any downstream repos that depend on them. Do NOT build upstream/parent repos where you made no changes.
+
+1. For each repo you modified, run `Build.ps1 build` in that repo.
+2. If a dependent (child) repo exists, propagate packages and build it too (see "Cross-repo builds" above).
+3. Verify there are zero unintentional warnings.
+4. If there are changes, commit and push.
 
 ### Phase 5. Finalize
 
