@@ -70,7 +70,17 @@ object DebugBuild : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage test --configuration Debug --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --timeout %Build.Timeout% %Build.Arguments%"
+            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% test --configuration Debug --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --timeout %Build.Timeout% %Build.Arguments%"
+        }
+        powerShell {
+            name = "Cleanup Docker containers"
+            id = "DockerCleanup"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+            }
+            noProfile = false
         }
     }
 
@@ -227,7 +237,17 @@ object ReleaseBuild : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage test --configuration Release --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --timeout %Build.Timeout% %Build.Arguments%"
+            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% test --configuration Release --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --timeout %Build.Timeout% %Build.Arguments%"
+        }
+        powerShell {
+            name = "Cleanup Docker containers"
+            id = "DockerCleanup"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+            }
+            noProfile = false
         }
     }
 
@@ -384,7 +404,17 @@ object PublicBuild : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage test --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --timeout %Build.Timeout% %Build.Arguments%"
+            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% test --configuration Public --buildNumber %build.number% --buildType %system.teamcity.buildType.id% --timeout %Build.Timeout% %Build.Arguments%"
+        }
+        powerShell {
+            name = "Cleanup Docker containers"
+            id = "DockerCleanup"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+            }
+            noProfile = false
         }
     }
 
@@ -536,7 +566,17 @@ object PublicDeployment : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage publish --configuration Public --timeout %Publish.Timeout% %Publish.Arguments%"
+            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% publish --configuration Public --timeout %Publish.Timeout% %Publish.Arguments%"
+        }
+        powerShell {
+            name = "Cleanup Docker containers"
+            id = "DockerCleanup"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+            }
+            noProfile = false
         }
     }
 
@@ -673,7 +713,17 @@ object UpstreamMerge : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -Dockerfile Dockerfile.claude -NoBuildImage -Snapshot upstream-merge --timeout %UpstreamMerge.Timeout% %UpstreamMerge.Arguments%"
+            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -Dockerfile Dockerfile.claude -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% -Snapshot upstream-merge --timeout %UpstreamMerge.Timeout% %UpstreamMerge.Arguments%"
+        }
+        powerShell {
+            name = "Cleanup Docker containers"
+            id = "DockerCleanup"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+            }
+            noProfile = false
         }
     }
 
@@ -767,7 +817,17 @@ object Bump : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage bump %Exec.Arguments%"
+            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% bump %Exec.Arguments%"
+        }
+        powerShell {
+            name = "Cleanup Docker containers"
+            id = "DockerCleanup"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+            }
+            noProfile = false
         }
     }
 
@@ -837,7 +897,17 @@ object PrePublish : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage prepublish %Exec.Arguments%"
+            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% prepublish %Exec.Arguments%"
+        }
+        powerShell {
+            name = "Cleanup Docker containers"
+            id = "DockerCleanup"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+            }
+            noProfile = false
         }
     }
 
@@ -907,7 +977,17 @@ object PostPublish : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage postpublish %Exec.Arguments%"
+            scriptArgs = "-Script Orchestrator.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% postpublish %Exec.Arguments%"
+        }
+        powerShell {
+            name = "Cleanup Docker containers"
+            id = "DockerCleanup"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+            }
+            noProfile = false
         }
     }
 
@@ -1000,7 +1080,17 @@ object Claude : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script DockerBuild.ps1 -ImageName metalamaconsolidated-2026.1 -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude -NoBuildImage -Claude -PostInit eng/InitClaudeCode.ps1 -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\" %Exec.Arguments%"
+            scriptArgs = "-Script DockerBuild.ps1 -ImageName metalamaconsolidated-2026.1 -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% -Claude -PostInit eng/InitClaudeCode.ps1 -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\" %Exec.Arguments%"
+        }
+        powerShell {
+            name = "Cleanup Docker containers"
+            id = "DockerCleanup"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+            }
+            noProfile = false
         }
     }
 
