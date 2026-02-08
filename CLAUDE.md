@@ -106,11 +106,12 @@ This phase determines where to resume. Always start here.
    ```
    Also search for existing PRs: `gh search prs --owner metalama --state open "{issue_number}"`.
    If a topic branch is found, fetch it, discard any local changes, checkout, and **pull** to ensure you have the latest commits: `cd source-dependencies/<repo> && git  fetch origin <branch> && git checkout -f <branch> && git reset --hard origin/<branch> && git clean -xfd && git pull`.
-4. If existing PRs are found, read ALL PR comments and review comments using `gh pr view <number> --repo metalama/<repo> --comments` and `gh api repos/metalama/<repo>/pulls/<number>/comments`. Look for feedback from @gfraiteur. For each comment:
+4. If a topic branch exists, check the latest TeamCity build status for that branch using the `eng:tc-check-build` skill. If the build is failing, review the errors — they may indicate issues from a previous session that need to be addressed.
+5. If existing PRs are found, read ALL PR comments and review comments using `gh pr view <number> --repo metalama/<repo> --comments` and `gh api repos/metalama/<repo>/pulls/<number>/comments`. Look for feedback from @gfraiteur. For each comment:
    - If the feedback is actionable, implement the requested changes, push, and reply to the comment confirming what you did.
    - If you disagree or the feedback doesn't apply, reply to the comment explaining your reasoning.
    - Never leave a review comment without a reply.
-5. Load the skills: `metalama*`, `eng:eng`, `metalama-dev:metalama-dev`.
+6. Load the skills: `metalama*`, `eng:eng`, `metalama-dev:metalama-dev`.
 
 Based on what you find, determine the current state and skip to the appropriate phase:
 
@@ -161,14 +162,16 @@ NOW you may read the source code to understand the root cause and implement a fi
 3. Run all tests in the solution. Fix the implementation (NOT the test, unless the test is really wrong). Iterate until they all pass.
 4. Commit and push.
 
-### Phase 4. Build changed repos and their dependents
+### Phase 4. Build and test changed repos and their dependents
 
 Only build the repos you actually modified and any downstream repos that depend on them. Do NOT build upstream/parent repos where you made no changes.
 
 1. For each repo you modified, run `Build.ps1 build` in that repo.
 2. If a dependent (child) repo exists, propagate packages and build it too (see "Cross-repo builds" above).
-3. Verify there are zero unintentional warnings.
-4. If there are changes, commit and push.
+3. Verify there are **zero warnings** after `Build.ps1 build`. The build system requires zero warnings — any warning is a build failure. Use the `eng:fix-binlog-warnings` skill to find and fix warnings from MSBuild binlog files. Fix all warnings unless they are clearly intentional (e.g., an obsolete API that must remain for backward compatibility). If you suppress a warning, add a comment explaining why.
+4. For each repo you modified, run `Build.ps1 test` to execute all tests. Fix any failures before proceeding.
+5. Verify there are **zero warnings** after `Build.ps1 test` as well, using the same approach as step 3.
+6. If there are changes, commit and push.
 
 ### Phase 5. Finalize
 
