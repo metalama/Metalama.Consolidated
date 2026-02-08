@@ -106,7 +106,7 @@ This phase determines where to resume. Always start here.
    ```
    Also search for existing PRs: `gh search prs --owner metalama --state open "{issue_number}"`.
    If a topic branch is found, fetch it, discard any local changes, checkout, and **pull** to ensure you have the latest commits: `cd source-dependencies/<repo> && git  fetch origin <branch> && git checkout -f <branch> && git reset --hard origin/<branch> && git clean -xfd && git pull`.
-4. If a topic branch exists, check the latest TeamCity build status for that branch using the `eng:tc-check-build` skill. If the build is failing, review the errors — they may indicate issues from a previous session that need to be addressed.
+4. If a topic branch exists, check the latest TeamCity build status for that branch using the `eng:tc-check-build` skill. If the build is failing or has warnings, download the full build log and analyze it for errors and warnings. Remember that TC builds enforce zero warnings — any warning is a failure. These issues may stem from a previous session and need to be addressed.
 5. If existing PRs are found, read ALL PR comments and review comments using `gh pr view <number> --repo metalama/<repo> --comments` and `gh api repos/metalama/<repo>/pulls/<number>/comments`. Look for feedback from @gfraiteur. For each comment:
    - If the feedback is actionable, implement the requested changes, push, and reply to the comment confirming what you did.
    - If you disagree or the feedback doesn't apply, reply to the comment explaining your reasoning.
