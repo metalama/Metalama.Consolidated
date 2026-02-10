@@ -139,6 +139,33 @@ foreach ($branch in $branches) {
 }
 ```
 
+#### 1d. Check Whether CHANGES_REQUESTED Feedback Was Already Addressed
+
+For PRs with `CHANGES_REQUESTED` from a human reviewer, determine whether the agent already addressed the feedback by comparing timestamps. This requires two pieces of data:
+
+1. **Claude build history:** Query the last 30 Claude builds (include in the 1c MCP call) and extract `issue`, `status`, `finishDate` for successful builds:
+
+```powershell
+Write-Host "=== CLAUDE BUILD HISTORY ==="
+try {
+    $builds = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:Metalama_Metalama20261_MetalamaConsolidated_Claude,count:30,defaultFilter:false&fields=build(id,status,finishDate,properties(property(name,value)))" -Headers $headers
+    foreach ($b in $builds.build) {
+        if ($b.status -eq 'SUCCESS') {
+            $issueProp = ($b.properties.property | Where-Object { $_.name -eq 'Issue' }).value
+            Write-Host "issue=$issueProp finished=$($b.finishDate) id=$($b.id)"
+        }
+    }
+} catch { Write-Host "ERROR: $($_.Exception.Message)" }
+```
+
+2. **Review timestamps:** For each PR with `CHANGES_REQUESTED`, fetch review timestamps (include in the 1a+1b MCP call):
+
+```
+gh api repos/metalama/<repo>/pulls/<pr>/reviews --jq '.[] | select(.user.login=="gfraiteur") | "\(.submitted_at) \(.state)"'
+```
+
+Compare the latest `CHANGES_REQUESTED` timestamp against the latest successful Claude build `finishDate` for the same issue. If the Claude build finished **after** the review, the agent already addressed the feedback.
+
 ### 2. Determine Status Per Issue
 
 For each issue, check conditions in this priority order. First match wins:
@@ -151,12 +178,13 @@ For each issue, check conditions in this priority order. First match wins:
 | 3 | Copilot review pending (`copilot-pull-request-reviewer` in PR's `reviewRequests`) | `Copilot review pending` | — | — (wait) |
 | 4 | No open PR, no merged PR, and no Claude build queued/running | `No work started` | Trigger Claude build | — |
 | 5 | PR is draft (`isDraft == true`), no builds running | `Agent work incomplete` | Trigger Claude build | — |
-| 6 | PR has `CHANGES_REQUESTED` from a human reviewer (not copilot) in `latestReviews` | `Changes requested` | Trigger Claude build | — |
+| 6a | PR has `CHANGES_REQUESTED` from a human reviewer, and NO successful Claude build after the review timestamp | `Changes requested` | Trigger Claude build | — |
+| 6b | PR has `CHANGES_REQUESTED` from a human reviewer, but a successful Claude build ran AFTER the review timestamp (agent already addressed feedback) | `Needs re-review` | Request @gfraiteur review | Re-review PR |
 | 7 | Latest DebugBuild for branch has `status:FAILURE` | `Debug build failed` | Trigger Claude build | — |
-| 8 | PR exists, not draft, no human review yet (no entries in `latestReviews` from humans) | `Needs review` | — | Review PR |
+| 8 | PR exists, not draft, no human review yet (no entries in `latestReviews` from humans) | `Needs review` | Request @gfraiteur review | Review PR |
 | 9a | PR has human `APPROVED` + copilot `COMMENTED` with inline comments, no DebugBuild | `Copilot has comments` | — | Review copilot comments, trigger DebugBuild |
 | 9b | PR has human `APPROVED` + copilot `COMMENTED` with no inline comments, no DebugBuild | `Ready for DebugBuild` | — | Trigger DebugBuild |
-| 10 | PR has human `APPROVED` but no copilot review at all | `Approved, no copilot` | Request copilot review | — |
+| 10 | PR has human `APPROVED` but no copilot review at all | `Approved, no copilot` | — | Request copilot review (GitHub UI), trigger DebugBuild |
 | 11 | Latest DebugBuild for branch has `status:SUCCESS` | `Build green` | — | Merge PR |
 | 12 | (fallback) | `Unknown` | — | Investigate |
 
@@ -179,7 +207,7 @@ For each issue, show:
 
 Sort the table by status priority: items needing human action first, then agent action items, then waiting items.
 
-After the table, display a summary line:
+After the table, display a summary line. An issue can count in both agent and human categories if it has both actions (e.g., status #6b and #8 have both agent and human actions):
 ```
 N issues total: X need agent action (auto-triggered), Y need human action, Z waiting
 ```
@@ -190,7 +218,7 @@ After displaying the table, execute agent actions automatically.
 
 #### 4a. Trigger Claude Builds
 
-For issues needing "Trigger Claude build" (statuses #4, #5, #6, #7), batch all triggers into a **single** MCP call:
+For issues needing "Trigger Claude build" (statuses #4, #5, #6a, #7), batch all triggers into a **single** MCP call:
 
 ```powershell
 $headers = @{ Authorization = "Bearer $env:TEAMCITY_CLOUD_TOKEN"; Accept = 'application/json' }
@@ -209,17 +237,7 @@ foreach ($issue in $issues) {
 }
 ```
 
-#### 4b. Request Copilot Reviews
-
-For issues with status #10 ("Approved, no copilot"), request a copilot review using the GitHub API:
-
-```
-gh api repos/metalama/<repo>/pulls/<pr_number>/requested_reviewers --method POST -f 'reviewers[]=copilot-pull-request-reviewer'
-```
-
-**Known issue:** This may fail with HTTP 422 ("not a collaborator") if the Copilot reviewer isn't enabled for the repo. If it fails, report the failure and note in the human action column that a manual copilot review request is needed via the GitHub UI (PR page > Reviewers > search "copilot").
-
-#### 4c. Close Merged Issues
+#### 4b. Close Merged Issues
 
 For issues with status #0 ("Merged, not closed"), close the issue with a comment:
 
@@ -227,10 +245,18 @@ For issues with status #0 ("Merged, not closed"), close the issue with a comment
 gh issue close <issue_number> --repo metalama/<repo> --comment "Closing: PR #<pr_number> has been merged."
 ```
 
+#### 4d. Request @gfraiteur Review
+
+For issues with status #6b ("Needs re-review") or #8 ("Needs review"), request a review from @gfraiteur:
+
+```
+gh api repos/metalama/<repo>/pulls/<pr_number>/requested_reviewers --method POST -f 'reviewers[]=gfraiteur'
+```
+
 After all actions, report what was triggered:
 ```
 Triggered Claude build for #<number>: Build #<id> — <url>
-Requested copilot review for #<number>: PR #<pr_number>
+Requested @gfraiteur review for #<number>: PR #<pr_number>
 Closed issue #<number> (PR #<pr_number> was merged)
 ```
 
