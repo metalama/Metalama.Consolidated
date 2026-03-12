@@ -25,6 +25,9 @@ var product = new Product( MetalamaDependencies.Consolidated )
         Components =
         [
             new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
+
+            // Metalama.Compiler requires 10.0.100.
+            new DotNetComponent( "10.0.100", DotNetComponentKind.Sdk ),
         ]
     },
     GenerateNuGetConfig = true,
