@@ -114,6 +114,7 @@ This phase determines where to resume. Always start here.
    - If the feedback is actionable, implement the requested changes, push, and reply to the comment confirming what you did.
    - If you disagree or the feedback doesn't apply, reply to the comment explaining your reasoning.
    - Never leave a review comment without a reply.
+   After addressing all feedback and pushing, request a re-review from @gfraiteur: `gh api repos/metalama/<repo>/pulls/<pr_number>/requested_reviewers --method POST -f 'reviewers[]=gfraiteur'`.
 7. Load the skills: `metalama*`, `eng:eng`, `metalama-dev:metalama-dev`.
 
 Based on what you find, determine the current state and skip to the appropriate phase:
@@ -180,3 +181,4 @@ Only build the repos you actually modified and any downstream repos that depend 
 
 1. Add a summary comment to the GitHub issue with links to all PRs.
 2. Mark all PRs as ready (non-draft).
+3. Request a review from @gfraiteur on each PR: `gh api repos/metalama/<repo>/pulls/<pr_number>/requested_reviewers --method POST -f 'reviewers[]=gfraiteur'`.

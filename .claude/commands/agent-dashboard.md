@@ -118,11 +118,22 @@ The `Issue` property value may be a plain number (`"837"`), a URL (`"https://git
 
 **Critical error handling:** Wrap each individual API call in its own `try/catch`. TeamCity returns HTTP 400 (not an empty list) when `running:true` or a branch filter matches nothing.
 
+**Critical: buildQueue does NOT support branch filtering** — the `buildQueue` API returns HTTP 400 when `branch:(name:...)` is used. Instead, query ALL queued DebugBuilds at once (without branch filter) and match branches client-side.
+
 ```powershell
 Write-Host "=== DEBUGBUILD ==="
 $branches = @( <list of branch names from PRs> )
+
+# Query ALL queued DebugBuilds once (buildQueue does NOT support branch filtering)
+$allQueued = @{}
+try {
+    $que = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/buildQueue?locator=buildType:Metalama_Metalama20261_Metalama_DebugBuild&fields=build(id,state,branchName,webUrl)" -Headers $headers
+    if ($que.build) { foreach ($b in $que.build) { $allQueued[$b.branchName] = "queued id=$($b.id) url=$($b.webUrl)" } }
+} catch {}
+
 foreach ($branch in $branches) {
-    $l = 'none'; $r2 = 'none'; $q2 = 'none'
+    $l = 'none'; $r2 = 'none'
+    $q2 = if ($allQueued.ContainsKey($branch)) { $allQueued[$branch] } else { 'none' }
     try {
         $latest = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:Metalama_Metalama20261_Metalama_DebugBuild,branch:(name:$branch),count:1&fields=build(id,state,status,branchName,webUrl)" -Headers $headers
         if ($latest.build.Count -gt 0) { $l = "$($latest.build[0].status)/$($latest.build[0].state) id=$($latest.build[0].id) url=$($latest.build[0].webUrl)" }
@@ -130,10 +141,6 @@ foreach ($branch in $branches) {
     try {
         $run = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:Metalama_Metalama20261_Metalama_DebugBuild,branch:(name:$branch),running:true&fields=build(id,state,branchName,webUrl)" -Headers $headers
         if ($run.build.Count -gt 0) { $r2 = "running id=$($run.build[0].id)" }
-    } catch {}
-    try {
-        $que = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/buildQueue?locator=buildType:Metalama_Metalama20261_Metalama_DebugBuild,branch:(name:$branch)&fields=build(id,state,branchName,webUrl)" -Headers $headers
-        if ($que.build.Count -gt 0) { $q2 = "queued id=$($que.build[0].id)" }
     } catch {}
     Write-Host "$branch | latest=$l | running=$r2 | queued=$q2"
 }
@@ -180,7 +187,7 @@ For each issue, check conditions in this priority order. First match wins:
 | 5 | PR is draft (`isDraft == true`), no builds running | `Agent work incomplete` | Trigger Claude build | — |
 | 6a | PR has `CHANGES_REQUESTED` from a human reviewer, and NO successful Claude build after the review timestamp | `Changes requested` | Trigger Claude build | — |
 | 6b | PR has `CHANGES_REQUESTED` from a human reviewer, but a successful Claude build ran AFTER the review timestamp (agent already addressed feedback) | `Needs re-review` | Request @gfraiteur review | Re-review PR |
-| 7 | Latest DebugBuild for branch has `status:FAILURE` | `Debug build failed` | Trigger Claude build | — |
+| 7 | Latest DebugBuild for branch has `status:FAILURE` | `Debug build failed` | — | Analyze DebugBuild failure |
 | 8 | PR exists, not draft, no human review yet (no entries in `latestReviews` from humans) | `Needs review` | Request @gfraiteur review | Review PR |
 | 9a | PR has human `APPROVED` + copilot `COMMENTED` with inline comments, no DebugBuild | `Copilot has comments` | — | Review copilot comments, trigger DebugBuild |
 | 9b | PR has human `APPROVED` + copilot `COMMENTED` with no inline comments, no DebugBuild | `Ready for DebugBuild` | — | Trigger DebugBuild |
@@ -218,7 +225,7 @@ After displaying the table, execute agent actions automatically.
 
 #### 4a. Trigger Claude Builds
 
-For issues needing "Trigger Claude build" (statuses #4, #5, #6a, #7), batch all triggers into a **single** MCP call:
+For issues needing "Trigger Claude build" (statuses #4, #5, #6a), batch all triggers into a **single** MCP call:
 
 ```powershell
 $headers = @{ Authorization = "Bearer $env:TEAMCITY_CLOUD_TOKEN"; Accept = 'application/json' }
