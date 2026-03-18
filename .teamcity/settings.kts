@@ -20,8 +20,9 @@ project {
     buildType(Bump)
     buildType(PrePublish)
     buildType(PostPublish)
+    buildType(Claude)
 
-    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,PublicBuild,PublicDeployment,UpstreamMerge,Bump,PrePublish,PostPublish)
+    buildTypesOrder = arrayListOf(DebugBuild,ReleaseBuild,PublicBuild,PublicDeployment,UpstreamMerge,Bump,PrePublish,PostPublish,Claude)
 
 }
 
@@ -1003,6 +1004,154 @@ object PostPublish : BuildType({
             verbose = true
         }
     }
+
+})
+
+object Claude : BuildType({
+
+    name = "Run Claude on Issue"
+
+    params {
+        text(
+            "Exec.Arguments", 
+            "", 
+            label ="DockerBuild.ps1 Arguments",
+            description = "Arguments to append to the 'Execute DockerBuild.ps1' build step.", allowEmpty = true)
+        text(
+            "Issue", 
+            "", 
+            label ="Issue",
+            description = "The issue for Claude to work on autonomously")
+    }
+
+    vcs {
+        root(AbsoluteId("Metalama_Metalama20260_MetalamaConsolidated"))
+        root(AbsoluteId("Metalama_Metalama20260_MetalamaCompiler"),
+          """+:. => source-dependencies/Metalama.Compiler""")
+        root(AbsoluteId("Metalama_Metalama20260_Metalama"),
+          """+:. => source-dependencies/Metalama""")
+        root(AbsoluteId("Metalama_Metalama20260_MetalamaCommunity"),
+          """+:. => source-dependencies/Metalama.Community""")
+        root(AbsoluteId("Metalama_Metalama20260_MetalamaPremium"),
+          """+:. => source-dependencies/Metalama.Premium""")
+        root(AbsoluteId("Metalama_Metalama20260_MetalamaSamples"),
+          """+:. => source-dependencies/Metalama.Samples""")
+        root(AbsoluteId("Metalama_Metalama20260_MetalamaDocumentation"),
+          """+:. => source-dependencies/Metalama.Documentation""")
+        root(AbsoluteId("Metalama_Metalama20260_MetalamaTestsNopCommerce"),
+          """+:. => source-dependencies/Metalama.Tests.NopCommerce""")
+     checkoutMode = CheckoutMode.ON_AGENT
+    }
+
+    steps {
+        powerShell {
+            name = "Copy nuget.restored.config to nuget.config"
+            id = "CopyNuGetConfig"
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "Copy-Item -Path \"artifacts/publish/private/nuget.restored.config\" -Destination \"nuget.config\" -Force;"
+            }
+            noProfile = false
+        }
+        powerShell {
+            name = "Create eng/Versions.g.props"
+            id = "CreateVersionsFile"
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "New-Item -Path \"eng/Versions.g.props\" -ItemType File -Force -Value \"<Project><Import Project=`\"../artifacts/publish/private/Metalama.Consolidated.version.props`\" /><Import Project=`\"../dependencies/Metalama.Compiler/Metalama.Compiler.version.props`\" /><Import Project=`\"../dependencies/Metalama/Metalama.version.props`\" /><Import Project=`\"../dependencies/Metalama.Community/Metalama.Community.version.props`\" /><Import Project=`\"../dependencies/Metalama.Premium/Metalama.Premium.version.props`\" /><Import Project=`\"../dependencies/Metalama.Samples/Metalama.Samples.version.props`\" /><Import Project=`\"../dependencies/Metalama.Documentation/Metalama.Documentation.version.props`\" /></Project>\" | Out-Null;"
+            }
+            noProfile = false
+        }
+        powerShell {
+            name = "Prepare Docker image metalamaconsolidated-2026.0"
+            id = "PrepareImage"
+            edition = PowerShellStep.Edition.Core
+            scriptMode = file {
+                path = "DockerBuild.ps1"
+            }
+            noProfile = false
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.0 -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude "
+        }
+        powerShell {
+            name = "Execute DockerBuild.ps1"
+            id = "Exec"
+            edition = PowerShellStep.Edition.Core
+            scriptMode = file {
+                path = "DockerBuild.ps1"
+            }
+            noProfile = false
+            scriptArgs = "-Script DockerBuild.ps1 -ImageName metalamaconsolidated-2026.0 -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% -Claude -PostInit eng/InitClaudeCode.ps1 -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\" %Exec.Arguments%"
+        }
+        powerShell {
+            name = "Cleanup Docker containers"
+            id = "DockerCleanup"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            edition = PowerShellStep.Edition.Core
+            scriptMode = script {
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+            }
+            noProfile = false
+        }
+    }
+
+    requirements {
+        matches("teamcity.agent.jvm.os.family", "Windows")
+        matches("teamcity.agent.jvm.os.arch", "amd64")
+        equals("env.BuildAgentType", "docker-win-x64-md")
+    }
+
+    features {
+        swabra {
+            filesCleanup = Swabra.FilesCleanup.BEFORE_BUILD
+            lockingProcesses = Swabra.LockingProcessPolicy.KILL
+            verbose = true
+        }
+    }
+
+    dependencies {
+
+        artifacts(DebugBuild) { 
+                              buildRule = lastSuccessful()
+            cleanDestination = true
+            artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private"
+        }
+
+        artifacts(AbsoluteId("Metalama_Metalama20260_MetalamaCompiler_ReleaseBuild")) { 
+                              buildRule = lastSuccessful()
+            cleanDestination = true
+            artifactRules = "+:artifacts/packages/Release/Shipping/**/*=>dependencies/Metalama.Compiler"
+        }
+
+        artifacts(AbsoluteId("Metalama_Metalama20260_Metalama_DebugBuild")) { 
+                              buildRule = lastSuccessful()
+            cleanDestination = true
+            artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama"
+        }
+
+        artifacts(AbsoluteId("Metalama_Metalama20260_MetalamaCommunity_DebugBuild")) { 
+                              buildRule = lastSuccessful()
+            cleanDestination = true
+            artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Community"
+        }
+
+        artifacts(AbsoluteId("Metalama_Metalama20260_MetalamaPremium_DebugBuild")) { 
+                              buildRule = lastSuccessful()
+            cleanDestination = true
+            artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Premium"
+        }
+
+        artifacts(AbsoluteId("Metalama_Metalama20260_MetalamaSamples_DebugBuild")) { 
+                              buildRule = lastSuccessful()
+            cleanDestination = true
+            artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Samples"
+        }
+
+        artifacts(AbsoluteId("Metalama_Metalama20260_MetalamaDocumentation_DebugBuild")) { 
+                              buildRule = lastSuccessful()
+            cleanDestination = true
+            artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Metalama.Documentation"
+        }
+     }
 
 })
 
