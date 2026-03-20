@@ -50,7 +50,7 @@ Do not attempt to build your root directory repo (`Metalama.Consolidated`). Do n
 
 ### Test projects
 
-`Build.ps1` do NOT build test projects. Use `dotnet test` to build and run tests.
+`Build.ps1 build` do NOT build test projects. Use `dotnet test` to build and run tests.
 
 ### File locking issues (Build.ps1 test)
 
