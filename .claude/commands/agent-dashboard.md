@@ -53,6 +53,30 @@ Each item has: `number`, `title`, `repository.name`, `url`, `labels`.
 
 If no issues are found, display "No open issues assigned to @PostSharpAgent." and stop.
 
+Then fetch each issue's milestone individually (the search API does not support the `milestone` field):
+```
+gh api repos/metalama/<repo>/issues/<number> --jq '.milestone.title // "NONE"'
+```
+
+**Milestone → branch and TC build config mapping:** The issue's milestone (e.g., `2026.1.4-preview`, `2026.0.18`) determines the major version by extracting the first two segments (`YYYY.N`). This determines:
+- **Major version**: first two dot-separated segments of the milestone (e.g., `2026.1.4-preview` → `2026.1`, `2026.0.18` → `2026.0`)
+- **Target branch**: `develop/{major_version}` (e.g., `develop/2026.1`)
+- **Topic branch prefix**: `topic/{major_version}/` (e.g., `topic/2026.1/1234-fix-something`)
+- **TC project prefix**: `Metalama_Metalama{YYYYN}_` where `{YYYYN}` is the major version with the dot removed (e.g., `2026.1` → `Metalama_Metalama20261_`)
+- **DebugBuild config**: `{prefix}Metalama_DebugBuild` (consistent across versions)
+- **Claude build config**: naming is **inconsistent** across versions — do NOT compute it. Instead, **discover it dynamically** by querying the TC API for each milestone's project:
+  ```
+  GET /app/rest/projects/id:Metalama_Metalama{YYYYN}?fields=projects(project(buildTypes(buildType(id,name))))
+  ```
+  Then find the build type where `name` equals `Run Claude on Issue`. Cache the result per milestone.
+
+Collect the set of unique major versions across all issues. For each one, discover the Claude build config ID. Issues without a milestone should be flagged as "Unknown milestone" in the dashboard.
+
+**Important:** `gh search issues` does NOT support the `milestone` field. After fetching issues, fetch each issue's milestone separately:
+```
+gh api repos/metalama/<repo>/issues/<number> --jq '.milestone.title // "NONE"'
+```
+
 #### 1b. Fetch PRs by @PostSharpAgent Per Repo
 
 Combine with step 1a in a single MCP call. For each repo (Metalama, Metalama.Premium, Metalama.Community, Metalama.Samples):
@@ -72,7 +96,7 @@ Match PRs to issues by extracting the issue number from `headRefName` using rege
 For each issue, track whether it has an open PR, a merged PR, or neither.
 
 Key fields (open PRs):
-- `headRefName`: branch name (e.g., `topic/2026.0/1340-fix-something`)
+- `headRefName`: branch name (e.g., `topic/2026.1/1340-fix-something`)
 - `isDraft`: boolean
 - `reviewRequests[].login`: pending reviewer usernames
 - `latestReviews[].author.login`: reviewer who left a review (`copilot-pull-request-reviewer` for Copilot)
@@ -84,37 +108,62 @@ Key fields (open PRs):
 
 Run all TeamCity queries in a **single** MCP call using PowerShell. Process all API responses inside the script and emit only compact `Write-Host` lines — never dump raw JSON.
 
-**Claude builds** (queue + running) — query once for all issues. Extract only the `Issue` property value per build:
+**Claude builds** (queue + running) — query for each unique milestone's build config. Extract only the `Issue` property value per build:
 
 ```powershell
 $headers = @{ Authorization = "Bearer $env:TEAMCITY_CLOUD_TOKEN"; Accept = 'application/json' }
 
-Write-Host "=== QUEUED CLAUDE ==="
-try {
-    $q = Invoke-RestMethod -Uri 'https://postsharp.teamcity.com/app/rest/buildQueue?locator=buildType:Metalama_Metalama20260_MetalamaConsolidated_Claude&fields=build(id,state,webUrl,properties(property(name,value)))' -Headers $headers
-    foreach ($b in $q.build) {
-        $issue = ($b.properties.property | Where-Object { $_.name -eq 'Issue' }).value
-        Write-Host "id=$($b.id) state=$($b.state) issue=$issue url=$($b.webUrl)"
-    }
-    if ($q.build.Count -eq 0) { Write-Host "none" }
-} catch { Write-Host "ERROR: $($_.Exception.Message)" }
+# For each unique major version (e.g., '2026.1', '2026.0'), discover the Claude build type ID dynamically.
+# The naming is inconsistent across versions, so we query the TC project structure.
+$milestones = @( <list of unique major versions from issues> )
 
-Write-Host "=== RUNNING CLAUDE ==="
-try {
-    $r = Invoke-RestMethod -Uri 'https://postsharp.teamcity.com/app/rest/builds?locator=buildType:Metalama_Metalama20260_MetalamaConsolidated_Claude,running:true&fields=build(id,state,webUrl,properties(property(name,value)))' -Headers $headers
-    foreach ($b in $r.build) {
-        $issue = ($b.properties.property | Where-Object { $_.name -eq 'Issue' }).value
-        Write-Host "id=$($b.id) state=$($b.state) issue=$issue url=$($b.webUrl)"
-    }
-    if ($r.build.Count -eq 0) { Write-Host "none" }
-} catch { Write-Host "ERROR: $($_.Exception.Message)" }
+foreach ($ms in $milestones) {
+    $msKey = $ms -replace '\.', ''
+    $projectId = "Metalama_Metalama${msKey}"
+
+    # Discover the Claude build config by searching subprojects for "Run Claude on Issue"
+    $btId = $null
+    try {
+        $proj = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/projects/id:$projectId`?fields=projects(project(buildTypes(buildType(id,name))))" -Headers $headers
+        foreach ($sub in $proj.projects.project) {
+            foreach ($bt in $sub.buildTypes.buildType) {
+                if ($bt.name -eq 'Run Claude on Issue') { $btId = $bt.id; break }
+            }
+            if ($btId) { break }
+        }
+    } catch {}
+    if (-not $btId) { Write-Host "WARNING: No Claude build config found for milestone $ms"; continue }
+    Write-Host "=== CLAUDE CONFIG ($ms) === btId=$btId"
+
+    Write-Host "=== QUEUED CLAUDE ($ms) ==="
+    try {
+        $q = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/buildQueue?locator=buildType:$btId&fields=build(id,state,webUrl,properties(property(name,value)))" -Headers $headers
+        if ($q.build) {
+            foreach ($b in $q.build) {
+                $issue = ($b.properties.property | Where-Object { $_.name -eq 'Issue' }).value
+                Write-Host "id=$($b.id) state=$($b.state) issue=$issue url=$($b.webUrl) milestone=$ms"
+            }
+        } else { Write-Host "none" }
+    } catch { Write-Host "ERROR: $($_.Exception.Message)" }
+
+    Write-Host "=== RUNNING CLAUDE ($ms) ==="
+    try {
+        $r = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:$btId,running:true&fields=build(id,state,webUrl,properties(property(name,value)))" -Headers $headers
+        if ($r.build) {
+            foreach ($b in $r.build) {
+                $issue = ($b.properties.property | Where-Object { $_.name -eq 'Issue' }).value
+                Write-Host "id=$($b.id) state=$($b.state) issue=$issue url=$($b.webUrl) milestone=$ms"
+            }
+        } else { Write-Host "none" }
+    } catch { Write-Host "none (no running builds)" }
+}
 ```
 
 The `Issue` property value may be a plain number (`"837"`), a URL (`"https://github.com/metalama/Metalama/issues/837"`), or other formats. Extract digits with regex and match against issue numbers.
 
 **DebugBuild** — query for each branch that has a PR.
 
-**Critical syntax:** Use `branch:(name:$branchName)` (with parentheses), NOT `branch:$branchName`. Branch names contain slashes (e.g., `topic/2026.0/...`) that break the locator parser without the parenthesized syntax.
+**Critical syntax:** Use `branch:(name:$branchName)` (with parentheses), NOT `branch:$branchName`. Branch names contain slashes (e.g., `topic/2026.1/...`) that break the locator parser without the parenthesized syntax.
 
 **Critical error handling:** Wrap each individual API call in its own `try/catch`. TeamCity returns HTTP 400 (not an empty list) when `running:true` or a branch filter matches nothing.
 
@@ -122,27 +171,41 @@ The `Issue` property value may be a plain number (`"837"`), a URL (`"https://git
 
 ```powershell
 Write-Host "=== DEBUGBUILD ==="
-$branches = @( <list of branch names from PRs> )
+# Each entry: branch name + milestone (to determine the correct build config)
+# e.g., @{branch='topic/2026.1/1234-fix'; ms='2026.1'}, @{branch='topic/2026.0/1405-fix'; ms='2026.0'}
+$branchEntries = @( <list of @{branch=...; ms=...} from PRs, using milestone from matching issue> )
 
-# Query ALL queued DebugBuilds once (buildQueue does NOT support branch filtering)
+# Query ALL queued DebugBuilds per milestone (buildQueue does NOT support branch filtering)
 $allQueued = @{}
-try {
-    $que = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/buildQueue?locator=buildType:Metalama_Metalama20260_Metalama_DebugBuild&fields=build(id,state,branchName,webUrl)" -Headers $headers
-    if ($que.build) { foreach ($b in $que.build) { $allQueued[$b.branchName] = "queued id=$($b.id) url=$($b.webUrl)" } }
-} catch {}
+$queriedMilestones = @{}
+foreach ($entry in $branchEntries) {
+    $ms = $entry.ms
+    if (-not $queriedMilestones.ContainsKey($ms)) {
+        $queriedMilestones[$ms] = $true
+        $msKey = $ms -replace '\.', ''
+        $dbBtId = "Metalama_Metalama${msKey}_Metalama_DebugBuild"
+        try {
+            $que = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/buildQueue?locator=buildType:$dbBtId&fields=build(id,state,branchName,webUrl)" -Headers $headers
+            if ($que.build) { foreach ($b in $que.build) { $allQueued[$b.branchName] = "queued id=$($b.id) url=$($b.webUrl)" } }
+        } catch {}
+    }
+}
 
-foreach ($branch in $branches) {
+foreach ($entry in $branchEntries) {
+    $branch = $entry.branch; $ms = $entry.ms
+    $msKey = $ms -replace '\.', ''
+    $dbBtId = "Metalama_Metalama${msKey}_Metalama_DebugBuild"
     $l = 'none'; $r2 = 'none'
     $q2 = if ($allQueued.ContainsKey($branch)) { $allQueued[$branch] } else { 'none' }
     try {
-        $latest = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:Metalama_Metalama20260_Metalama_DebugBuild,branch:(name:$branch),count:1&fields=build(id,state,status,branchName,webUrl)" -Headers $headers
+        $latest = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:$dbBtId,branch:(name:$branch),count:1&fields=build(id,state,status,branchName,webUrl)" -Headers $headers
         if ($latest.build.Count -gt 0) { $l = "$($latest.build[0].status)/$($latest.build[0].state) id=$($latest.build[0].id) url=$($latest.build[0].webUrl)" }
     } catch {}
     try {
-        $run = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:Metalama_Metalama20260_Metalama_DebugBuild,branch:(name:$branch),running:true&fields=build(id,state,branchName,webUrl)" -Headers $headers
+        $run = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:$dbBtId,branch:(name:$branch),running:true&fields=build(id,state,branchName,webUrl)" -Headers $headers
         if ($run.build.Count -gt 0) { $r2 = "running id=$($run.build[0].id)" }
     } catch {}
-    Write-Host "$branch | latest=$l | running=$r2 | queued=$q2"
+    Write-Host "$branch ($ms) | latest=$l | running=$r2 | queued=$q2"
 }
 ```
 
@@ -153,16 +216,22 @@ For PRs with `CHANGES_REQUESTED` from a human reviewer, determine whether the ag
 1. **Claude build history:** Query the last 30 Claude builds (include in the 1c MCP call) and extract `issue`, `status`, `finishDate` for successful builds:
 
 ```powershell
-Write-Host "=== CLAUDE BUILD HISTORY ==="
-try {
-    $builds = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:Metalama_Metalama20260_MetalamaConsolidated_Claude,count:30,defaultFilter:false&fields=build(id,status,finishDate,properties(property(name,value)))" -Headers $headers
-    foreach ($b in $builds.build) {
-        if ($b.status -eq 'SUCCESS') {
-            $issueProp = ($b.properties.property | Where-Object { $_.name -eq 'Issue' }).value
-            Write-Host "issue=$issueProp finished=$($b.finishDate) id=$($b.id)"
+# Query Claude build history for each milestone (reuse the $btId discovered above)
+foreach ($ms in $milestones) {
+    # $btId should already be discovered from the queued/running section above
+    Write-Host "=== CLAUDE BUILD HISTORY ($ms) ==="
+    try {
+        $builds = Invoke-RestMethod -Uri "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:$btId,count:30,defaultFilter:false&fields=build(id,status,finishDate,properties(property(name,value)))" -Headers $headers
+        if ($builds.build) {
+            foreach ($b in $builds.build) {
+                if ($b.status -eq 'SUCCESS') {
+                    $issueProp = ($b.properties.property | Where-Object { $_.name -eq 'Issue' }).value
+                    Write-Host "issue=$issueProp finished=$($b.finishDate) id=$($b.id) milestone=$ms"
+                }
+            }
         }
-    }
-} catch { Write-Host "ERROR: $($_.Exception.Message)" }
+    } catch { Write-Host "ERROR: $($_.Exception.Message)" }
+}
 ```
 
 2. **Review timestamps:** For each PR with `CHANGES_REQUESTED`, fetch review timestamps (include in the 1a+1b MCP call):
@@ -200,12 +269,13 @@ For each issue, check conditions in this priority order. First match wins:
 Output a markdown table:
 
 ```
-| # | Title | Status | Agent Action | Human Action | Link |
-|---|-------|--------|--------------|--------------|------|
+| # | Milestone | Title | Status | Agent Action | Human Action | Link |
+|---|-----------|-------|--------|--------------|--------------|------|
 ```
 
 For each issue, show:
 - **#**: Issue number as a link, e.g., `[#1340](url)`
+- **Milestone**: The issue's milestone (e.g., `2026.1`), or `—` if none
 - **Title**: Issue title (truncate to 50 chars if needed)
 - **Status**: From the status determination above
 - **Agent Action**: What the agent/Claude should do (or `—`)
@@ -225,21 +295,24 @@ After displaying the table, execute agent actions automatically.
 
 #### 4a. Trigger Claude Builds
 
-For issues needing "Trigger Claude build" (statuses #4, #5, #6a), batch all triggers into a **single** MCP call:
+For issues needing "Trigger Claude build" (statuses #4, #5, #6a), batch all triggers into a **single** MCP call. Use the issue's milestone to determine the correct build config:
 
 ```powershell
 $headers = @{ Authorization = "Bearer $env:TEAMCITY_CLOUD_TOKEN"; Accept = 'application/json' }
-$issues = @(<list of issue numbers>)
+# Each entry: issue number + major version + the discovered Claude build type ID
+# The Claude btId was discovered in step 1c — reuse the same values here.
+# e.g., @{num='1414'; val='1414'; ms='2026.0'; btId='Metalama_Metalama20260_Consolidated_Claude'}
+$issues = @( <list of @{num=...; val=...; ms=...; btId=...}> )
 foreach ($issue in $issues) {
     $body = @{
-        buildType = @{id = "Metalama_Metalama20260_MetalamaConsolidated_Claude"}
-        properties = @{ property = @( @{name = "Issue"; value = "$issue"} ) }
+        buildType = @{id = $issue.btId}
+        properties = @{ property = @( @{name = "Issue"; value = $issue.val} ) }
     } | ConvertTo-Json -Depth 5 -Compress
     try {
         $result = Invoke-RestMethod -Uri 'https://postsharp.teamcity.com/app/rest/buildQueue' -Method Post -Headers $headers -ContentType 'application/json' -Body $body
-        Write-Host "Triggered Claude build for #$issue`: Build #$($result.id) - $($result.webUrl)"
+        Write-Host "Triggered Claude build for #$($issue.num) (milestone $($issue.ms))`: Build #$($result.id) - $($result.webUrl)"
     } catch {
-        Write-Host "FAILED to trigger for #$issue`: $($_.Exception.Message)"
+        Write-Host "FAILED to trigger for #$($issue.num)`: $($_.Exception.Message)"
     }
 }
 ```
@@ -268,6 +341,17 @@ Closed issue #<number> (PR #<pr_number> was merged)
 ```
 
 If there are no agent actions needed, skip this step.
+
+### 5. Final Summary Table
+
+**IMPORTANT:** After all auto-actions are complete, always end your response with a clean, final markdown summary table. This must be the very last thing displayed, so the user sees an easy-to-parse overview. Use the same table format as section 3, but ensure the **Link** column contains the single most actionable URL for each issue:
+
+- If a human action is needed on a PR → link to the PR
+- If a DebugBuild failed → link to the TC build
+- If a Claude build is running/queued → link to the TC build
+- Otherwise → link to the issue
+
+This table is a repeat of the section 3 table, updated to reflect any auto-actions taken (e.g., if a Claude build was just triggered, the status should now say "Claude build queued" with a link to the build).
 
 ## Error Handling
 
