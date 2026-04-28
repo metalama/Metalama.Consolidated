@@ -28,6 +28,9 @@ var product = new Product( MetalamaDependencies.Consolidated )
 
             // Some projects are on 9.0.
             new DotNetComponent( PreferredVersions.DotNetSdk.V_9_0, DotNetComponentKind.Sdk ),
+
+            // Metalama.Compiler requires 10.0.106.
+            new DotNetComponent( "10.0.106", DotNetComponentKind.Sdk ),
         ]
     },
     GenerateNuGetConfig = true,
