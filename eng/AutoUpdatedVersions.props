@@ -1,13 +1,13 @@
 <Project>
   <PropertyGroup>
-    <MetalamaVersion Condition="'$(MetalamaVersion)' == ''">2026.1.16</MetalamaVersion>
+    <MetalamaVersion Condition="'$(MetalamaVersion)' == ''">2026.1.17</MetalamaVersion>
     <MetalamaCompilerVersion Condition="'$(MetalamaCompilerVersion)' == ''">2026.1.10</MetalamaCompilerVersion>
-    <MetalamaCommunityVersion Condition="'$(MetalamaCommunityVersion)' == ''">2026.1.16</MetalamaCommunityVersion>
-    <MetalamaSamplesVersion Condition="'$(MetalamaSamplesVersion)' == ''">2026.1.16</MetalamaSamplesVersion>
+    <MetalamaCommunityVersion Condition="'$(MetalamaCommunityVersion)' == ''">2026.1.17</MetalamaCommunityVersion>
+    <MetalamaSamplesVersion Condition="'$(MetalamaSamplesVersion)' == ''">2026.1.17</MetalamaSamplesVersion>
     <MetalamaVsxVersion Condition="'$(MetalamaVsxVersion)' == ''">2026.1.0</MetalamaVsxVersion>
-    <MetalamaConsolidatedReleaseVersion>2026.1.16</MetalamaConsolidatedReleaseVersion>
-    <MetalamaConsolidatedReleaseMainVersion>2026.1.16</MetalamaConsolidatedReleaseMainVersion>
-    <MetalamaPremiumVersion Condition="'$(MetalamaPremiumVersion)' == ''">2026.1.16</MetalamaPremiumVersion>
-    <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2026.1.16</MetalamaDocumentationVersion>
+    <MetalamaConsolidatedReleaseVersion>2026.1.17</MetalamaConsolidatedReleaseVersion>
+    <MetalamaConsolidatedReleaseMainVersion>2026.1.17</MetalamaConsolidatedReleaseMainVersion>
+    <MetalamaPremiumVersion Condition="'$(MetalamaPremiumVersion)' == ''">2026.1.17</MetalamaPremiumVersion>
+    <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2026.1.17</MetalamaDocumentationVersion>
   </PropertyGroup>
 </Project>
