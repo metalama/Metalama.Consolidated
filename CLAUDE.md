@@ -102,6 +102,12 @@ You may be invoked multiple times on the same issue. Before starting, you must a
 
 **Console output:** Write frequent feedback to the console about your progress and difficulties.
 
+**No deferring work across turns:** You run in headless (`claude -p`) mode, which is single-shot — the process exits as soon as you end your turn, and nothing will ever wake it back up. Never schedule a wakeup, cron job, or `/loop`, and never end your turn expecting to "resume later when the build completes."
+
+- **Run builds and tests in the FOREGROUND.** Do NOT start `Build.ps1 build`/`test` (or any long command you depend on) with `run_in_background`. Run it as a normal blocking command so your turn cannot end until it finishes. Use a long timeout (e.g. 30+ minutes) rather than backgrounding.
+- **The "You will be notified when it completes" message is a LIE in headless mode.** When you background a command, the tool prints something like *"Command running in background... You will be notified when it completes."* That notification will NEVER arrive — there is no next turn. If you ever see that message for a command whose result you need, you have already made a mistake: do NOT end your turn, do NOT "wait for the completion notification," and do NOT `sleep` and stop. Immediately resume by blocking on the result (e.g. `wait`, or poll the output file in a loop within the same turn) until the command actually exits.
+- Ending the turn while a build is still running kills the build and abandons ALL your work — no commit, no PR update, nothing. This has happened repeatedly. Treat "my turn is about to end but a build I started hasn't finished" as a hard error to be avoided at all costs.
+
 **Time limit:** Stop after 120 minutes regardless of progress. Check elapsed time by running `echo $(( $(date +%s) - $(cat /tmp/claude-session-start) ))` and comparing against 7200 seconds. Check this before starting any new major step.
 
 **PR description checklist:** When you create a draft PR, include a checklist in the PR description that reflects the remaining phases (e.g., reproduce bug, implement fix, build, test, finalize). As you complete each phase, update the PR description to check off the completed items. This gives reviewers a clear view of progress.
