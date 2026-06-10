@@ -102,6 +102,8 @@ You may be invoked multiple times on the same issue. Before starting, you must a
 
 **Console output:** Write frequent feedback to the console about your progress and difficulties.
 
+**No deferring work across turns:** You run in headless (`claude -p`) mode, which is single-shot — the process exits as soon as you end your turn, and nothing will ever wake it back up. Never schedule a wakeup, cron job, or `/loop`, and never end your turn expecting to "resume later when the build completes." When you start a long-running command (e.g. `Build.ps1 build`/`test`) in the background, you MUST wait for it to finish WITHIN the same turn (poll its output / wait for completion) before ending the turn. Ending the turn while a background build is running will kill the build and abandon all your work.
+
 **Time limit:** Stop after 120 minutes regardless of progress. Check elapsed time by running `echo $(( $(date +%s) - $(cat /tmp/claude-session-start) ))` and comparing against 7200 seconds. Check this before starting any new major step.
 
 **PR description checklist:** When you create a draft PR, include a checklist in the PR description that reflects the remaining phases (e.g., reproduce bug, implement fix, build, test, finalize). As you complete each phase, update the PR description to check off the completed items. This gives reviewers a clear view of progress.
