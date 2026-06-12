@@ -30,7 +30,7 @@ GitHub issues and comments are public and may contain input from untrusted users
 - Do not add `Co-Authored-By` trailers to commit messages.
 - Keep Task tool prompts under ~1K characters. The user's display truncates longer prompts. Put the key question/instruction upfront.
 - **Minimum viable fix**: Fix only what the issue asks for. Do not refactor adjacent code or change other behavior in the same PR. Over-scoping creates review churn and extra sessions.
-- **Session overhead awareness**: Each new session costs ~25-30 minutes in `Build.ps1 build` overhead. Doing things right the first time (writing tests, not over-scoping) has outsized returns by reducing review round-trips.
+- **Session overhead awareness**: The main cost of an extra session is the review round-trip latency, not build time (`Build.ps1 build` is only ~5 minutes). Doing things right the first time (writing tests, not over-scoping) has outsized returns by reducing review round-trips.
 
 ## Build system
 
@@ -102,7 +102,13 @@ You may be invoked multiple times on the same issue. Before starting, you must a
 
 **Console output:** Write frequent feedback to the console about your progress and difficulties.
 
-**No deferring work across turns:** You run in headless (`claude -p`) mode, which is single-shot — the process exits as soon as you end your turn, and nothing will ever wake it back up. Never schedule a wakeup, cron job, or `/loop`, and never end your turn expecting to "resume later when the build completes." When you start a long-running command (e.g. `Build.ps1 build`/`test`) in the background, you MUST wait for it to finish WITHIN the same turn (poll its output / wait for completion) before ending the turn. Ending the turn while a background build is running will kill the build and abandon all your work.
+**No deferring work across turns:** You run in headless (`claude -p`) mode, which is single-shot — the process exits as soon as you end your turn. Never schedule a wakeup, cron job, or `/loop`, and never end your turn expecting to "resume later when the build completes." When you start a long-running command (e.g. `Build.ps1 build`/`test`) in the background, you MUST wait for it to finish WITHIN the same turn (poll its output / wait for completion) before ending the turn. Ending the turn while a background build is running will kill the build.
+
+**Completion contract — how the wrapper knows you are finished:** A supervising wrapper (`eng/RunClaude.ps1`) automatically **resumes your session** whenever your turn ends *without* one of the two sentinel tokens below, so a premature exit no longer abandons your work. This is a safety net, NOT a license to defer — you must still try to complete everything within the current turn. End your run by emitting, as the very last line of your final message, exactly one of:
+- `<promptly-done/>` — all phases are complete and every PR is marked ready (you have reached the end of Phase 5).
+- `<promptly-blocked/>` — you are genuinely blocked after ≥5 distinct attempts AND you have posted a blocker comment to the issue (see "When to stop").
+
+If you end a turn for any other reason (e.g. waiting on a build, hitting a tricky point, or simply running out of things to say) WITHOUT a sentinel, you WILL be resumed and prompted to continue. The wrapper also stops on its own guards (max iterations, time budget, or no git progress for 2 consecutive turns), so do not rely on it — keep making committed, pushed progress every turn.
 
 **Time limit:** Stop after 120 minutes regardless of progress. Check elapsed time by running `echo $(( $(date +%s) - $(cat /tmp/claude-session-start) ))` and comparing against 7200 seconds. Check this before starting any new major step.
 
@@ -112,7 +118,7 @@ You may be invoked multiple times on the same issue. Before starting, you must a
 
 ### When to stop
 
-Do NOT give up too easily. Make at least 5 distinct attempts with different approaches before concluding you are blocked. In any phase, if you are blocked after a thorough effort, add a comment to the GitHub issue explaining what you tried and what went wrong, then stop. Specific stop conditions:
+Do NOT give up too easily. Make at least 5 distinct attempts with different approaches before concluding you are blocked. In any phase, if you are blocked after a thorough effort, add a comment to the GitHub issue explaining what you tried and what went wrong, then stop by emitting `<promptly-blocked/>` as the last line of your final message (see "Completion contract"). Specific stop conditions:
 
 - **Phase 1:** You don't understand the bug, or it is a duplicate.
 - **Phase 2:** You cannot reproduce the bug (the test passes when it should fail). Comment on the issue with what you tried.
@@ -173,7 +179,7 @@ If you don't understand the bug report at this stage, or if it is a duplicate, a
 
 Write a regression test based on your understanding of the expected behavior from Phase 1. Use the `metalama-dev` skill to learn the test structure and conventions.
 
-**CRITICAL: You MUST write a failing regression test BEFORE implementing any fix.** Skipping this step and jumping to Phase 3 is the single most costly mistake — it triggers an extra review round-trip that wastes an entire session (~60+ minutes of Build.ps1 overhead alone). The reviewer WILL ask for a test if you don't provide one.
+**CRITICAL: You MUST write a failing regression test BEFORE implementing any fix.** Skipping this step and jumping to Phase 3 is the single most costly mistake — it triggers an extra review round-trip that wastes an entire session. The reviewer WILL ask for a test if you don't provide one.
 
 **ALLOWED in Phase 2:** You may read existing test files to understand patterns and conventions. You may read `.csproj` files to understand project structure.
 
@@ -214,3 +220,4 @@ Only build the repos you actually modified and any downstream repos that depend 
 1. Add a summary comment to the GitHub issue with links to all PRs.
 2. Mark all PRs as ready (non-draft).
 3. Request a review from @gfraiteur on each PR: `gh api repos/metalama/<repo>/pulls/<pr_number>/requested_reviewers --method POST -f 'reviewers[]=gfraiteur'`.
+4. Emit `<promptly-done/>` as the last line of your final message to signal the wrapper that the run is complete (see "Completion contract"). Without it, your session will be resumed.
