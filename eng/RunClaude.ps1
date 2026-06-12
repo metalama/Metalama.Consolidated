@@ -161,7 +161,10 @@ function ConvertFrom-ClaudeJsonLine {
 # notification rather than poll"), which abandons all work. We cannot distinguish that from a
 # genuine finish via the exit code (both are exit 0 / result.subtype == "success"), so we invert
 # the logic: the run is considered DONE only when the model emits an explicit sentinel; any other
-# ending is auto-resumed via `claude --resume <session_id>`, bounded by the guards below.
+# ending is auto-resumed via `claude --resume <session_id>`, bounded by the guards below. Each
+# resume waits a short delay first (the exit may signal a transient condition), and the "give up"
+# guards (no-progress / max-iterations) are held off until a minimum runtime floor so a burst of
+# fast exits cannot abandon the run within the first few minutes.
 
 # Spawn one `claude` process, stream/log its stdout, and return what we need to decide whether
 # to resume: the exit code, the (stable) session id, and any completion sentinel in the final text.
@@ -384,6 +387,12 @@ if ($Prompt)
     $maxIterations = if ($env:CLAUDE_MAX_ITERATIONS) { [int]$env:CLAUDE_MAX_ITERATIONS } else { 8 }
     $maxMinutes    = if ($env:CLAUDE_MAX_MINUTES)    { [int]$env:CLAUDE_MAX_MINUTES }    else { 120 }
     $maxNoProgress = 2
+    # Floor before any "give up" guard (no-progress / max-iterations) may fire: a fast-exiting or
+    # crashing claude must be retried for at least this long before we conclude it is truly stuck.
+    $minMinutes        = if ($env:CLAUDE_MIN_MINUTES)         { [int]$env:CLAUDE_MIN_MINUTES }         else { 10 }
+    # Pause before each resume -- claude exited for a reason (rate limit, transient error, etc.),
+    # so give that condition a moment to clear instead of hammering an immediate retry.
+    $retryDelaySeconds = if ($env:CLAUDE_RETRY_DELAY_SECONDS) { [int]$env:CLAUDE_RETRY_DELAY_SECONDS } else { 30 }
 
     $gitRepos = @(Get-GitRepos -RepoRoot $repoRoot)
     Write-Host "Monitoring $($gitRepos.Count) git repo(s) for progress between iterations." -ForegroundColor Cyan
@@ -445,9 +454,10 @@ Your previous turn ended without a completion sentinel, so your work is presumed
             $finalExitCode = 1; $stopReason = "budget-exhausted"; break
         }
 
-        # Guard: max iterations.
-        if ($iteration -ge $maxIterations) {
-            Write-Host "Reached max iterations ($maxIterations)." -ForegroundColor Red
+        # Guard: max iterations. Held off until the minimum runtime floor so a burst of fast
+        # exits cannot exhaust the iteration budget within the first few minutes.
+        if ($iteration -ge $maxIterations -and $elapsedMin -ge $minMinutes) {
+            Write-Host "Reached max iterations ($maxIterations) after ${elapsedMin}m." -ForegroundColor Red
             $finalExitCode = 1; $stopReason = "max-iterations"; break
         }
 
@@ -459,11 +469,18 @@ Your previous turn ended without a completion sentinel, so your work is presumed
         }
         if ($madeProgress) { $noProgressStreak = 0 } else { $noProgressStreak++ }
         Write-Host "Progress this iteration: $madeProgress (no-progress streak: $noProgressStreak/$maxNoProgress)" -ForegroundColor Cyan
-        if ($noProgressStreak -ge $maxNoProgress) {
-            Write-Host "No progress for $maxNoProgress consecutive iterations; stopping to avoid a stuck loop." -ForegroundColor Red
+        # Held off until the minimum runtime floor: a model that exits fast without committing
+        # (e.g. repeated crashes) still gets at least $minMinutes of retries before we give up.
+        if ($noProgressStreak -ge $maxNoProgress -and $elapsedMin -ge $minMinutes) {
+            Write-Host "No progress for $maxNoProgress consecutive iterations after ${elapsedMin}m; stopping to avoid a stuck loop." -ForegroundColor Red
             $finalExitCode = 1; $stopReason = "stuck-no-progress"; break
         }
 
+        # Pause before resuming -- claude exited for a reason, so let any transient condition clear.
+        if ($retryDelaySeconds -gt 0) {
+            Write-Host "Waiting ${retryDelaySeconds}s before resuming..." -ForegroundColor DarkGray
+            Start-Sleep -Seconds $retryDelaySeconds
+        }
         Write-Host "No completion sentinel -- resuming Claude session $sessionId." -ForegroundColor Yellow
     }
 
