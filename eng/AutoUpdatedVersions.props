@@ -9,7 +9,6 @@
         <MetalamaDocumentationVersion>2025.1.0</MetalamaDocumentationVersion>
         <MetalamaCommunityVersion></MetalamaCommunityVersion>
         <MetalamaSamplesVersion>2025.1.17</MetalamaSamplesVersion>
-        <MetalamaVsxVersion>2025.1.17</MetalamaVsxVersion>
     <MetalamaConsolidatedReleaseVersion>2025.1.17</MetalamaConsolidatedReleaseVersion><MetalamaConsolidatedReleaseMainVersion>2025.1.17</MetalamaConsolidatedReleaseMainVersion></PropertyGroup>
 
 </Project>
