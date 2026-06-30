@@ -1,15 +1,14 @@
-
 <Project>
-
-    <PropertyGroup>
-        <MetalamaVersion>2025.1.17</MetalamaVersion>
-        <MetalamaCompilerVersion>2025.1.11</MetalamaCompilerVersion>
-        <MetalamaCommunityVersion>2025.1.18</MetalamaCommunityVersion>
-        <MetalamaPremiumVersion>2025.1.17</MetalamaPremiumVersion>
-        <MetalamaDocumentationVersion>2025.1.0</MetalamaDocumentationVersion>
-        <MetalamaCommunityVersion></MetalamaCommunityVersion>
-        <MetalamaSamplesVersion>2025.1.17</MetalamaSamplesVersion>
-        <MetalamaVsxVersion>2025.1.17</MetalamaVsxVersion>
-    <MetalamaConsolidatedReleaseVersion>2025.1.17</MetalamaConsolidatedReleaseVersion><MetalamaConsolidatedReleaseMainVersion>2025.1.17</MetalamaConsolidatedReleaseMainVersion></PropertyGroup>
-
+  <PropertyGroup>
+    <MetalamaVersion Condition="'$(MetalamaVersion)' == ''">2025.1.18</MetalamaVersion>
+    <MetalamaCompilerVersion Condition="'$(MetalamaCompilerVersion)' == ''">2025.1.12</MetalamaCompilerVersion>
+    <MetalamaCommunityVersion Condition="'$(MetalamaCommunityVersion)' == ''">2025.1.19</MetalamaCommunityVersion>
+    <MetalamaPremiumVersion Condition="'$(MetalamaPremiumVersion)' == ''">2025.1.18</MetalamaPremiumVersion>
+    <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2025.1.1</MetalamaDocumentationVersion>
+    <MetalamaCommunityVersion></MetalamaCommunityVersion>
+    <MetalamaSamplesVersion Condition="'$(MetalamaSamplesVersion)' == ''">2025.1.18</MetalamaSamplesVersion>
+    <MetalamaVsxVersion Condition="'$(MetalamaVsxVersion)' == ''">2025.1.18</MetalamaVsxVersion>
+    <MetalamaConsolidatedReleaseVersion>2025.1.18</MetalamaConsolidatedReleaseVersion>
+    <MetalamaConsolidatedReleaseMainVersion>2025.1.18</MetalamaConsolidatedReleaseMainVersion>
+  </PropertyGroup>
 </Project>
