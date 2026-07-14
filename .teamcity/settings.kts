@@ -906,7 +906,7 @@ object Bump : BuildType({
         gitHubAppBuildScopedToken {
             parameterName = "env.GITHUB_TOKEN"
             connectionId = "%GITHUB_CONNECTION_METALAMA%"
-            targetRepositories = "Metalama.Consolidated"
+            targetRepositories = "Metalama.Consolidated\nMetalama.Compiler\nMetalama\nMetalama.Community\nMetalama.Premium\nMetalama.Samples\nMetalama.Documentation\nMetalama.Tests.NopCommerce"
         }
     }
 
@@ -1000,7 +1000,7 @@ object PrePublish : BuildType({
         gitHubAppBuildScopedToken {
             parameterName = "env.GITHUB_TOKEN"
             connectionId = "%GITHUB_CONNECTION_METALAMA%"
-            targetRepositories = "Metalama.Consolidated"
+            targetRepositories = "Metalama.Consolidated\nMetalama.Compiler\nMetalama\nMetalama.Community\nMetalama.Premium\nMetalama.Samples\nMetalama.Documentation\nMetalama.Tests.NopCommerce"
         }
     }
 
@@ -1094,7 +1094,7 @@ object PostPublish : BuildType({
         gitHubAppBuildScopedToken {
             parameterName = "env.GITHUB_TOKEN"
             connectionId = "%GITHUB_CONNECTION_METALAMA%"
-            targetRepositories = "Metalama.Consolidated"
+            targetRepositories = "Metalama.Consolidated\nMetalama.Compiler\nMetalama\nMetalama.Community\nMetalama.Premium\nMetalama.Samples\nMetalama.Documentation\nMetalama.Tests.NopCommerce"
         }
     }
 
@@ -1211,7 +1211,7 @@ object Claude : BuildType({
         gitHubAppBuildScopedToken {
             parameterName = "env.GITHUB_TOKEN"
             connectionId = "%GITHUB_CONNECTION_METALAMA%"
-            targetRepositories = "Metalama.Consolidated"
+            targetRepositories = "Metalama.Consolidated\nMetalama.Compiler\nMetalama\nMetalama.Community\nMetalama.Premium\nMetalama.Samples\nMetalama.Documentation\nMetalama.Tests.NopCommerce"
         }
     }
 
