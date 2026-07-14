@@ -11,7 +11,6 @@ $products = @( "Metalama.Compiler",
     "Metalama.Premium",
     "Metalama.Samples",
     "Metalama.Documentation",
-    "Metalama.Vsx",
     "Metalama.Tests.NopCommerce",
     ".")
 
