@@ -7,7 +7,7 @@
     <MetalamaVsxVersion Condition="'$(MetalamaVsxVersion)' == ''">2026.1.0</MetalamaVsxVersion>
     <MetalamaConsolidatedReleaseVersion>2026.1.20</MetalamaConsolidatedReleaseVersion>
     <MetalamaConsolidatedReleaseMainVersion>2026.1.20</MetalamaConsolidatedReleaseMainVersion>
-    <MetalamaPremiumVersion Condition="'$(MetalamaPremiumVersion)' == ''">2026.1.19</MetalamaPremiumVersion>
+    <MetalamaPremiumVersion Condition="'$(MetalamaPremiumVersion)' == ''">2026.1.20</MetalamaPremiumVersion>
     <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2026.1.20</MetalamaDocumentationVersion>
   </PropertyGroup>
 </Project>
