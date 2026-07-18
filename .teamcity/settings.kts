@@ -598,7 +598,7 @@ object PublicDeployment : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% publish --configuration Public --timeout %Publish.Timeout% %Publish.Arguments%"
+            scriptArgs = "-Script Build.ps1 -ImageName metalamaconsolidated-2026.1 -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% publish --configuration Public --deployment default --timeout %Publish.Timeout% %Publish.Arguments%"
         }
         powerShell {
             name = "Cleanup Docker containers"
@@ -1209,8 +1209,8 @@ object Claude : BuildType({
             verbose = true
         }
         gitHubAppBuildScopedToken {
-            parameterName = "env.GITHUB_TOKEN"
-            connectionId = "%GITHUB_CONNECTION_METALAMA%"
+            parameterName = "env.CLAUDE_GITHUB_TOKEN"
+            connectionId = "%GITHUB_CONNECTION_METALAMA_AGENT%"
             targetRepositories = "Metalama.Consolidated\nMetalama.Compiler\nMetalama\nMetalama.Community\nMetalama.Premium\nMetalama.Samples\nMetalama.Documentation\nMetalama.Tests.NopCommerce"
         }
     }

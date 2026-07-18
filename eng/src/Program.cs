@@ -7,6 +7,7 @@ using PostSharp.Engineering.BuildTools.Build.Model;
 using PostSharp.Engineering.BuildTools.Dependencies.Definitions;
 using MetalamaDependencies = PostSharp.Engineering.BuildTools.Dependencies.Definitions.MetalamaDependencies.V2026_1;
 using PostSharp.Engineering.BuildTools.Build.Publishing.Downloads;
+using PostSharp.Engineering.BuildTools.ContinuousIntegration;
 using PostSharp.Engineering.BuildTools.ContinuousIntegration.Model;
 using PostSharp.Engineering.BuildTools.ContinuousIntegration.TeamCity.Arguments;
 using PostSharp.Engineering.BuildTools.Docker;
@@ -94,6 +95,11 @@ var product = new Product( MetalamaDependencies.Consolidated )
         {
             Dockerfile = @".\eng\docker\Dockerfile.agent.claude",
             SourceDependenciesRequirements = SourceDependenciesRequirements.Full,
+
+            // The agent acts on GitHub under its own app, not under the build system's. The token goes to
+            // CLAUDE_GITHUB_TOKEN because DockerBuild.ps1 forwards a host variable into the container only when it
+            // carries a CLAUDE_ prefix, and it arrives inside the container as GITHUB_TOKEN.
+            GitHubAppToken = new GitHubAppTokenOverride( GitHubAppConnections.MetalamaAgent, "env.CLAUDE_GITHUB_TOKEN" ),
             ReuseLastSuccessfulBuild = true,
             BuildSnapshotDependency = BuildConfiguration.Debug,
             Parameters = [new TextBuildConfigurationParameter( "Issue", "Issue", "The issue for Claude to work on autonomously" )
