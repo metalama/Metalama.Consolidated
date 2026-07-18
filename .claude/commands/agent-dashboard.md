@@ -1,5 +1,5 @@
 ---
-description: Show status of issues assigned to @PostSharpAgent and required user actions
+description: Show status of issues labeled "agent" and required user actions
 allowed-tools:
   - Bash
   - Read
@@ -8,7 +8,7 @@ allowed-tools:
 
 # Agent Dashboard
 
-Show the status of all open GitHub issues assigned to @PostSharpAgent across Metalama repos, and highlight which ones need human action vs. agent action.
+Show the status of all open GitHub issues labeled `agent` across Metalama repos, and highlight which ones need human action vs. agent action.
 
 ## Instructions
 
@@ -43,15 +43,17 @@ $result | ConvertTo-Json -Depth 10  # THIS WILL OVERFLOW
 
 Collect data from three sources. Run steps 1a+1b in a single MCP call, and 1c in another, in parallel.
 
-#### 1a. Fetch All Open Issues Assigned to @PostSharpAgent
+#### 1a. Fetch All Open Issues Labeled `agent`
 
 ```
-gh search issues --assignee PostSharpAgent --owner metalama --state open --json number,title,repository,url,labels --limit 100
+gh search issues --label agent --owner metalama --state open --json number,title,repository,url,labels --limit 100
 ```
 
 Each item has: `number`, `title`, `repository.name`, `url`, `labels`.
 
-If no issues are found, display "No open issues assigned to @PostSharpAgent." and stop.
+Note: the selection criterion is the `agent` **label**, not the assignee. Issues assigned to @PostSharpAgent but without the `agent` label are NOT part of the dashboard.
+
+If no issues are found, display "No open issues labeled `agent`." and stop.
 
 Then fetch each issue's milestone individually (the search API does not support the `milestone` field):
 ```
@@ -77,19 +79,23 @@ Collect the set of unique major versions across all issues. For each one, discov
 gh api repos/metalama/<repo>/issues/<number> --jq '.milestone.title // "NONE"'
 ```
 
-#### 1b. Fetch PRs by @PostSharpAgent Per Repo
+#### 1b. Fetch Agent PRs Per Repo
+
+PRs are selected by the `agent` **label**, not by author. The agent now runs under the identity of a **GitHub App**, so its PRs are authored by a bot account (e.g. `...[bot]`) whose login varies and is not a usable filter. Every PR the agent opens carries the `agent` label (see "Labeling agent PRs" below).
 
 Combine with step 1a in a single MCP call. For each repo (Metalama, Metalama.Premium, Metalama.Community, Metalama.Samples):
 
 **Open PRs:**
 ```
-gh pr list --repo metalama/<repo> --author PostSharpAgent --state open --json number,headRefName,isDraft,reviewRequests,latestReviews,url
+gh pr list --repo metalama/<repo> --label agent --state open --json number,headRefName,isDraft,reviewRequests,latestReviews,url
 ```
 
 **Merged PRs** (to detect "merged but issue still open"):
 ```
-gh pr list --repo metalama/<repo> --author PostSharpAgent --state merged --json number,headRefName,url --limit 50
+gh pr list --repo metalama/<repo> --label agent --state merged --json number,headRefName,url --limit 50
 ```
+
+If a PR is missing the `agent` label but its branch matches `topic/<version>/<issue>-*` for an issue in the dashboard, it will not be picked up. Treat that as a labeling bug: add the label with `gh pr edit <number> --repo metalama/<repo> --add-label agent` and continue.
 
 Match PRs to issues by extracting the issue number from `headRefName` using regex: `topic/[^/]+/(\d+)-`.
 
@@ -358,5 +364,5 @@ This table is a repeat of the section 3 table, updated to reflect any auto-actio
 - **No TEAMCITY_CLOUD_TOKEN**: Display warning that TeamCity data is unavailable, but still show GitHub data
 - **GitHub API errors**: Display error and continue with available data
 - **TeamCity API errors**: Display warning per-branch and continue; show TC columns as "unknown"
-- **No issues found**: Display friendly "No open issues assigned to @PostSharpAgent" message
+- **No issues found**: Display friendly "No open issues labeled `agent`" message
 - **MCP output overflow**: If an MCP call result is truncated, the PowerShell script is dumping raw JSON. Fix by processing in-script and emitting only `Write-Host` lines with extracted fields.

@@ -10,7 +10,9 @@ Metalama is composed of several repositories under https://github.com/metalama:
 
 You are currently in the `Metalama.Consolidated` repo. All source repositories (sub repos) are cloned in the `source-dependencies/` directory (or as sibling directories of the current repo). Topic branches and code changes are NEVER in Metalama.Consolidated — always in repos under `source-dependencies/`.
 
-Your GitHub account is **@PostSharpAgent**. When reading issue discussions, pay attention to comments addressed to you or written by you from a previous session.
+You act on GitHub under the identity of a **GitHub App**, so your comments and PRs appear under a bot account (login ending in `[bot]`) rather than a personal account. Do not assume a fixed login: resolve your own identity at runtime with `gh api /user --jq .login` and use it to recognize your own comments and PRs from previous sessions. When reading issue discussions, pay attention to comments addressed to you or written by you from a previous session.
+
+Because the bot login is not a stable filter, **the `agent` label is the marker for agent work**: issues to be handled by the agent carry the `agent` label, and every PR the agent creates must carry it too.
 
 When working in autonomous (unattended) mode, the Approval MCP server mentioned in your skills is NOT available. You do have access to the `gh` CLI locally from the container.
 
@@ -152,9 +154,11 @@ This phase determines where to resume. Always start here.
 
 Based on what you find, determine the current state and skip to the appropriate phase:
 
-- **No prior work found** (no @PostSharpAgent comments, no topic branches, no PRs): Start at Phase 1.
-- **Phase 1 was completed** (@PostSharpAgent posted an understanding summary, but no topic branch or failing test exists): Start at Phase 2.
-- **Phase 2 was completed** (topic branch and draft PR exist with a failing regression test, @PostSharpAgent commented that the bug is reproduced): Start at Phase 3.
+("your own comments" below means comments authored by your bot login, resolved as described in the Context section.)
+
+- **No prior work found** (no comments of your own, no topic branches, no PRs): Start at Phase 1.
+- **Phase 1 was completed** (you posted an understanding summary, but no topic branch or failing test exists): Start at Phase 2.
+- **Phase 2 was completed** (topic branch and draft PR exist with a failing regression test, and you commented that the bug is reproduced): Start at Phase 3.
 - **Phase 3 was completed** (fix is committed, tests pass, but no consolidated build was done): Start at Phase 4.
 - **Phase 4 was completed** (consolidated build passed, but PRs are still in draft): Start at Phase 5.
 - **Partial progress within a phase** (e.g. topic branch exists but no failing test yet): Resume within that phase at the appropriate step.
@@ -190,7 +194,11 @@ Write a regression test based on your understanding of the expected behavior fro
 3. Create a regression test that FAILS. **Verify the test actually tests what you claim** — check that the test output contains the expected markers/assertions. For HTML-based tests, grep for expected CSS classes in the output files. For diagnostic tests, verify the expected diagnostic actually appears. **If creating a standalone repro project**, limit to 5 build attempts with different configurations. If it's not reproducing after 5 attempts, step back and reason about why, or move to Phase 3 to read the implementation.
 4. **Write high-quality test code**: Use real objects from the test infrastructure instead of `null!` for required parameters. Brittle test shortcuts get flagged in review and add to the session count.
 5. Commit and push.
-6. Create a DRAFT PR to the current development branch for each repo that required a change, linking the GitHub issue.
+6. Create a DRAFT PR to the current development branch for each repo that required a change, linking the GitHub issue. **Add the `agent` label to every PR you create** — this is how the dashboard and tooling identify agent PRs:
+   ```bash
+   gh pr create --draft --base develop/<version> --label agent --title "..." --body "..."
+   ```
+   If the PR already exists without the label: `gh pr edit <number> --add-label agent`.
 7. Add a comment to the issue confirming the bug is reproduced, explaining how, with a link to the PR.
 
 ### Phase 3. Fix the issue
