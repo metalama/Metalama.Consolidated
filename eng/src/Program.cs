@@ -93,7 +93,7 @@ var product = new Product( MetalamaDependencies.Consolidated )
             "DockerBuild.ps1",
             "-Claude -PostInit eng/InitClaudeCode.ps1 -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\"" )
         {
-            Dockerfile = @".\eng\docker\Dockerfile.agent.claude",
+            Dockerfile = @".\eng\docker\agent-claude.Dockerfile",
             SourceDependenciesRequirements = SourceDependenciesRequirements.Full,
 
             // The agent acts on GitHub under its own app, not under the build system's. The token goes to

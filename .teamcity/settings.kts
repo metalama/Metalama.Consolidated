@@ -1172,7 +1172,7 @@ object Claude : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.1 -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude "
+            scriptArgs = "-BuildImage -ImageName metalamaconsolidated-2026.1 -Dockerfile .\\eng\\docker\\agent-claude.Dockerfile "
         }
         powerShell {
             name = "Execute DockerBuild.ps1"
@@ -1182,7 +1182,7 @@ object Claude : BuildType({
                 path = "DockerBuild.ps1"
             }
             noProfile = false
-            scriptArgs = "-Script DockerBuild.ps1 -ImageName metalamaconsolidated-2026.1 -Dockerfile .\\eng\\docker\\Dockerfile.agent.claude -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% -Claude -PostInit eng/InitClaudeCode.ps1 -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\" %Exec.Arguments%"
+            scriptArgs = "-Script DockerBuild.ps1 -ImageName metalamaconsolidated-2026.1 -Dockerfile .\\eng\\docker\\agent-claude.Dockerfile -NoBuildImage -Label %system.teamcity.buildType.id%_%build.number% -Claude -PostInit eng/InitClaudeCode.ps1 -NoMcp \"Work autonomously on %Issue%. Respect CLAUDE.md instructions *STRICTLY*\" %Exec.Arguments%"
         }
         powerShell {
             name = "Cleanup Docker containers"
