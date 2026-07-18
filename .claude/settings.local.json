@@ -3,7 +3,8 @@
     "allow": [
       "Bash(git log:*)",
       "Bash(git ls-tree:*)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(find /c/Users/GaelFraiteur/.claude -ipath \"*agent-dashboard*\" 2>/dev/null; find /c/src/Metalama-2026.1/Metalama.Consolidated/.claude -ipath \"*agent-dashboard*\" 2>/dev/null)"
     ]
   }
 }
