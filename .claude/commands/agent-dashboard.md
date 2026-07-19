@@ -95,11 +95,17 @@ gh pr list --repo metalama/<repo> --label agent --state open --json number,headR
 gh pr list --repo metalama/<repo> --label agent --state merged --json number,headRefName,url --limit 50
 ```
 
+**Closed-unmerged PRs** (to detect rejected work):
+```
+gh pr list --repo metalama/<repo> --label agent --state closed --json number,headRefName,url,closedAt --limit 50
+```
+`--state closed` returns merged PRs too, so drop any PR that also appears in the merged list.
+
 If a PR is missing the `agent` label but its branch matches `topic/<version>/<issue>-*` for an issue in the dashboard, it will not be picked up. Treat that as a labeling bug: add the label with `gh pr edit <number> --repo metalama/<repo> --add-label agent` and continue.
 
 Match PRs to issues by extracting the issue number from `headRefName` using regex: `topic/[^/]+/(\d+)-`.
 
-For each issue, track whether it has an open PR, a merged PR, or neither.
+For each issue, track whether it has an open PR, a merged PR, a closed-unmerged PR, or none.
 
 Key fields (open PRs):
 - `headRefName`: branch name (e.g., `topic/2026.1/1340-fix-something`)
@@ -255,10 +261,11 @@ For each issue, check conditions in this priority order. First match wins:
 | # | Condition | Status | Agent Action | Human Action |
 |---|-----------|--------|--------------|--------------|
 | 0 | No open PR, but a merged PR exists for this issue | `Merged, not closed` | Close issue | — |
+| 0b | No open PR, no merged PR, but a **closed-unmerged** PR exists for this issue | `Work rejected` | — (do NOT trigger) | Close the issue, or say what to do differently |
 | 1 | Claude build queued or running with matching Issue parameter | `Claude build queued/running` | — | — (wait) |
 | 2 | DebugBuild queued or running for the topic branch | `Debug build in progress` | — | — (wait) |
 | 3 | Copilot review pending (`copilot-pull-request-reviewer` in PR's `reviewRequests`) | `Copilot review pending` | — | — (wait) |
-| 4 | No open PR, no merged PR, and no Claude build queued/running | `No work started` | Trigger Claude build | — |
+| 4 | No PR of any kind, and no Claude build queued/running | `No work started` | Trigger Claude build | — |
 | 5 | PR is draft (`isDraft == true`), no builds running | `Agent work incomplete` | Trigger Claude build | — |
 | 6a | PR has `CHANGES_REQUESTED` from a human reviewer, and NO successful Claude build after the review timestamp | `Changes requested` | Trigger Claude build | — |
 | 6b | PR has `CHANGES_REQUESTED` from a human reviewer, but a successful Claude build ran AFTER the review timestamp (agent already addressed feedback) | `Needs re-review` | Request @gfraiteur review | Re-review PR |
@@ -269,6 +276,8 @@ For each issue, check conditions in this priority order. First match wins:
 | 10 | PR has human `APPROVED` but no copilot review at all | `Approved, no copilot` | — | Request copilot review (GitHub UI), trigger DebugBuild |
 | 11 | Latest DebugBuild for branch has `status:SUCCESS` | `Build green` | — | Merge PR |
 | 12 | (fallback) | `Unknown` | — | Investigate |
+
+**Why #0b sits at the top:** a closed-unmerged PR means a human rejected that attempt. Without this rule the issue looks identical to "never started" (no open PR, no merged PR) and #4 would auto-trigger a build that redoes the rejected work. Re-triggering requires a human decision — the issue should either be closed, or given a comment saying what to do differently. Never trigger a build for an issue whose only PR was closed unmerged.
 
 ### 3. Display Results
 
