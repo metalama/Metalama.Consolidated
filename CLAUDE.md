@@ -1,4 +1,4 @@
-# CLAUDE.md
+﻿# CLAUDE.md
 
 ## Context
 
@@ -128,6 +128,17 @@ If you end a turn for any other reason (e.g. waiting on a build, hitting a trick
 
 **Frequent commits:** Commit and push your work at least every 15 minutes so progress can be recovered if the session is interrupted. Always commit and push before stopping, even if incomplete, so the next session can resume.
 
+### When the work has been abandoned
+
+**Check this before anything else, in Phase 0.** A closed issue or a closed-unmerged PR is a human decision to drop the work. Do NOT resume it, do NOT reopen anything, and do NOT start a fresh attempt:
+
+- **The issue is closed** (`gh api repos/metalama/<repo>/issues/<number> --jq .state` returns `closed`) — regardless of whether a PR exists.
+- **The PR for the issue is closed but not merged** (`gh pr view <number> --repo metalama/<repo> --json state,merged` returns `state=CLOSED, merged=false`) — the reviewer rejected the approach.
+
+In either case, stop immediately and emit `<promptly-done/>`. Do not post a comment: the human already knows, and a comment on a closed issue is noise. Leave the topic branch alone — deleting it is the human's call.
+
+Only a **merged** PR means the work succeeded. A closed-unmerged PR means it was rejected, which is not the same as being blocked — do not emit `<promptly-blocked/>` for it.
+
 ### When to stop
 
 Do NOT give up too easily. Make at least 5 distinct attempts with different approaches before concluding you are blocked. In any phase, if you are blocked after a thorough effort, add a comment to the GitHub issue explaining what you tried and what went wrong, then stop by emitting `<promptly-blocked/>` as the last line of your final message (see "Completion contract"). Specific stop conditions:
@@ -144,8 +155,9 @@ This phase determines where to resume. Always start here.
 
 1. Record the session start time: run `date +%s | tee /tmp/claude-session-start > /tmp/claude-last-progress`.
 2. Determine whether the prompt refers to an issue or a PR. If it's a PR, extract the issue number from the branch name (e.g., branch `topic/2026.1/1234-fix-something` → issue `#1234`). Use `gh pr view` to get the branch name if needed. From this point on, work with the resolved issue number.
-3. Read the issue on GitHub including ALL comments. **Use `gh api` for reading comments** — do NOT use `gh issue view --comments` (it fails with GraphQL deprecation errors). Use: `gh api repos/metalama/<repo>/issues/<number>/comments --jq '.[] | "--- \(.user.login) (\(.created_at)) ---\n\(.body)\n"'`
-4. Check for existing topic branches and PRs. Branch names follow the pattern `topic/{version}/{issue_number}-*` (e.g. `topic/2026.1/1234-fix-something`). Use the GitHub API to check all repos in parallel:
+3. **Check whether the work has been abandoned before reading anything else.** Fetch the issue state and, if a PR exists, its state and `merged` flag. If the issue is closed, or the PR is closed and not merged, stop now — see "When the work has been abandoned" above. Everything below assumes the work is still live.
+4. Read the issue on GitHub including ALL comments. **Use `gh api` for reading comments** — do NOT use `gh issue view --comments` (it fails with GraphQL deprecation errors). Use: `gh api repos/metalama/<repo>/issues/<number>/comments --jq '.[] | "--- \(.user.login) (\(.created_at)) ---\n\(.body)\n"'`
+5. Check for existing topic branches and PRs. Branch names follow the pattern `topic/{version}/{issue_number}-*` (e.g. `topic/2026.1/1234-fix-something`). Use the GitHub API to check all repos in parallel:
    ```bash
    for repo in Metalama Metalama.Premium Metalama.Community Metalama.Samples; do
      gh api "repos/metalama/$repo/git/matching-refs/heads/topic/{version}/{issue_number}" --jq '.[].ref' &
@@ -154,13 +166,13 @@ This phase determines where to resume. Always start here.
    ```
    Also search for existing PRs: `gh search prs --owner metalama --state open "{issue_number}"`.
    If a topic branch is found, fetch it, discard any local changes, checkout, and **pull** to ensure you have the latest commits: `cd source-dependencies/<repo> && git  fetch origin <branch> && git checkout -f <branch> && git reset --hard origin/<branch> && git clean -xfd && git pull`.
-5. If a topic branch exists, check the latest TeamCity build status for that branch using the `eng:tc-check-build` skill. If the build is failing or has warnings, download the full build log and analyze it for errors and warnings. Remember that TC builds enforce zero warnings — any warning is a failure. These issues may stem from a previous session and need to be addressed.
-6. If existing PRs are found, read ALL PR review comments using `gh api repos/metalama/<repo>/pulls/<number>/reviews` and `gh api repos/metalama/<repo>/pulls/<number>/comments`. Do NOT use `gh pr view --comments` (fails with GraphQL errors). Look for feedback from @gfraiteur. For each comment:
+6. If a topic branch exists, check the latest TeamCity build status for that branch using the `eng:tc-check-build` skill. If the build is failing or has warnings, download the full build log and analyze it for errors and warnings. Remember that TC builds enforce zero warnings — any warning is a failure. These issues may stem from a previous session and need to be addressed.
+7. If existing PRs are found, read ALL PR review comments using `gh api repos/metalama/<repo>/pulls/<number>/reviews` and `gh api repos/metalama/<repo>/pulls/<number>/comments`. Do NOT use `gh pr view --comments` (fails with GraphQL errors). Look for feedback from @gfraiteur. For each comment:
    - If the feedback is actionable, implement the requested changes, push, and reply to the comment confirming what you did.
    - If you disagree or the feedback doesn't apply, reply to the comment explaining your reasoning.
    - Never leave a review comment without a reply.
    After addressing all feedback and pushing, request a re-review from @gfraiteur: `gh api repos/metalama/<repo>/pulls/<pr_number>/requested_reviewers --method POST -f 'reviewers[]=gfraiteur'`.
-7. Load the skills using their fully-qualified names: `metalama:metalama`, `eng:eng`, `metalama-dev:metalama-dev`. Do NOT use short names like `metalama` — they will fail with "Unknown skill".
+8. Load the skills using their fully-qualified names: `metalama:metalama`, `eng:eng`, `metalama-dev:metalama-dev`. Do NOT use short names like `metalama` — they will fail with "Unknown skill".
 
 Based on what you find, determine the current state and skip to the appropriate phase:
 
