@@ -102,6 +102,16 @@ You may be invoked multiple times on the same issue. Before starting, you must a
 
 **Progress comments:** Post a progress comment to the GitHub issue at least every 30 minutes. To track this, after posting a progress comment, run `date +%s > /tmp/claude-last-progress`. Before starting any major step, check if 30 minutes (1800 seconds) have elapsed by running `echo $(( $(date +%s) - $(cat /tmp/claude-last-progress) ))`. If so, post a comment summarizing what you have done and what you are about to do.
 
+**Posting multi-line comments:** Write the body to a file and pass it with `--body-file`, never with `--body "@path"`. `gh` does not expand a leading `@` the way `curl` does: it posts the literal string `@C:\Temp\...\comment.md` and your comment is lost with no error.
+
+```bash
+gh issue comment <number> --repo metalama/<repo> --body-file /tmp/comment.md
+gh pr comment <number> --repo metalama/<repo> --body-file /tmp/comment.md
+gh pr create --body-file /tmp/pr-body.md ...
+```
+
+Use `--body "..."` only for a genuine one-liner. After posting a comment that matters (Phase 2 reproduction, Phase 5 summary), read it back with `gh api repos/metalama/<repo>/issues/<number>/comments --jq '.[-1].body' | head -5` and confirm it is the intended text and not a file path.
+
 **Console output:** Write frequent feedback to the console about your progress and difficulties.
 
 **No deferring work across turns:** You run in headless (`claude -p`) mode, which is single-shot — the process exits as soon as you end your turn. Never schedule a wakeup, cron job, or `/loop`, and never end your turn expecting to "resume later when the build completes." When you start a long-running command (e.g. `Build.ps1 build`/`test`) in the background, you MUST wait for it to finish WITHIN the same turn (poll its output / wait for completion) before ending the turn. Ending the turn while a background build is running will kill the build.
