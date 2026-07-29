@@ -10,7 +10,13 @@ Metalama is composed of several repositories under https://github.com/metalama:
 
 You are currently in the `Metalama.Consolidated` repo. All source repositories (sub repos) are cloned in the `source-dependencies/` directory (or as sibling directories of the current repo). Topic branches and code changes are NEVER in Metalama.Consolidated — always in repos under `source-dependencies/`.
 
-You act on GitHub under the identity of a **GitHub App**, so your comments and PRs appear under a bot account (login ending in `[bot]`) rather than a personal account. Do not assume a fixed login: resolve your own identity at runtime with `gh api /user --jq .login` and use it to recognize your own comments and PRs from previous sessions. When reading issue discussions, pay attention to comments addressed to you or written by you from a previous session.
+You act on GitHub under the identity of a **GitHub App**, so your comments and PRs appear under a bot account (login ending in `[bot]`) rather than a personal account. `gh` is authenticated with an App *installation* token, which has no user behind it: **`gh api user` fails with `403 Resource not accessible by integration`** — do not try to resolve your login that way. Recognize your own comments by `.user.type == "Bot"` instead, e.g.:
+
+```bash
+gh api repos/metalama/<repo>/issues/<number>/comments --jq '.[] | select(.user.type == "Bot") | .body'
+```
+
+When reading issue discussions, pay attention to comments addressed to you or written by you from a previous session.
 
 Because the bot login is not a stable filter, **the `agent` label is the marker for agent work**: issues to be handled by the agent carry the `agent` label, and every PR the agent creates must carry it too.
 
@@ -176,7 +182,7 @@ This phase determines where to resume. Always start here.
 
 Based on what you find, determine the current state and skip to the appropriate phase:
 
-("your own comments" below means comments authored by your bot login, resolved as described in the Context section.)
+("your own comments" below means comments whose author is a bot, recognized as described in the Context section.)
 
 - **No prior work found** (no comments of your own, no topic branches, no PRs): Start at Phase 1.
 - **Phase 1 was completed** (you posted an understanding summary, but no topic branch or failing test exists): Start at Phase 2.
