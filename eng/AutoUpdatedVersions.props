@@ -1,13 +1,13 @@
 <Project>
   <PropertyGroup>
     <MetalamaVersion Condition="'$(MetalamaVersion)' == ''">2026.1.24</MetalamaVersion>
-    <MetalamaCompilerVersion Condition="'$(MetalamaCompilerVersion)' == ''">2026.1.16</MetalamaCompilerVersion>
-    <MetalamaCommunityVersion Condition="'$(MetalamaCommunityVersion)' == ''">2026.1.24</MetalamaCommunityVersion>
+    <MetalamaCompilerVersion Condition="'$(MetalamaCompilerVersion)' == ''">2026.1.17</MetalamaCompilerVersion>
+    <MetalamaCommunityVersion Condition="'$(MetalamaCommunityVersion)' == ''">2026.1.25</MetalamaCommunityVersion>
     <MetalamaSamplesVersion Condition="'$(MetalamaSamplesVersion)' == ''">2026.1.24</MetalamaSamplesVersion>
     <MetalamaVsxVersion Condition="'$(MetalamaVsxVersion)' == ''">2026.1.0</MetalamaVsxVersion>
     <MetalamaConsolidatedReleaseVersion>2026.1.24</MetalamaConsolidatedReleaseVersion>
     <MetalamaConsolidatedReleaseMainVersion>2026.1.24</MetalamaConsolidatedReleaseMainVersion>
     <MetalamaPremiumVersion Condition="'$(MetalamaPremiumVersion)' == ''">2026.1.24</MetalamaPremiumVersion>
-    <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2026.1.24</MetalamaDocumentationVersion>
+    <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2026.1.25</MetalamaDocumentationVersion>
   </PropertyGroup>
 </Project>
