@@ -19,8 +19,8 @@ foreach ($dir in $directories) {
     git fetch origin
     git checkout release/2026.0
     git pull --no-edit
-    git checkout -b release/2026.1
-    git push -u origin release/2026.1
+    git checkout -b release/2027.0
+    git push -u origin release/2027.0
 
     Write-Host ""
     Write-Host ""
