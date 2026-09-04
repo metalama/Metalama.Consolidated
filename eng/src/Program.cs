@@ -14,6 +14,10 @@ using PostSharp.Engineering.BuildTools.Docker;
 
 const string productFamilyVersion = "2025.2";
 
+// The .NET SDK of the build agent, and the one pinned in global.json. The version comes from the product family,
+// so that it matches the feature band that the Visual Studio version of the family installs.
+var dotNetSdkVersion = MetalamaDependencies.Family.PreferredVersions.DotNetSdk.V_10_0;
+
 var zipPackageName = "Metalama.$(PackageVersion).zip";
 var versionPackageName = "Metalama.Framework";
 var mainIndexName = "Index.xml";
@@ -25,17 +29,14 @@ var product = new Product( MetalamaDependencies.Consolidated )
     {
         Components =
         [
-            new DotNetComponent( PreferredVersions.DotNetSdk.V_10_0, DotNetComponentKind.Sdk ),
-
-            // Some projects are on 9.0.
-            new DotNetComponent( PreferredVersions.DotNetSdk.V_9_0, DotNetComponentKind.Sdk ),
+            new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
 
             // Metalama.Compiler requires 10.0.110.
             new DotNetComponent( "10.0.110", DotNetComponentKind.Sdk ),
         ]
     },
     GenerateNuGetConfig = true,
-    DotNetSdkVersion = new DotNetSdkVersion( PreferredVersions.DotNetSdk.V_10_0 ),
+    DotNetSdkVersion = new DotNetSdkVersion( dotNetSdkVersion ),
     Solutions = [new ZipAllArtifactsSolution( zipPackageName, versionPackageName )],
     MainVersionDependency = MetalamaDependencies.Metalama,
     Configurations = Product.DefaultConfigurations
@@ -57,10 +58,9 @@ var product = new Product( MetalamaDependencies.Consolidated )
     // Docker image for autonomous Claude-based workflows.
     AdditionalDockerfiles = [ new AdditionalDockerfile( "agent",
     [
-        // .NET SDKs
-        new DotNetComponent( PreferredVersions.DotNetSdk.V_10_0, DotNetComponentKind.Sdk ),
-        new DotNetComponent( PreferredVersions.DotNetSdk.V_9_0, DotNetComponentKind.Sdk ),
-        new DotNetComponent( PreferredVersions.DotNetSdk.V_8_0, DotNetComponentKind.Sdk ),
+        // The only .NET SDK. A target framework older than the SDK is compiled from the targeting packs that the
+        // SDK restores from NuGet, so no older SDK is required.
+        new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
 
         // Visual Studio Build Tools (union of all VS components across Metalama and Metalama.Premium).
         new VisualStudioBuildToolsComponent(
