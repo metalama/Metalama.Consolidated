@@ -31,8 +31,8 @@ var product = new Product( MetalamaDependencies.Consolidated )
         [
             new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
 
-            // Metalama.Compiler requires 10.0.110.
-            new DotNetComponent( "10.0.110", DotNetComponentKind.Sdk ),
+            // Metalama.Compiler pins 10.0.301 in its own global.json. Keep the two in sync.
+            new DotNetComponent( "10.0.301", DotNetComponentKind.Sdk ),
         ]
     },
     GenerateNuGetConfig = true,
