@@ -62,19 +62,29 @@ var product = new Product( MetalamaDependencies.Consolidated )
         // SDK restores from NuGet, so no older SDK is required.
         new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
 
-        // Visual Studio Build Tools (union of all VS components across Metalama and Metalama.Premium).
+        // Visual Studio Build Tools. The union of the components of Metalama, Metalama.Premium and
+        // Metalama.Compiler, because this image builds all three. It is a strict superset of the set that Metalama
+        // declares, so the two do not share the generated layer. Keep it a union: a component dropped here breaks
+        // the product that needs it, and this image is the only place where the three sets meet.
         new VisualStudioBuildToolsComponent(
-            VisualStudioBuildToolsComponentVersion.v17_14_15,
+            VisualStudioBuildToolsComponentVersion.v18_9_2,
             [
-                // Required to test MSBuild.
+                // Required to test MSBuild. Microsoft.NetCore.Component.SDK cannot be omitted: without it the
+                // MSBuild.exe of the Build Tools has no C:\BuildTools\MSBuild\Sdks directory and fails to
+                // resolve Microsoft.NET.Sdk with MSB4276.
                 "Microsoft.Component.MSBuild",
                 "Microsoft.NetCore.Component.SDK",
 
-                // Required because we target these frameworks.
+                // Required by Metalama.Premium and by Metalama.Compiler. Metalama alone needs no .NET Framework
+                // targeting pack, because the .NET SDK obtains the reference assemblies of a .NET Framework target
+                // framework from the Microsoft.NETFramework.ReferenceAssemblies packages.
                 "Microsoft.Net.Component.4.7.2.TargetingPack",
                 "Microsoft.Net.Component.4.7.2.SDK",
-                "Microsoft.Net.Component.4.8.TargetingPack",
-                "Microsoft.Net.Component.4.8.SDK"
+
+                // Required by Metalama.Compiler, which builds the Roslyn solution.
+                "Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools",
+                "Microsoft.VisualStudio.Workload.NetCoreBuildTools",
+                "Microsoft.VisualStudio.Workload.MSBuildTools"
             ] ),
 
         // Required to download test license keys (Metalama, Metalama.Premium).
