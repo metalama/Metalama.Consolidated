@@ -19,23 +19,25 @@ var versionPackageName = "Metalama.Framework";
 var mainIndexName = "Index.xml";
 var packageIndexName = $"Index.{zipPackageName}.xml";
 
+var preferredVersions = MetalamaDependencies.Family.PreferredVersions;
+
 var product = new Product( MetalamaDependencies.Consolidated )
 {
     OverriddenBuildAgentRequirements = new ContainerRequirements( ContainerHostKind.Windows )
     {
         Components =
         [
-            new DotNetComponent( PreferredVersions.DotNetSdk.V_10_0, DotNetComponentKind.Sdk ),
+            new DotNetComponent( preferredVersions.DotNetSdk.V_10_0, DotNetComponentKind.Sdk ),
 
             // Some projects are on 9.0.
-            new DotNetComponent( PreferredVersions.DotNetSdk.V_9_0, DotNetComponentKind.Sdk ),
+            new DotNetComponent( preferredVersions.DotNetSdk.V_9_0, DotNetComponentKind.Sdk ),
 
             // Metalama.Compiler requires 10.0.110.
             new DotNetComponent( "10.0.110", DotNetComponentKind.Sdk ),
         ]
     },
     GenerateNuGetConfig = true,
-    DotNetSdkVersion = new DotNetSdkVersion( PreferredVersions.DotNetSdk.V_10_0 ),
+    DotNetSdkVersion = new DotNetSdkVersion( preferredVersions.DotNetSdk.V_10_0 ),
     Solutions = [new ZipAllArtifactsSolution( zipPackageName, versionPackageName )],
     MainVersionDependency = MetalamaDependencies.Metalama,
     Configurations = Product.DefaultConfigurations
@@ -58,9 +60,9 @@ var product = new Product( MetalamaDependencies.Consolidated )
     AdditionalDockerfiles = [ new AdditionalDockerfile( "agent",
     [
         // .NET SDKs
-        new DotNetComponent( PreferredVersions.DotNetSdk.V_10_0, DotNetComponentKind.Sdk ),
-        new DotNetComponent( PreferredVersions.DotNetSdk.V_9_0, DotNetComponentKind.Sdk ),
-        new DotNetComponent( PreferredVersions.DotNetSdk.V_8_0, DotNetComponentKind.Sdk ),
+        new DotNetComponent( preferredVersions.DotNetSdk.V_10_0, DotNetComponentKind.Sdk ),
+        new DotNetComponent( preferredVersions.DotNetSdk.V_9_0, DotNetComponentKind.Sdk ),
+        new DotNetComponent( preferredVersions.DotNetSdk.V_8_0, DotNetComponentKind.Sdk ),
 
         // Visual Studio Build Tools (union of all VS components across Metalama and Metalama.Premium).
         new VisualStudioBuildToolsComponent(
