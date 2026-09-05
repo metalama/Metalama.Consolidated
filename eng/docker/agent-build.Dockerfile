@@ -33,6 +33,24 @@ RUN Invoke-WebRequest -Uri https://github.com/PowerShell/PowerShell/releases/dow
 ENV PATH="C:\Program Files\PowerShell\7;${PATH}"
 
 
+# Install GitHub CLI
+RUN Invoke-WebRequest -Uri https://github.com/cli/cli/releases/download/v2.63.2/gh_2.63.2_windows_amd64.msi -OutFile gh.msi; `
+    $process = Start-Process msiexec.exe -Wait -PassThru -ArgumentList '/I gh.msi /quiet'; `
+    if ($process.ExitCode -ne 0) { exit $process.ExitCode }; `
+    Remove-Item gh.msi
+
+ENV PATH="C:\Program Files\GitHub CLI;${PATH}"
+
+
+# Install Azure CLI
+RUN Invoke-WebRequest -Uri https://aka.ms/installazurecliwindowsx64 -OutFile AzureCLI.msi; `
+    $process = Start-Process msiexec.exe -Wait -PassThru -ArgumentList '/I AzureCLI.msi /quiet'; `
+    if ($process.ExitCode -ne 0) { exit $process.ExitCode }; `
+    Remove-Item AzureCLI.msi
+
+ENV PATH="C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin;${PATH}"
+
+
 # Download .NET Installer
 RUN Invoke-WebRequest -Uri https://dot.net/v1/dotnet-install.ps1 -OutFile dotnet-install.ps1
 
@@ -60,24 +78,6 @@ RUN & .\dotnet-install.ps1 -Version 10.0.110 -InstallDir 'C:\Program Files\dotne
 RUN dotnet tool install --global dotnet-dump;
 
 ENV PATH="C:\Users\ContainerAdministrator\.dotnet\tools;${PATH}"
-
-
-# Install GitHub CLI
-RUN Invoke-WebRequest -Uri https://github.com/cli/cli/releases/download/v2.63.2/gh_2.63.2_windows_amd64.msi -OutFile gh.msi; `
-    $process = Start-Process msiexec.exe -Wait -PassThru -ArgumentList '/I gh.msi /quiet'; `
-    if ($process.ExitCode -ne 0) { exit $process.ExitCode }; `
-    Remove-Item gh.msi
-
-ENV PATH="C:\Program Files\GitHub CLI;${PATH}"
-
-
-# Install Azure CLI
-RUN Invoke-WebRequest -Uri https://aka.ms/installazurecliwindowsx64 -OutFile AzureCLI.msi; `
-    $process = Start-Process msiexec.exe -Wait -PassThru -ArgumentList '/I AzureCLI.msi /quiet'; `
-    if ($process.ExitCode -ne 0) { exit $process.ExitCode }; `
-    Remove-Item AzureCLI.msi
-
-ENV PATH="C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin;${PATH}"
 
 
 # Epilogue
