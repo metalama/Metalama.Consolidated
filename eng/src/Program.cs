@@ -37,6 +37,10 @@ var product = new Product( MetalamaDependencies.Consolidated )
     {
         Components =
         [
+            // Must precede every DotNetComponent: it decides the archive form that dotnet-install.ps1
+            // downloads.
+            new DotNetInstallZipComponent(),
+
             new DotNetComponent( dotNet11SdkVersion, DotNetComponentKind.Sdk ),
             new DotNetComponent( dotNet10SdkVersion, DotNetComponentKind.Sdk ),
 
@@ -69,6 +73,10 @@ var product = new Product( MetalamaDependencies.Consolidated )
     [
         // The main SDK of the products that this image builds. A target framework older than the SDK is compiled
         // from the targeting packs that the SDK restores from NuGet.
+        // Must precede every DotNetComponent: it decides the archive form that dotnet-install.ps1
+        // downloads.
+        new DotNetInstallZipComponent(),
+
         new DotNetComponent( dotNet11SdkVersion, DotNetComponentKind.Sdk ),
 
         // Required to execute the net10.0 assemblies of the build tools, because the .NET 11 SDK carries no .NET 10
