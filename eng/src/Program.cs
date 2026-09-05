@@ -14,9 +14,17 @@ using PostSharp.Engineering.BuildTools.Docker;
 
 const string productFamilyVersion = "2025.2";
 
-// The .NET SDK of the build agent, and the one pinned in global.json. The version comes from the product family,
-// so that it matches the feature band that the Visual Studio version of the family installs.
-var dotNetSdkVersion = MetalamaDependencies.Family.PreferredVersions.DotNetSdk.V_10_0;
+// The .NET 11 SDK, which global.json names as the main SDK of the product and which the build agent installs. The
+// version is a literal instead of a member of the product family, because the .NET 11 SDK is still a preview and
+// PostSharp.Engineering names only released feature bands. Keep it equal to the constant of the same name in the
+// Metalama repository, and move both to MetalamaDependencies.Family.PreferredVersions.DotNetSdk once the .NET 11
+// SDK is released.
+const string dotNet11SdkVersion = "11.0.100-preview.7.26381.103";
+
+// The .NET 10 SDK, which stays installed beside the .NET 11 one, because the build tool of this repository targets
+// net10.0 and the .NET 11 SDK carries no .NET 10 runtime. The version comes from the product family, so that it
+// matches the feature band that the Visual Studio version of the family installs.
+var dotNet10SdkVersion = MetalamaDependencies.Family.PreferredVersions.DotNetSdk.V_10_0;
 
 var zipPackageName = "Metalama.$(PackageVersion).zip";
 var versionPackageName = "Metalama.Framework";
@@ -29,14 +37,15 @@ var product = new Product( MetalamaDependencies.Consolidated )
     {
         Components =
         [
-            new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
+            new DotNetComponent( dotNet11SdkVersion, DotNetComponentKind.Sdk ),
+            new DotNetComponent( dotNet10SdkVersion, DotNetComponentKind.Sdk ),
 
             // Metalama.Compiler pins 10.0.301 in its own global.json. Keep the two in sync.
             new DotNetComponent( "10.0.301", DotNetComponentKind.Sdk ),
         ]
     },
     GenerateNuGetConfig = true,
-    DotNetSdkVersion = new DotNetSdkVersion( dotNetSdkVersion ),
+    DotNetSdkVersion = new DotNetSdkVersion( dotNet11SdkVersion ) { AllowPrerelease = true },
     Solutions = [new ZipAllArtifactsSolution( zipPackageName, versionPackageName )],
     MainVersionDependency = MetalamaDependencies.Metalama,
     Configurations = Product.DefaultConfigurations
@@ -58,9 +67,13 @@ var product = new Product( MetalamaDependencies.Consolidated )
     // Docker image for autonomous Claude-based workflows.
     AdditionalDockerfiles = [ new AdditionalDockerfile( "agent",
     [
-        // The only .NET SDK. A target framework older than the SDK is compiled from the targeting packs that the
-        // SDK restores from NuGet, so no older SDK is required.
-        new DotNetComponent( dotNetSdkVersion, DotNetComponentKind.Sdk ),
+        // The main SDK of the products that this image builds. A target framework older than the SDK is compiled
+        // from the targeting packs that the SDK restores from NuGet.
+        new DotNetComponent( dotNet11SdkVersion, DotNetComponentKind.Sdk ),
+
+        // Required to execute the net10.0 assemblies of the build tools, because the .NET 11 SDK carries no .NET 10
+        // runtime.
+        new DotNetComponent( dotNet10SdkVersion, DotNetComponentKind.Sdk ),
 
         // Visual Studio Build Tools. The union of the components of Metalama, Metalama.Premium and
         // Metalama.Compiler, because this image builds all three. It is a strict superset of the set that Metalama
