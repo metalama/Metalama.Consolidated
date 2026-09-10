@@ -68,8 +68,8 @@ RUN & .\dotnet-install.ps1 -Version 10.0.301 -InstallDir 'C:\Program Files\dotne
 RUN & .\dotnet-install.ps1 -Version 10.0.400 -InstallDir 'C:\Program Files\dotnet'
 
 
-# Install .NET Sdk 11.0.100-preview.7.26381.103
-RUN $env:DOTNET_INSTALL_SKIP_TAR = '1'; & .\dotnet-install.ps1 -Version 11.0.100-preview.7.26381.103 -InstallDir 'C:\Program Files\dotnet'
+# Install .NET Sdk 11.0.100-rc.1.26425.128
+RUN $env:DOTNET_INSTALL_SKIP_TAR = '1'; & .\dotnet-install.ps1 -Version 11.0.100-rc.1.26425.128 -InstallDir 'C:\Program Files\dotnet'
 
 
 # .NET Dump Tool
