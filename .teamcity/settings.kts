@@ -56,7 +56,7 @@ object DebugBuild : BuildType({
             id = "CleanNuGetCache"
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
+                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*', 'sharpcrafters.backstage*', 'sharpcrafters.common*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
             }
             noProfile = false
         }
@@ -86,7 +86,7 @@ object DebugBuild : BuildType({
             executionMode = BuildStep.ExecutionMode.ALWAYS
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }; if (${'$'}env:BUILDAGENT_CLEANUP_SCRIPT) { Write-Host \"Running the agent cleanup script: ${'$'}(${'$'}env:BUILDAGENT_CLEANUP_SCRIPT)\"; try { Invoke-Expression ${'$'}env:BUILDAGENT_CLEANUP_SCRIPT; if (${'$'}LASTEXITCODE -ne 0) { Write-Host \"The agent cleanup script exited with code ${'$'}LASTEXITCODE.\" } } catch { Write-Host \"The agent cleanup script failed: ${'$'}_\" } }"
             }
             noProfile = false
         }
@@ -127,6 +127,17 @@ object DebugBuild : BuildType({
     }
 
     dependencies {
+        snapshot(AbsoluteId("Backstage_Backstage20270_DebugBuild")) {
+                 onDependencyFailure = FailureAction.FAIL_TO_START
+        }
+
+        artifacts(AbsoluteId("Backstage_Backstage20270_DebugBuild")) { 
+            cleanDestination = true
+            artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Backstage"
+        }
+        snapshot(AbsoluteId("Backstage_Backstage20270_DebugBuild")) {
+                 onDependencyFailure = FailureAction.FAIL_TO_START
+        }
         snapshot(AbsoluteId("Metalama_Metalama20270_Metalama_DebugBuild")) {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
@@ -231,7 +242,7 @@ object ReleaseBuild : BuildType({
             id = "CleanNuGetCache"
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
+                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*', 'sharpcrafters.backstage*', 'sharpcrafters.common*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
             }
             noProfile = false
         }
@@ -261,7 +272,7 @@ object ReleaseBuild : BuildType({
             executionMode = BuildStep.ExecutionMode.ALWAYS
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }; if (${'$'}env:BUILDAGENT_CLEANUP_SCRIPT) { Write-Host \"Running the agent cleanup script: ${'$'}(${'$'}env:BUILDAGENT_CLEANUP_SCRIPT)\"; try { Invoke-Expression ${'$'}env:BUILDAGENT_CLEANUP_SCRIPT; if (${'$'}LASTEXITCODE -ne 0) { Write-Host \"The agent cleanup script exited with code ${'$'}LASTEXITCODE.\" } } catch { Write-Host \"The agent cleanup script failed: ${'$'}_\" } }"
             }
             noProfile = false
         }
@@ -302,6 +313,17 @@ object ReleaseBuild : BuildType({
     }
 
     dependencies {
+        snapshot(AbsoluteId("Backstage_Backstage20270_ReleaseBuild")) {
+                 onDependencyFailure = FailureAction.FAIL_TO_START
+        }
+
+        artifacts(AbsoluteId("Backstage_Backstage20270_ReleaseBuild")) { 
+            cleanDestination = true
+            artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Backstage"
+        }
+        snapshot(AbsoluteId("Backstage_Backstage20270_ReleaseBuild")) {
+                 onDependencyFailure = FailureAction.FAIL_TO_START
+        }
         snapshot(AbsoluteId("Metalama_Metalama20270_Metalama_ReleaseBuild")) {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
@@ -406,7 +428,7 @@ object PublicBuild : BuildType({
             id = "CleanNuGetCache"
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
+                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*', 'sharpcrafters.backstage*', 'sharpcrafters.common*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
             }
             noProfile = false
         }
@@ -436,7 +458,7 @@ object PublicBuild : BuildType({
             executionMode = BuildStep.ExecutionMode.ALWAYS
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }; if (${'$'}env:BUILDAGENT_CLEANUP_SCRIPT) { Write-Host \"Running the agent cleanup script: ${'$'}(${'$'}env:BUILDAGENT_CLEANUP_SCRIPT)\"; try { Invoke-Expression ${'$'}env:BUILDAGENT_CLEANUP_SCRIPT; if (${'$'}LASTEXITCODE -ne 0) { Write-Host \"The agent cleanup script exited with code ${'$'}LASTEXITCODE.\" } } catch { Write-Host \"The agent cleanup script failed: ${'$'}_\" } }"
             }
             noProfile = false
         }
@@ -477,6 +499,17 @@ object PublicBuild : BuildType({
     }
 
     dependencies {
+        snapshot(AbsoluteId("Backstage_Backstage20270_PublicBuild")) {
+                 onDependencyFailure = FailureAction.FAIL_TO_START
+        }
+
+        artifacts(AbsoluteId("Backstage_Backstage20270_PublicBuild")) { 
+            cleanDestination = true
+            artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Backstage"
+        }
+        snapshot(AbsoluteId("Backstage_Backstage20270_PublicBuild")) {
+                 onDependencyFailure = FailureAction.FAIL_TO_START
+        }
         snapshot(AbsoluteId("Metalama_Metalama20270_Metalama_PublicBuild")) {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
@@ -576,7 +609,7 @@ object PublicDeployment : BuildType({
             id = "CleanNuGetCache"
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
+                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*', 'sharpcrafters.backstage*', 'sharpcrafters.common*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
             }
             noProfile = false
         }
@@ -606,7 +639,7 @@ object PublicDeployment : BuildType({
             executionMode = BuildStep.ExecutionMode.ALWAYS
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }; if (${'$'}env:BUILDAGENT_CLEANUP_SCRIPT) { Write-Host \"Running the agent cleanup script: ${'$'}(${'$'}env:BUILDAGENT_CLEANUP_SCRIPT)\"; try { Invoke-Expression ${'$'}env:BUILDAGENT_CLEANUP_SCRIPT; if (${'$'}LASTEXITCODE -ne 0) { Write-Host \"The agent cleanup script exited with code ${'$'}LASTEXITCODE.\" } } catch { Write-Host \"The agent cleanup script failed: ${'$'}_\" } }"
             }
             noProfile = false
         }
@@ -632,6 +665,17 @@ object PublicDeployment : BuildType({
     }
 
     dependencies {
+        snapshot(AbsoluteId("Backstage_Backstage20270_PublicBuild")) {
+                 onDependencyFailure = FailureAction.FAIL_TO_START
+        }
+
+        artifacts(AbsoluteId("Backstage_Backstage20270_PublicBuild")) { 
+            cleanDestination = true
+            artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Backstage"
+        }
+        snapshot(AbsoluteId("Backstage_Backstage20270_PublicDeployment")) {
+                 onDependencyFailure = FailureAction.FAIL_TO_START
+        }
         snapshot(AbsoluteId("Metalama_Metalama20270_Metalama_PublicBuild")) {
                  onDependencyFailure = FailureAction.FAIL_TO_START
         }
@@ -737,7 +781,7 @@ object UpstreamMerge : BuildType({
             id = "CleanNuGetCache"
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
+                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*', 'sharpcrafters.backstage*', 'sharpcrafters.common*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
             }
             noProfile = false
         }
@@ -767,7 +811,7 @@ object UpstreamMerge : BuildType({
             executionMode = BuildStep.ExecutionMode.ALWAYS
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }; if (${'$'}env:BUILDAGENT_CLEANUP_SCRIPT) { Write-Host \"Running the agent cleanup script: ${'$'}(${'$'}env:BUILDAGENT_CLEANUP_SCRIPT)\"; try { Invoke-Expression ${'$'}env:BUILDAGENT_CLEANUP_SCRIPT; if (${'$'}LASTEXITCODE -ne 0) { Write-Host \"The agent cleanup script exited with code ${'$'}LASTEXITCODE.\" } } catch { Write-Host \"The agent cleanup script failed: ${'$'}_\" } }"
             }
             noProfile = false
         }
@@ -832,6 +876,8 @@ object Bump : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20270_MetalamaConsolidated"))
+        root(AbsoluteId("Backstage_Backstage20270"),
+          """+:. => source-dependencies/Backstage""")
         root(AbsoluteId("Metalama_Metalama20270_MetalamaCompiler"),
           """+:. => source-dependencies/Metalama.Compiler""")
         root(AbsoluteId("Metalama_Metalama20270_Metalama"),
@@ -855,7 +901,7 @@ object Bump : BuildType({
             id = "CleanNuGetCache"
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
+                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*', 'sharpcrafters.backstage*', 'sharpcrafters.common*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
             }
             noProfile = false
         }
@@ -885,7 +931,7 @@ object Bump : BuildType({
             executionMode = BuildStep.ExecutionMode.ALWAYS
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }; if (${'$'}env:BUILDAGENT_CLEANUP_SCRIPT) { Write-Host \"Running the agent cleanup script: ${'$'}(${'$'}env:BUILDAGENT_CLEANUP_SCRIPT)\"; try { Invoke-Expression ${'$'}env:BUILDAGENT_CLEANUP_SCRIPT; if (${'$'}LASTEXITCODE -ne 0) { Write-Host \"The agent cleanup script exited with code ${'$'}LASTEXITCODE.\" } } catch { Write-Host \"The agent cleanup script failed: ${'$'}_\" } }"
             }
             noProfile = false
         }
@@ -908,6 +954,11 @@ object Bump : BuildType({
             connectionId = "%GITHUB_CONNECTION_METALAMA%"
             targetRepositories = "Metalama.Consolidated\nMetalama.Compiler\nMetalama\nMetalama.Community\nMetalama.Premium\nMetalama.Samples\nMetalama.Documentation\nMetalama.Tests.NopCommerce"
         }
+        gitHubAppBuildScopedToken {
+            parameterName = "env.GITHUB_TOKEN_POSTSHARP_OPS"
+            connectionId = "%GITHUB_CONNECTION_POSTSHARP_OPS%"
+            targetRepositories = "SharpCrafters.Backstage"
+        }
     }
 
 })
@@ -926,6 +977,8 @@ object PrePublish : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20270_MetalamaConsolidated"))
+        root(AbsoluteId("Backstage_Backstage20270"),
+          """+:. => source-dependencies/Backstage""")
         root(AbsoluteId("Metalama_Metalama20270_MetalamaCompiler"),
           """+:. => source-dependencies/Metalama.Compiler""")
         root(AbsoluteId("Metalama_Metalama20270_Metalama"),
@@ -949,7 +1002,7 @@ object PrePublish : BuildType({
             id = "CleanNuGetCache"
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
+                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*', 'sharpcrafters.backstage*', 'sharpcrafters.common*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
             }
             noProfile = false
         }
@@ -979,7 +1032,7 @@ object PrePublish : BuildType({
             executionMode = BuildStep.ExecutionMode.ALWAYS
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }; if (${'$'}env:BUILDAGENT_CLEANUP_SCRIPT) { Write-Host \"Running the agent cleanup script: ${'$'}(${'$'}env:BUILDAGENT_CLEANUP_SCRIPT)\"; try { Invoke-Expression ${'$'}env:BUILDAGENT_CLEANUP_SCRIPT; if (${'$'}LASTEXITCODE -ne 0) { Write-Host \"The agent cleanup script exited with code ${'$'}LASTEXITCODE.\" } } catch { Write-Host \"The agent cleanup script failed: ${'$'}_\" } }"
             }
             noProfile = false
         }
@@ -1002,6 +1055,11 @@ object PrePublish : BuildType({
             connectionId = "%GITHUB_CONNECTION_METALAMA%"
             targetRepositories = "Metalama.Consolidated\nMetalama.Compiler\nMetalama\nMetalama.Community\nMetalama.Premium\nMetalama.Samples\nMetalama.Documentation\nMetalama.Tests.NopCommerce"
         }
+        gitHubAppBuildScopedToken {
+            parameterName = "env.GITHUB_TOKEN_POSTSHARP_OPS"
+            connectionId = "%GITHUB_CONNECTION_POSTSHARP_OPS%"
+            targetRepositories = "SharpCrafters.Backstage"
+        }
     }
 
 })
@@ -1020,6 +1078,8 @@ object PostPublish : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20270_MetalamaConsolidated"))
+        root(AbsoluteId("Backstage_Backstage20270"),
+          """+:. => source-dependencies/Backstage""")
         root(AbsoluteId("Metalama_Metalama20270_MetalamaCompiler"),
           """+:. => source-dependencies/Metalama.Compiler""")
         root(AbsoluteId("Metalama_Metalama20270_Metalama"),
@@ -1043,7 +1103,7 @@ object PostPublish : BuildType({
             id = "CleanNuGetCache"
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
+                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*', 'sharpcrafters.backstage*', 'sharpcrafters.common*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
             }
             noProfile = false
         }
@@ -1073,7 +1133,7 @@ object PostPublish : BuildType({
             executionMode = BuildStep.ExecutionMode.ALWAYS
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }; if (${'$'}env:BUILDAGENT_CLEANUP_SCRIPT) { Write-Host \"Running the agent cleanup script: ${'$'}(${'$'}env:BUILDAGENT_CLEANUP_SCRIPT)\"; try { Invoke-Expression ${'$'}env:BUILDAGENT_CLEANUP_SCRIPT; if (${'$'}LASTEXITCODE -ne 0) { Write-Host \"The agent cleanup script exited with code ${'$'}LASTEXITCODE.\" } } catch { Write-Host \"The agent cleanup script failed: ${'$'}_\" } }"
             }
             noProfile = false
         }
@@ -1095,6 +1155,11 @@ object PostPublish : BuildType({
             parameterName = "env.GITHUB_TOKEN"
             connectionId = "%GITHUB_CONNECTION_METALAMA%"
             targetRepositories = "Metalama.Consolidated\nMetalama.Compiler\nMetalama\nMetalama.Community\nMetalama.Premium\nMetalama.Samples\nMetalama.Documentation\nMetalama.Tests.NopCommerce"
+        }
+        gitHubAppBuildScopedToken {
+            parameterName = "env.GITHUB_TOKEN_POSTSHARP_OPS"
+            connectionId = "%GITHUB_CONNECTION_POSTSHARP_OPS%"
+            targetRepositories = "SharpCrafters.Backstage"
         }
     }
 
@@ -1119,6 +1184,8 @@ object Claude : BuildType({
 
     vcs {
         root(AbsoluteId("Metalama_Metalama20270_MetalamaConsolidated"))
+        root(AbsoluteId("Backstage_Backstage20270"),
+          """+:. => source-dependencies/Backstage""")
         root(AbsoluteId("Metalama_Metalama20270_MetalamaCompiler"),
           """+:. => source-dependencies/Metalama.Compiler""")
         root(AbsoluteId("Metalama_Metalama20270_Metalama"),
@@ -1142,7 +1209,7 @@ object Claude : BuildType({
             id = "CleanNuGetCache"
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
+                content = "${'$'}nugetPackages = if ( ${'$'}env:NUGET_PACKAGES ) { ${'$'}env:NUGET_PACKAGES } else { Join-Path ${'$'}HOME '.nuget' 'packages' }; ${'$'}removedDirs = 0; ${'$'}removedFiles = 0; if ( Test-Path -LiteralPath ${'$'}nugetPackages ) { foreach ( ${'$'}pattern in @('flashtrace*', 'metalama.backstage*', 'metalama.community', 'metalama.community.*', 'metalama.compiler', 'metalama.compiler.*', 'metalama.consolidated', 'metalama.consolidated.*', 'metalama.documentation', 'metalama.documentation.*', 'metalama.documentation.quickstart', 'metalama.extensions.architecture', 'metalama.extensions.codefixes', 'metalama.extensions.codefixes.redist', 'metalama.extensions.dependencyinjection', 'metalama.extensions.dependencyinjection.servicelocator', 'metalama.extensions.diffengine', 'metalama.extensions.htmlwriter', 'metalama.extensions.metrics', 'metalama.extensions.multicast', 'metalama.extensions.validation', 'metalama.extensions.validation.redist', 'metalama.framework*', 'metalama.licensing', 'metalama.linqpad', 'metalama.migration', 'metalama.patterns.caching', 'metalama.patterns.caching.aspects', 'metalama.patterns.caching.backend', 'metalama.patterns.caching.backends.azure', 'metalama.patterns.caching.backends.redis', 'metalama.patterns.caching.testhelpers', 'metalama.patterns.contracts', 'metalama.patterns.immutability', 'metalama.patterns.memoization', 'metalama.patterns.observability', 'metalama.patterns.testhelpers', 'metalama.patterns.wpf', 'metalama.testing.*', 'metalama.tool', 'postsharp.engineering', 'postsharp.engineering.*', 'sharpcrafters.backstage*', 'sharpcrafters.common*') ) { Get-ChildItem -LiteralPath ${'$'}nugetPackages -Directory -Filter ${'$'}pattern -ErrorAction SilentlyContinue | ForEach-Object { ${'$'}files = @( Get-ChildItem -LiteralPath ${'$'}_.FullName -Recurse -File -ErrorAction SilentlyContinue ).Count; Write-Host \"Removing NuGet cache directory: ${'$'}(${'$'}_.FullName) (${'$'}files file(s))\"; Remove-Item -LiteralPath ${'$'}_.FullName -Recurse -Force -ErrorAction SilentlyContinue; if ( -not ( Test-Path -LiteralPath ${'$'}_.FullName ) ) { ${'$'}removedDirs++; ${'$'}removedFiles += ${'$'}files } } } Write-Host \"Removed ${'$'}removedDirs package directory(ies) and ${'$'}removedFiles file(s) from the NuGet cache.\"; } else { Write-Host \"NuGet packages folder not found: ${'$'}nugetPackages\" }"
             }
             noProfile = false
         }
@@ -1160,7 +1227,7 @@ object Claude : BuildType({
             id = "CreateVersionsFile"
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "New-Item -Path \"eng/Versions.g.props\" -ItemType File -Force -Value \"<Project><Import Project=`\"../artifacts/publish/private/Metalama.Consolidated.version.props`\" /><Import Project=`\"../dependencies/Metalama.Compiler/Metalama.Compiler.version.props`\" /><Import Project=`\"../dependencies/Metalama/Metalama.version.props`\" /><Import Project=`\"../dependencies/Metalama.Community/Metalama.Community.version.props`\" /><Import Project=`\"../dependencies/Metalama.Premium/Metalama.Premium.version.props`\" /><Import Project=`\"../dependencies/Metalama.Samples/Metalama.Samples.version.props`\" /><Import Project=`\"../dependencies/Metalama.Documentation/Metalama.Documentation.version.props`\" /></Project>\" | Out-Null;"
+                content = "New-Item -Path \"eng/Versions.g.props\" -ItemType File -Force -Value \"<Project><Import Project=`\"../artifacts/publish/private/Metalama.Consolidated.version.props`\" /><Import Project=`\"../dependencies/Backstage/Backstage.version.props`\" /><Import Project=`\"../dependencies/Metalama.Compiler/Metalama.Compiler.version.props`\" /><Import Project=`\"../dependencies/Metalama/Metalama.version.props`\" /><Import Project=`\"../dependencies/Metalama.Community/Metalama.Community.version.props`\" /><Import Project=`\"../dependencies/Metalama.Premium/Metalama.Premium.version.props`\" /><Import Project=`\"../dependencies/Metalama.Samples/Metalama.Samples.version.props`\" /><Import Project=`\"../dependencies/Metalama.Documentation/Metalama.Documentation.version.props`\" /></Project>\" | Out-Null;"
             }
             noProfile = false
         }
@@ -1190,7 +1257,7 @@ object Claude : BuildType({
             executionMode = BuildStep.ExecutionMode.ALWAYS
             edition = PowerShellStep.Edition.Core
             scriptMode = script {
-                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }"
+                content = "${'$'}label = \"%system.teamcity.buildType.id%_%build.number%\"; ${'$'}ids = docker ps -a -q --filter \"label=postsharp.build=${'$'}label\"; if (${'$'}ids) { docker rm -f ${'$'}ids 2>&1 | Out-Null }; if (${'$'}env:BUILDAGENT_CLEANUP_SCRIPT) { Write-Host \"Running the agent cleanup script: ${'$'}(${'$'}env:BUILDAGENT_CLEANUP_SCRIPT)\"; try { Invoke-Expression ${'$'}env:BUILDAGENT_CLEANUP_SCRIPT; if (${'$'}LASTEXITCODE -ne 0) { Write-Host \"The agent cleanup script exited with code ${'$'}LASTEXITCODE.\" } } catch { Write-Host \"The agent cleanup script failed: ${'$'}_\" } }"
             }
             noProfile = false
         }
@@ -1213,6 +1280,11 @@ object Claude : BuildType({
             connectionId = "%GITHUB_CONNECTION_METALAMA_AGENT%"
             targetRepositories = "Metalama.Consolidated\nMetalama.Compiler\nMetalama\nMetalama.Community\nMetalama.Premium\nMetalama.Samples\nMetalama.Documentation\nMetalama.Tests.NopCommerce"
         }
+        gitHubAppBuildScopedToken {
+            parameterName = "env.GITHUB_TOKEN_POSTSHARP_OPS"
+            connectionId = "%GITHUB_CONNECTION_POSTSHARP_OPS%"
+            targetRepositories = "SharpCrafters.Backstage"
+        }
     }
 
     dependencies {
@@ -1221,6 +1293,12 @@ object Claude : BuildType({
                               buildRule = lastSuccessful()
             cleanDestination = true
             artifactRules = "+:artifacts/publish/private/**/*=>artifacts/publish/private"
+        }
+
+        artifacts(AbsoluteId("Backstage_Backstage20270_DebugBuild")) { 
+                              buildRule = lastSuccessful()
+            cleanDestination = true
+            artifactRules = "+:artifacts/publish/private/**/*=>dependencies/Backstage"
         }
 
         artifacts(AbsoluteId("Metalama_Metalama20270_MetalamaCompiler_ReleaseBuild")) { 
