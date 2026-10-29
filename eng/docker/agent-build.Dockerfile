@@ -62,8 +62,8 @@ ENV PATH="C:\Program Files\dotnet;${PATH}"
 RUN & .\dotnet-install.ps1 -Version 10.0.301 -InstallDir 'C:\Program Files\dotnet'
 
 
-# Install .NET Sdk 10.0.400
-RUN & .\dotnet-install.ps1 -Version 10.0.400 -InstallDir 'C:\Program Files\dotnet'
+# Install .NET Sdk 10.0.403
+RUN & .\dotnet-install.ps1 -Version 10.0.403 -InstallDir 'C:\Program Files\dotnet'
 
 
 # Install .NET Sdk 11.0.100-rc.2.26504.105
