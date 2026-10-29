@@ -1,14 +1,14 @@
 <Project>
   <PropertyGroup>
     <MetalamaVersion Condition="'$(MetalamaVersion)' == ''">2027.0.4-preview</MetalamaVersion>
-    <MetalamaCompilerVersion Condition="'$(MetalamaCompilerVersion)' == ''">2027.0.4-preview</MetalamaCompilerVersion>
-    <MetalamaCommunityVersion Condition="'$(MetalamaCommunityVersion)' == ''">2027.0.4-preview</MetalamaCommunityVersion>
+    <MetalamaCompilerVersion Condition="'$(MetalamaCompilerVersion)' == ''">2027.0.5-preview</MetalamaCompilerVersion>
+    <MetalamaCommunityVersion Condition="'$(MetalamaCommunityVersion)' == ''">2027.0.5-preview</MetalamaCommunityVersion>
     <MetalamaSamplesVersion Condition="'$(MetalamaSamplesVersion)' == ''">2027.0.4-preview</MetalamaSamplesVersion>
     <MetalamaVsxVersion Condition="'$(MetalamaVsxVersion)' == ''">2027.0.1</MetalamaVsxVersion>
     <MetalamaConsolidatedReleaseVersion>2027.0.4-preview</MetalamaConsolidatedReleaseVersion>
     <MetalamaConsolidatedReleaseMainVersion>2027.0.4</MetalamaConsolidatedReleaseMainVersion>
     <MetalamaPremiumVersion Condition="'$(MetalamaPremiumVersion)' == ''">2027.0.4-preview</MetalamaPremiumVersion>
-    <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2027.0.4-preview</MetalamaDocumentationVersion>
-    <BackstageVersion Condition="'$(BackstageVersion)' == ''">2027.0.3-preview</BackstageVersion>
+    <MetalamaDocumentationVersion Condition="'$(MetalamaDocumentationVersion)' == ''">2027.0.5-preview</MetalamaDocumentationVersion>
+    <BackstageVersion Condition="'$(BackstageVersion)' == ''">2027.0.7-preview</BackstageVersion>
   </PropertyGroup>
 </Project>
